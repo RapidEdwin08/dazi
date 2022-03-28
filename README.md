@@ -1,4 +1,6 @@
 # D00M Addon ZIP Integration (DAZI)  
+![lzdoom-dazi.png](https://raw.githubusercontent.com/RapidEdwin08/dazi/main/lzdoom-dazi.png)  
+
 Integration of D00M-M0D.ZIP files into RetroPie.  
 Additionally make use of the *Runcommand Launch Menu* to Pre-Load D00M M0Ds.  
 **Press [A] to Configure** -> **EXIT WITHOUT LAUNCHING** to Pre-Load One *or MORE* D00M M0Ds.  
