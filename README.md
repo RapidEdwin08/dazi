@@ -1,10 +1,8 @@
 # D00M Addon ZIP Integration (DAZI)  
-
-**WHAT IS DAZI?**  
-D00M AddOn Zip Integration  
-
-**WHAT DOES IT DO?**  
-Integration of [D00M-M0D.ZIPs] for [lzdoom] in RetroPie  
+Integration of D00M-M0D.ZIP files into RetroPie.  
+Additionally make use of the *Runcommand Launch Menu* to Pre-Load D00M M0Ds.  
+**Press [A] to Configure** -> **EXIT WITHOUT LAUNCHING** to Pre-Load One *or MORE* D00M M0Ds.  
+NOTE: The **Runcommand Launch Menu** needs to be **ENABLED**  
 
 **HOW DOES IT WORK?**  
 [DAZI-Templates.sh] will Extract [D00M-M0D.ZIPs] into [/dev/shm/addon]  
@@ -48,15 +46,15 @@ Example Entry:
 PLACE YOUR [D00M-M0D] FILES INTO A [D00M-M0D.ZIP]  
 NAME THEM ACCORDINGLY IF A PARTICULAR L0ADING 0RDER IS NEEDED  
 
-                # EXAMPLE [D00M-M0D.ZIP] CONTENTS #  
-                 ./D00M-M0D.ZIP/01-FileToLoad.wad  
-                 ./D00M-M0D.ZIP/02-FileToLoad.deh  
-                 ./D00M-M0D.ZIP/03-FileToLoad.pk3  
+      # EXAMPLE [D00M-M0D.ZIP] CONTENTS #  
+      ./D00M-M0D.ZIP/01-FileToLoad.wad  
+      ./D00M-M0D.ZIP/02-FileToLoad.deh  
+      ./D00M-M0D.ZIP/03-FileToLoad.pk3  
 
 MODIFY [DAZI-Template.sh] TO INCLUDE YOUR [IWAD] + [D00M-M0D.ZIP]  
 0ptional D00M-M0D.ZIP Entry Available if needed  
 
-              # EXAMPLE [DAZI-Template.sh] CONTENTS #  
+    # EXAMPLE [DAZI-Template.sh] CONTENTS #  
       doomWAD=~/RetroPie/roms/ports/doom/doom2.wad  
       modZIP=~/RetroPie/roms/ports/doom/mods/BrutalDoom.zip  
       optionalZIP=~/RetroPie/roms/ports/doom/mods/HellOnEarthStarterPack.zip  
