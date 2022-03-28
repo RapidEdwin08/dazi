@@ -1,4 +1,5 @@
 #!/bin/bash
+# https://github.com/RapidEdwin08/dazi
 
 # INPUT D00M.WAD + D00M-M0D.ZIPs
 doomWAD=~/RetroPie/roms/ports/doom/doom2.wad
@@ -18,5 +19,5 @@ if [ ! "$optionalZIP" == "" ]; then unzip -qq -o $optionalZIP -d $addonDIR > /de
 
 # CASE#1: [runcommand.log] FILLED = ROM was Launched/Played -> DELETE the [addonDIR]
 # CASE#2: [runcommand.log] BLANK = EXIT WITHOUT LAUNCHING -> KEEP the [addonDIR]
-# CASE#2 Allows you to Pre-Load a M0D in [addonDIR] if you SELECT a M0D + EXIT WITHOUT LAUNCHING
+# USE CASE#2 to Pre-Load a M0D in [addonDIR] BY SELECTING [EXIT WITHOUT LAUNCHING]
 if [ ! "$(cat /dev/shm/runcommand.log)" == "" ]; then rm "$addonDIR" -R -f > /dev/null 2>&1; fi
