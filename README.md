@@ -2,7 +2,10 @@
 Integration of D00M-M0D.ZIP files into RetroPie.  
 Additionally make use of the *Runcommand Launch Menu* to Pre-Load D00M M0Ds.  
 **Press [A] to Configure** -> **EXIT WITHOUT LAUNCHING** to Pre-Load One *or MORE* D00M M0Ds.  
-NOTE: The **Runcommand Launch Menu** needs to be **ENABLED**  
+
+**Before you get started:**  
+The **Runcommand Launch Menu** should to be **ENABLED**  
+**lzdoom** should be **INSTALLED**  
 
 **HOW DOES IT WORK?**  
 [DAZI-Templates.sh] will Extract [D00M-M0D.ZIPs] into [/dev/shm/addon]  
