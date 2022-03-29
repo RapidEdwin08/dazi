@@ -142,10 +142,20 @@ if [ "$confCONFIG" == '3' ]; then
 	# Backup emulators.cfg if not exist already
 	if [ ! -f /opt/retropie/configs/ports/doom/emulators.cfg.bakdazi ]; then cp /opt/retropie/configs/ports/doom/emulators.cfg /opt/retropie/configs/ports/doom/emulators.cfg.bakdazi 2>/dev/null; fi
 	
-	cat /opt/retropie/configs/ports/doom/emulators.cfg | grep -v 'lzdoom-dazi-' | grep -v 'lzdoom-dazi =' > /dev/shm/emulators.cfg
-	sed -i 's/default\ =.*/default\ =\ \"lzdoom\"/g' /dev/shm/emulators.cfg
+	cat /opt/retropie/configs/ports/doom/emulators.cfg | grep -v 'lzdoom-dazi-' | grep -v 'lzdoom-dazi =' | grep -v 'default =' > /dev/shm/emulators.cfg
+	echo 'default = "lzdoom"' >> /dev/shm/emulators.cfg
 	mv /dev/shm/emulators.cfg /opt/retropie/configs/ports/doom/emulators.cfg 2>/dev/null
 	
+	# Remove [lzdoom-dazi] from  [runcommand-onstart.sh]
+	if [ -f /opt/retropie/configs/all/runcommand-onstart.sh ]; then
+		# Backup [runcommand-onstart.sh] not exist already
+		if [ ! -f /opt/retropie/configs/all/runcommand-onstart.sh.bakdazi ]; then cp /opt/retropie/configs/all/runcommand-onstart.sh /opt/retropie/configs/all/runcommand-onstart.sh.bakdazi 2>/dev/null; fi	
+		
+		# Rebuild [runcommand-onstart.sh] without [lzdoom-dazi]
+		cat /opt/retropie/configs/all/runcommand-onstart.sh | grep -v 'lzdoom-dazi' > /dev/shm/runcommand-onstart.sh
+		mv /dev/shm/runcommand-onstart.sh /opt/retropie/configs/all/runcommand-onstart.sh
+	fi
+
 	dialog --no-collapse --title "REMOVE [DAZI] for [RetroPie]  *COMPLETE!*" --ok-label Back --msgbox "$daziLOGO $daziFILES"  25 75
 	tput reset
 	mainMENU
@@ -199,6 +209,21 @@ sed -i 's/default\ =.*/default\ =\ \"lzdoom-dazi\"/g' /opt/retropie/configs/port
 # Cleanup
 rm /dev/shm/emulators.cfg 2>/dev/null
 rm /dev/shm/emulators.dazi 2>/dev/null
+
+# Update [runcommand-onstart.sh] to BLANK the [runcommand.log] 0NLY IF [lzdoom-dazi] is Called
+# Ensures the PRE-LOAD D00M-M0Ds Using [EXIT WITHOUT LAUNCHING] Feature remains Functional
+if [ ! -f /opt/retropie/configs/all/runcommand-onstart.sh ]; then touch /opt/retropie/configs/all/runcommand-onstart.sh; fi
+
+# Backup [runcommand-onstart.sh] not exist already
+if [ ! -f /opt/retropie/configs/all/runcommand-onstart.sh.bakdazi ]; then cp /opt/retropie/configs/all/runcommand-onstart.sh /opt/retropie/configs/all/runcommand-onstart.sh.bakdazi 2>/dev/null; fi
+
+# Rebuild [runcommand-onstart.sh] with [lzdoom-dazi]
+if [ "$(cat /opt/retropie/configs/all/runcommand-onstart.sh | tail -n 1 | grep -q "lzdoom-dazi" ; echo $?)" == '1' ]; then
+	# Needs to be the LAST Line in [runcommand-onstart.sh] to Properly BLANK the [runcommand.log]
+	cat /opt/retropie/configs/all/runcommand-onstart.sh | grep -v 'lzdoom-dazi' > /dev/shm/runcommand-onstart.sh
+	echo 'if [[ "$2" == *"lzdoom-dazi"* ]]; then cat /dev/null > /dev/shm/runcommand.log; fi #For Use With [lzdoom-dazi] + [ExitWithoutLaunching] #Line Should be LAST' >> /dev/shm/runcommand-onstart.sh
+	mv /dev/shm/runcommand-onstart.sh /opt/retropie/configs/all/runcommand-onstart.sh
+fi
 
 # FINISHED
 dialog --no-collapse --title "INSTALL [DAZI] for [RetroPie]  *COMPLETE!* " --ok-label Back --msgbox "$daziLOGO $zipREFmod"  25 75
