@@ -141,6 +141,7 @@ if [ "$confCONFIG" == '2' ]; then installDAZI; fi
 # WIPE [lzdoom-dazi] Settings
 if [ "$confCONFIG" == '3' ]; then
 	cat /opt/retropie/configs/ports/doom/emulators.cfg | grep -v 'lzdoom-dazi =' > /dev/shm/emulators.cfg
+	sed -i 's/default\ =.*/default\ =\ \"lzdoom\"/g' /dev/shm/emulators.cfg
 	mv /dev/shm/emulators.cfg /opt/retropie/configs/ports/doom/emulators.cfg 2>/dev/null
 	
 	dialog --no-collapse --title "REMOVE [DAZI] for [RetroPie]  *COMPLETE!*" --ok-label Back --msgbox "$daziLOGO $daziFILES"  25 75
