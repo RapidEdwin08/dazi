@@ -140,7 +140,7 @@ if [ "$confCONFIG" == '2' ]; then installDAZI; fi
 
 # WIPE [lzdoom-dazi] Settings
 if [ "$confCONFIG" == '3' ]; then
-	cat /opt/retropie/configs/ports/doom/emulators.cfg | grep -v 'lzdoom-dazi =' > /dev/shm/emulators.cfg
+	cat /opt/retropie/configs/ports/doom/emulators.cfg | grep -v 'lzdoom-dazi' > /dev/shm/emulators.cfg
 	sed -i 's/default\ =.*/default\ =\ \"lzdoom\"/g' /dev/shm/emulators.cfg
 	mv /dev/shm/emulators.cfg /opt/retropie/configs/ports/doom/emulators.cfg 2>/dev/null
 	
@@ -176,14 +176,15 @@ if [ ! -f /opt/retropie/configs/ports/doom/emulators.cfg.bakdazi ]; then cp /opt
 
 # Add [dazi] to [emulators.cfg]
 cat /opt/retropie/configs/ports/doom/emulators.cfg | grep -v 'lzdoom-dazi =' > /dev/shm/emulators.cfg
-cat /opt/retropie/configs/ports/doom/emulators.cfg | grep 'lzdoom-addon =' > /dev/shm/emulators.dazi
+cat /opt/retropie/configs/ports/doom/emulators.cfg | grep 'lzdoom-addon' > /dev/shm/emulators.dazi
 if [ "$(cat /dev/shm/emulators.dazi | grep -q 'lzdoom-addon =' ; echo $?)" == '1' ]; then
 	echo 'lzdoom-addon = "DOOMWADDIR=/home/pi/RetroPie/roms/ports/doom /opt/retropie/ports/lzdoom/lzdoom -iwad %ROM% +fullscreen 1 +vid_renderer 1 +'snd_mididevice -3' +vid_vsync 1 -width %XRES% -height %YRES% -file /home/pi/RetroPie/roms/ports/doom/addon/*"' > /dev/shm/emulators.dazi
 	echo 'lzdoom-addon = "DOOMWADDIR=/home/pi/RetroPie/roms/ports/doom /opt/retropie/ports/lzdoom/lzdoom -iwad %ROM% +fullscreen 1 +vid_renderer 1 +'snd_mididevice -3' +vid_vsync 1 -width %XRES% -height %YRES% -file /home/pi/RetroPie/roms/ports/doom/addon/*"' >> /dev/shm/emulators.cfg
 fi
 
 # Create [dazi] entry based on current [lzdoom-addon] entry in [emulators.cfg]
-sed -i 's/lzdoom-addon\ =/lzdoom-dazi\ =/g' /dev/shm/emulators.dazi
+# sed -i 's/lzdoom-addon\ =/lzdoom-dazi\ =/g' /dev/shm/emulators.dazi
+sed -i 's/lzdoom-addon/lzdoom-dazi/g' /dev/shm/emulators.dazi
 sed -i 's/~\/RetroPie\/roms\/ports\/doom\/addon\//\/dev\/shm\/addon\//g' /dev/shm/emulators.dazi
 sed -i 's/\/home\/pi\/RetroPie\/roms\/ports\/doom\/addon\//\/dev\/shm\/addon\//g' /dev/shm/emulators.dazi
 cat /dev/shm/emulators.dazi >> /dev/shm/emulators.cfg
