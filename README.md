@@ -41,7 +41,7 @@ Example Entry:
 ```
 	<game>
 		<path>./lzdoom-dazi.sh</path>
-		<name>DAZI [lzdoom]</name>
+		<name>[lzdoom] DAZI</name>
 		<desc>INSTALL/REMOVE [lzdoom-dazi] for [RetroPie].</desc>
 		<image>/home/pi/RetroPie/retropiemenu/icons/lzdoom-dazi.png</image>
 	</game>
