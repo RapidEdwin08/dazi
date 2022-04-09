@@ -257,8 +257,8 @@ if [ $? -eq 0 ]; then
 	if [ -f ~/RetroPie/roms/ports/doom/doom.wad ]; then
 		sed -i 's/doom1.wad/doom.wad/g' ~/RetroPie/roms/ports/Doom\ SIGIL\ \(DAZI\).sh
 	else
-		mv /dev/shm/SIGIL_v1_21/SIGIL_v1_21.wad ~/RetroPie/roms/ports/doom 2>/dev/null
-		sed -i 's/doom1.wad/SIGIL_v1_21.wad/g' ~/RetroPie/roms/ports/Doom\ SIGIL\ \(DAZI\).sh
+		#mv /dev/shm/SIGIL_v1_21/SIGIL_v1_21.wad ~/RetroPie/roms/ports/doom 2>/dev/null
+		sed -i 's/doom1.wad/freedoom1.wad/g' ~/RetroPie/roms/ports/Doom\ SIGIL\ \(DAZI\).sh
 	fi
 	sed -i 's/modZIP=.*/modZIP=~\/RetroPie\/roms\/ports\/doom\/mods\/SIGIL_COMPAT.zip/g' ~/RetroPie/roms/ports/Doom\ SIGIL\ \(DAZI\).sh
 	rm /dev/shm/SIGIL_v1_21.zip 2>/dev/null
