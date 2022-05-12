@@ -1,4 +1,13 @@
 #!/usr/bin/env bash
+versionDAZI=202205
+modDIRzips=~/RetroPie/roms/ports/doom/mods/
+modDIRroms=/home/pi/RetroPie/roms/ports/doom/addon/
+modDIRtmpfs=/dev/shm/addon/
+
+zdoomCFGrp=/opt/retropie/configs/ports/doom/lzdoom.ini
+zdoomCFGroms=~/RetroPie/roms/ports/doom/lzdoom.ini
+
+MENUlaunchDOOM=BACK
 
 daziLOGO=$(
 echo ""
@@ -22,6 +31,16 @@ echo ""
 echo "       ------------------------------------------------------- "
 )
 
+daziHUD=$(
+echo ""
+echo '+--------------------------------------------------------------------+   '
+echo '|      | /|  |  |            |   (\\   |     /|    |_| ..  ports.... |   '
+echo '|      | /|  |  |  2  3  4   |    \||  |     /|    |_| ..  ..doom... |   '
+echo '|      | ~|~ | %|            |  __(_"; |     ~|~ % |_| ..  ....addon |   '
+echo '|      | /|  |  |            | /    \  |     /|    |_| ..  ..shm.... |   '
+echo '| AMMO | HEALTH |  5  6  7   |{}___)\)_|    ARMOR  |#| ..  dev...... |   '
+echo '+--------------------------------------------------------------------+   '
+)
 
 scriptREF=$(
 echo ""
@@ -98,6 +117,7 @@ echo '# CASE#1: [runcommand.log] FILLED = ROM was Launched/Played -> DELETE the 
 echo '# CASE#2: [runcommand.log] BLANK = EXIT WITHOUT LAUNCHING -> KEEP the [addonDIR]'
 echo '# USE CASE#2 to Pre-Load a M0D in [addonDIR] BY SELECTING [EXIT WITHOUT LAUNCHING]'
 echo 'if [ ! "$(cat /dev/shm/runcommand.log)" == "''" ]; then rm "$addonDIR" -R -f > /dev/null 2>&1; fi'
+echo 'mkdir "$addonDIR" > /dev/null 2>&1'
 echo ''
 )
 
@@ -126,19 +146,21 @@ if [ ! -f /opt/retropie/configs/ports/doom/emulators.cfg ]; then
 	dialog --no-collapse --title "***N0TICE*** [..ports/doom/emlators.cfg] NOT FOUND!" --ok-label MENU --msgbox "$daziEMUcfg"  25 75
 fi
 # Confirm Configurations
-confCONFIG=$(dialog --stdout --no-collapse --title " D00M AddOn ZIP Integration [DAZI] for [lzdoom] by: RapidEdwin08 [202203]" \
+confCONFIG=$(dialog --stdout --no-collapse --title " D00M AddOn ZIP Integration [DAZI] for [lzdoom] by: RapidEdwin08 [$versionDAZI]" \
 	--ok-label OK --cancel-label EXIT \
 	--menu "$scriptREF" 25 75 20 \
-	1 "><  GET [DAZI-Templates.sh] for [/roms/ports]   ><" \
-	2 "><  INSTALL [lzdoom-dazi] to [emulators.cfg]  ><" \
-	3 "><  REMOVE [lzdoom-dazi] from [emulators.cfg]  ><" \
-	4 "><  REFERENCES  ><")
+	1 "><  DAZI [M0D LOADER]  ><" \
+	2 "><  GET [DAZI-Templates.sh] for [/roms/ports]   ><" \
+	3 "><  INSTALL [lzdoom-dazi] to [emulators.cfg]  ><" \
+	4 "><  REMOVE [lzdoom-dazi] from [emulators.cfg]  ><" \
+	5 "><  REFERENCES  ><")
 
-if [ "$confCONFIG" == '1' ]; then getDAZIsh; fi 
-if [ "$confCONFIG" == '2' ]; then installDAZI; fi
+if [ "$confCONFIG" == '1' ]; then DMLmainMENU; fi 
+if [ "$confCONFIG" == '2' ]; then getDAZIsh; fi 
+if [ "$confCONFIG" == '3' ]; then installDAZI; fi
 
 # WIPE [lzdoom-dazi] Settings
-if [ "$confCONFIG" == '3' ]; then
+if [ "$confCONFIG" == '4' ]; then
 	# Backup emulators.cfg if not exist already
 	if [ ! -f /opt/retropie/configs/ports/doom/emulators.cfg.bakdazi ]; then cp /opt/retropie/configs/ports/doom/emulators.cfg /opt/retropie/configs/ports/doom/emulators.cfg.bakdazi 2>/dev/null; fi
 	
@@ -155,13 +177,16 @@ if [ "$confCONFIG" == '3' ]; then
 		cat /opt/retropie/configs/all/runcommand-onstart.sh | grep -v 'lzdoom-dazi' > /dev/shm/runcommand-onstart.sh
 		mv /dev/shm/runcommand-onstart.sh /opt/retropie/configs/all/runcommand-onstart.sh
 	fi
+	
+	# Remove [dazi-mod-loader.sh]
+	rm /opt/retropie/configs/ports/doom/dazi-mod-loader.sh
 
 	dialog --no-collapse --title "REMOVE [DAZI] for [RetroPie]  *COMPLETE!*" --ok-label Back --msgbox "$daziLOGO $daziFILES"  25 75
 	tput reset
 	mainMENU
 fi
 
-if [ "$confCONFIG" == '4' ]; then
+if [ "$confCONFIG" == '5' ]; then
 	dialog --no-collapse --title "[DAZI] for [RetroPie] REFERENCES" --ok-label Back --msgbox "$daziLOGO $zipREFmod"  25 75
 	mainMENU
 fi
@@ -180,6 +205,17 @@ installDAZI()
 {
 tput reset
 # =====================================
+# Check If Internet Connection Available
+wget -q --spider http://google.com
+if [ $? -eq 0 ]; then
+	sudo apt-get install zip
+	sudo apt-get install unzip
+else
+	# No Internet - Back to Main Menu
+	dialog --no-collapse --title "               [ERROR]               " --msgbox "   *INTERNET CONNECTION REQUIRED*"  25 75
+	mainMENU
+fi
+
 # Create [emulators.cfg] from a verified working [emulators.cfg] file If N0T Found 
 if [ ! -f /opt/retropie/configs/ports/doom/emulators.cfg ]; then echo "$lzdoomCFGemu" > /opt/retropie/configs/ports/doom/emulators.cfg; fi
 
@@ -221,9 +257,15 @@ if [ ! -f /opt/retropie/configs/all/runcommand-onstart.sh.bakdazi ]; then cp /op
 if [ "$(cat /opt/retropie/configs/all/runcommand-onstart.sh | tail -n 1 | grep -q "lzdoom-dazi" ; echo $?)" == '1' ]; then
 	# Needs to be the LAST Line in [runcommand-onstart.sh] to Properly BLANK the [runcommand.log]
 	cat /opt/retropie/configs/all/runcommand-onstart.sh | grep -v 'lzdoom-dazi' > /dev/shm/runcommand-onstart.sh
-	echo 'if [[ "$2" == *"lzdoom-dazi"* ]]; then cat /dev/null > /dev/shm/runcommand.log; fi #For Use With [lzdoom-dazi] + [ExitWithoutLaunching] #Line Should be LAST' >> /dev/shm/runcommand-onstart.sh
+	#echo 'if [[ "$2" == *"lzdoom-dazi"* ]]; then cat /dev/null > /dev/shm/runcommand.log; fi #For Use With [lzdoom-dazi] + [ExitWithoutLaunching] #Line Should be LAST' >> /dev/shm/runcommand-onstart.sh
+	echo 'if [[ "$2" == *"lzdoom-addon"* ]] || [[ "$2" == *"lzdoom-dazi"* ]]; then echo "$3" > /dev/shm/runcommand.log && sudo /home/pi/RetroPie-Setup/retropie_packages.sh retropiemenu launch "/opt/retropie/configs/ports/doom/dazi-mod-loader.sh" </dev/tty > /dev/tty; fi #For Use With [lzdoom-dazi] + [ExitWithoutLaunching] #Line Should be LAST' >> /dev/shm/runcommand-onstart.sh
 	mv /dev/shm/runcommand-onstart.sh /opt/retropie/configs/all/runcommand-onstart.sh
 fi
+
+# Get DAZI M0D LOADER
+wget https://raw.githubusercontent.com/RapidEdwin08/dazi/main/dazi-mod-loader -P /dev/shm
+mv /dev/shm/dazi-mod-loader.sh /opt/retropie/configs/ports/doom/dazi-mod-loader.sh
+sudo chmod 755 /opt/retropie/configs/ports/doom/dazi-mod-loader.sh
 
 # FINISHED
 dialog --no-collapse --title "INSTALL [DAZI] for [RetroPie]  *COMPLETE!* " --ok-label Back --msgbox "$daziLOGO $zipREFmod"  25 75
@@ -250,17 +292,23 @@ if [ $? -eq 0 ]; then
 	wget --progress=bar:force https://romero.com/s/SIGIL_v1_21.zip -P /dev/shm
 	unzip -qq -o /dev/shm/SIGIL_v1_21.zip -d /dev/shm
 	sudo apt-get install zip
-	zip -mj /dev/shm/SIGIL_v1_21/SIGIL_COMPAT.zip /dev/shm/SIGIL_v1_21/SIGIL_COMPAT_v1_21.wad
+	sudo apt-get install unzip
+	mv /dev/shm/SIGIL_v1_21/SIGIL_COMPAT_v1_21.wad /dev/shm/SIGIL_v1_21/01_SIGIL_COMPAT_v1_21.wad
+	mv /dev/shm/SIGIL_v1_21/SIGIL_v1_21.wad /dev/shm/SIGIL_v1_21/01_SIGIL_v1_21.wad
+	zip -mj /dev/shm/SIGIL_v1_21/SIGIL_COMPAT.zip /dev/shm/SIGIL_v1_21/01_SIGIL_COMPAT_v1_21.wad
+	zip -mj /dev/shm/SIGIL_v1_21/SIGIL.zip /dev/shm/SIGIL_v1_21/01_SIGIL_v1_21.wad
 	mkdir ~/RetroPie/roms/ports/doom/mods 2>/dev/null
+	mv /dev/shm/SIGIL_v1_21/SIGIL.zip ~/RetroPie/roms/ports/doom/mods 2>/dev/null
 	mv /dev/shm/SIGIL_v1_21/SIGIL_COMPAT.zip ~/RetroPie/roms/ports/doom/mods 2>/dev/null
 	echo "$daziSH" > ~/RetroPie/roms/ports/Doom\ SIGIL\ \(DAZI\).sh
+	
 	if [ -f ~/RetroPie/roms/ports/doom/doom.wad ]; then
 		sed -i 's/doom1.wad/doom.wad/g' ~/RetroPie/roms/ports/Doom\ SIGIL\ \(DAZI\).sh
 	else
 		#mv /dev/shm/SIGIL_v1_21/SIGIL_v1_21.wad ~/RetroPie/roms/ports/doom 2>/dev/null
 		sed -i 's/doom1.wad/freedoom1.wad/g' ~/RetroPie/roms/ports/Doom\ SIGIL\ \(DAZI\).sh
 	fi
-	sed -i 's/modZIP=.*/modZIP=~\/RetroPie\/roms\/ports\/doom\/mods\/SIGIL_COMPAT.zip/g' ~/RetroPie/roms/ports/Doom\ SIGIL\ \(DAZI\).sh
+	sed -i 's/modZIP=.*/modZIP=~\/RetroPie\/roms\/ports\/doom\/mods\/SIGIL.zip/g' ~/RetroPie/roms/ports/Doom\ SIGIL\ \(DAZI\).sh
 	rm /dev/shm/SIGIL_v1_21.zip 2>/dev/null
 	rm /dev/shm/SIGIL_v1_21 -R -f 2>/dev/null
 	rm /dev/shm/__MACOSX -R -f 2>/dev/null
@@ -272,7 +320,199 @@ dialog --no-collapse --title "GET [DAZI-Templates.sh] for [../roms/ports] *COMPL
 mainMENU
 }
 
+DMLmainMENU()
+{
+if [ ! -d $modDIRtmpfs ]; then mkdir $modDIRtmpfs; fi
+
+# WARN IF [..ports/doom/emlators.cfg] N0T Found 
+if [ ! -f /opt/retropie/configs/ports/doom/emulators.cfg ]; then
+	dialog --no-collapse --title "***N0TICE*** [..ports/doom/emlators.cfg] NOT FOUND!" --ok-label MENU --msgbox "$daziLOGO"  25 75
+fi
+# Confirm Configurations
+DMLconfCONFIG=$(dialog --stdout --no-collapse --title " [DAZI] M0D LOADER for [lzdoom] by: RapidEdwin08 [$versionDAZI]" \
+	--ok-label SELECT --cancel-label "$MENUlaunchDOOM" \
+	--menu "\n[$modDIRroms] FreeSpace: [$(df -h $modDIRroms |awk '{print $4}' | grep -v Avail )] \n$(ls -1 $modDIRroms ) \n$daziHUD \n[$modDIRtmpfs] (tmpfs) FreeSpace: [$(df -h $modDIRtmpfs |awk '{print $4}' | grep -v Avail )] \n$(ls -1 $modDIRtmpfs ) \n" 25 75 20 \
+	1 ">< $MENUlaunchDOOM ><" \
+	2 ">< LOAD   [M0D] in [$modDIRtmpfs] (tmpfs) ><" \
+	3 ">< REMOVE [M0D] in [$modDIRtmpfs] (tmpfs) ><" \
+	4 ">< LOAD   [M0D] in [$modDIRroms] ><" \
+	5 ">< REMOVE [M0D] in [$modDIRroms] ><" \
+	6 ">< DELETE [lzdoom.ini] Configuration (RESET) ><")
+
+if [ "$DMLconfCONFIG" == '1' ]; then
+	cat /dev/null > /dev/shm/runcommand.log
+	tput reset
+	mainMENU
+fi
+
+if [ "$DMLconfCONFIG" == '2' ]; then addonZIPmenuTMPFS; fi
+if [ "$DMLconfCONFIG" == '3' ]; then M0DremoveTMPFS; fi
+
+if [ "$DMLconfCONFIG" == '4' ]; then addonZIPmenuROMS; fi
+if [ "$DMLconfCONFIG" == '5' ]; then M0DremoveROMS; fi
+
+# DELETE Confirmed - Otherwise Back to Main Menu
+if [ "$DMLconfCONFIG" == '6' ]; then
+	DMLconfDELETEcfg=$(dialog --stdout --no-collapse --title "               DELETE [lzdoom.ini] Configuration (RESET)              " \
+		--ok-label OK --cancel-label BACK \
+		--menu "Default: [$zdoomCFGrp]  \nPorts:   [$zdoomCFGroms]\n \n                          ? ARE YOU SURE ?             " 25 75 20 \
+		1 "><  DELETE [lzdoom.ini] Configuration (RESET)  ><" \
+		2 "><  BACK  ><")
+	# Uninstall Confirmed - Otherwise Back to Main Menu
+	if [ "$DMLconfDELETEcfg" == '1' ]; then
+		rm $zdoomCFGrp
+		rm $zdoomCFGroms
+		dialog --no-collapse --title "DELETE [lzdoom.ini] Configuration (RESET) *COMPLETE!*" --ok-label Back --msgbox "Default: [$zdoomCFGrp]  \nPorts:   [$zdoomCFGroms]\n"  25 75
+		DMLmainMENU
+	fi
+DMLmainMENU
+fi
+
+# Back if N0T Confirmed
+if [ "$DMLconfCONFIG" == '' ]; then
+	cat /dev/null > /dev/shm/runcommand.log
+	tput reset
+	mainMENU
+fi
+
+cat /dev/null > /dev/shm/runcommand.log
+tput reset
+mainMENU
+}
+
+addonZIPmenuTMPFS()
+{
+tput reset
+# =====================================
+
+let i=0 # define counting variable
+W=() # define working array
+while read -r line; do # process file by file
+    let i=$i+1
+    W+=($i "$line")
+done < <( ls -1 $modDIRzips )
+#done < <( find "$modDIRzips" -maxdepth 1 -type f -iname "*.zip" )
+FILE=$(dialog --title "Select M0D from $modDIRzips" --ok-label SELECT --cancel-label BACK --menu "[$modDIRtmpfs] (tmpfs) FreeSpace: [$(df -h $modDIRtmpfs |awk '{print $4}' | grep -v Avail )] \n$(ls -1 $modDIRtmpfs )\n" 25 75 20 "${W[@]}" 3>&2 2>&1 1>&3  </dev/tty > /dev/tty) # show dialog and store output
+#clear
+tput reset
+#if [ $? -eq 0 ]; then # Exit with OK
+if [ ! "$FILE" == '' ]; then
+    #selectFILE=$(readlink -f $(ls -1 $modDIRzips | sed -n "`echo "$FILE p" | sed 's/ //'`"))
+	selectFILE=$(ls -1 $modDIRzips | sed -n "`echo "$FILE p" | sed 's/ //'`")
+	if [[ "$selectFILE" == *".zip" ]] || [[ "$selectFILE" == *".ZIP" ]]; then
+		unzip -qq -o $modDIRzips/$selectFILE -d $modDIRtmpfs
+	else
+		cp $modDIRzips/$selectFILE $modDIRtmpfs
+	fi
+	dialog --no-collapse --title "  M0D Added: [$selectFILE]   " --ok-label CONTINUE --msgbox "[$modDIRtmpfs] (tmpfs) FreeSpace: [$(df -h /dev/shm |awk '{print $4}' | grep -v Avail )] \n$(ls -1 $modDIRtmpfs )\n"  25 75
+	addonZIPmenuTMPFS
+fi
+
+DMLmainMENU
+}
+
+M0DremoveTMPFS()
+{
+tput reset
+# =====================================
+if [ "$(ls -1 $modDIRtmpfs)" == '' ]; then
+	dialog --no-collapse --title "  NO FILES FOUND   " --ok-label CONTINUE --msgbox "[$modDIRtmpfs] (tmpfs) FreeSpace: [$(df -h $modDIRtmpfs |awk '{print $4}' | grep -v Avail )] \n$(ls -1 $modDIRtmpfs )\n"  25 75
+	DMLmainMENU
+fi
+
+let i=0 # define counting variable
+W=() # define working array
+while read -r line; do # process file by file
+    let i=$i+1
+    W+=($i "$line")
+done < <( ls -1 $modDIRtmpfs )
+#done < <( find "$modDIRzips" -maxdepth 1 -type f -iname "*.zip" )
+FILE=$(dialog --title "Remove M0D from $modDIRtmpfs" --ok-label SELECT --cancel-label BACK --menu "[$modDIRtmpfs] (tmpfs) FreeSpace: [$(df -h $modDIRtmpfs |awk '{print $4}' | grep -v Avail )] \n$(ls -1 $modDIRtmpfs )\n" 25 75 20 "${W[@]}" 3>&2 2>&1 1>&3  </dev/tty > /dev/tty) # show dialog and store output
+#clear
+tput reset
+#if [ $? -eq 0 ]; then # Exit with OK
+if [ ! "$FILE" == '' ]; then
+    #selectFILE=$(readlink -f $(ls -1 $modDIRzips | sed -n "`echo "$FILE p" | sed 's/ //'`"))
+	selectFILE=$(ls -1 $modDIRtmpfs | sed -n "`echo "$FILE p" | sed 's/ //'`")
+	rm $modDIRtmpfs/$selectFILE
+	#dialog --no-collapse --title "  M0D Removed: [$selectFILE]   " --ok-label CONTINUE --msgbox "[$modDIRtmpfs] (tmpfs) FreeSpace: [$(df -h /dev/shm |awk '{print $4}' | grep -v Avail )] \n$(ls -1 $modDIRtmpfs )\n"  25 75
+	if [ "$(ls -1 $modDIRtmpfs)" == '' ]; then
+		dialog --no-collapse --title "  NO FILES FOUND   " --ok-label CONTINUE --msgbox "[$modDIRtmpfs] (tmpfs) FreeSpace: [$(df -h $modDIRtmpfs |awk '{print $4}' | grep -v Avail )] \n$(ls -1 $modDIRtmpfs )\n"  25 75
+		DMLmainMENU
+	fi
+	M0DremoveTMPFS
+fi
+
+DMLmainMENU
+}
+
+addonZIPmenuROMS()
+{
+tput reset
+# =====================================
+
+let i=0 # define counting variable
+W=() # define working array
+while read -r line; do # process file by file
+    let i=$i+1
+    W+=($i "$line")
+done < <( ls -1 $modDIRzips )
+#done < <( find "$modDIRzips" -maxdepth 1 -type f -iname "*.zip" )
+FILE=$(dialog --title "Select M0D from $modDIRzips" --ok-label SELECT --cancel-label BACK --menu "[$modDIRroms] FreeSpace: [$(df -h $modDIRroms |awk '{print $4}' | grep -v Avail )] \n$(ls -1 $modDIRroms )\n" 25 75 20 "${W[@]}" 3>&2 2>&1 1>&3  </dev/tty > /dev/tty) # show dialog and store output
+#clear
+tput reset
+#if [ $? -eq 0 ]; then # Exit with OK
+if [ ! "$FILE" == '' ]; then
+    #selectFILE=$(readlink -f $(ls -1 $modDIRzips | sed -n "`echo "$FILE p" | sed 's/ //'`"))
+	selectFILE=$(ls -1 $modDIRzips | sed -n "`echo "$FILE p" | sed 's/ //'`")
+	if [[ "$selectFILE" == *".zip" ]] || [[ "$selectFILE" == *".ZIP" ]]; then
+		unzip -qq -o $modDIRzips/$selectFILE -d $modDIRroms
+	else
+		cp $modDIRzips/$selectFILE $modDIRroms
+	fi
+	dialog --no-collapse --title "  M0D Added: [$selectFILE]   " --ok-label CONTINUE --msgbox "[$modDIRroms] FreeSpace: [$(df -h $modDIRroms |awk '{print $4}' | grep -v Avail )] \n$(ls -1 $modDIRroms )\n"  25 75
+	addonZIPmenuROMS
+fi
+
+DMLmainMENU
+}
+
+M0DremoveROMS()
+{
+tput reset
+# =====================================
+if [ "$(ls -1 $modDIRroms)" == '' ]; then
+	dialog --no-collapse --title "  NO FILES FOUND   " --ok-label CONTINUE --msgbox "[$modDIRroms] FreeSpace: [$(df -h $modDIRroms |awk '{print $4}' | grep -v Avail )] \n$(ls -1 $modDIRroms )\n"  25 75
+	DMLmainMENU
+fi
+	
+let i=0 # define counting variable
+W=() # define working array
+while read -r line; do # process file by file
+    let i=$i+1
+    W+=($i "$line")
+done < <( ls -1 $modDIRroms )
+#done < <( find "$modDIRzips" -maxdepth 1 -type f -iname "*.zip" )
+FILE=$(dialog --title "Remove M0D from $modDIRroms" --ok-label SELECT --cancel-label BACK --menu "[$modDIRroms] FreeSpace: [$(df -h $modDIRroms |awk '{print $4}' | grep -v Avail )] \n$(ls -1 $modDIRroms )\n" 25 75 20 "${W[@]}" 3>&2 2>&1 1>&3  </dev/tty > /dev/tty) # show dialog and store output
+#clear
+tput reset
+#if [ $? -eq 0 ]; then # Exit with OK
+if [ ! "$FILE" == '' ]; then
+    #selectFILE=$(readlink -f $(ls -1 $modDIRzips | sed -n "`echo "$FILE p" | sed 's/ //'`"))
+	selectFILE=$(ls -1 $modDIRroms | sed -n "`echo "$FILE p" | sed 's/ //'`")
+	rm $modDIRroms/$selectFILE
+	if [ "$(ls -1 $modDIRroms)" == '' ]; then
+		dialog --no-collapse --title "  NO FILES FOUND   " --ok-label CONTINUE --msgbox "[$modDIRroms] FreeSpace: [$(df -h $modDIRroms |awk '{print $4}' | grep -v Avail )] \n$(ls -1 $modDIRroms )\n"  25 75
+		DMLmainMENU
+	fi
+	M0DremoveROMS
+fi
+
+DMLmainMENU
+}
+
 mainMENU
 
+#cat /dev/null > /dev/shm/runcommand.log
 tput reset
 exit 0
