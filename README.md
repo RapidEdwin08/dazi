@@ -18,6 +18,10 @@ Place your [D00M-M0D] FILEs into a [.ZIP] in [..roms/ports/doom/mods/*]
 Replace all [D00M.sh] Scripts with [DAZI-Templates.sh] in [/roms/ports]  
 CHOOSE [lzdoom-dazi] D00M P0RT to RUN [DAZI-Template.sh] + [*.ZIPs]  
 
+DAZI includes [dazi-mod-loader] for use with both [lzdoom-addon*] and [lzdoom-dazi*]  
+'INSTALL [lzdoom-dazi] to [emulators.cfg]' to access this Feature whenever [lzdoom-addon*] or [lzdoom-dazi*] is Launched  
+You can also access the 'DAZI [M0D Loader]' Feature from the Main Script without Installing  
+
 ## INSTALLATION  
 
  Can be ran manually from any directory:  
