@@ -91,6 +91,10 @@ echo "       PRESS [A] BUTTON TO CONFIGURE *(Before the ROM Loads)*"
 echo "                     * [EXIT WITHOUT LAUNCHING] *"
 echo "  The Last D00M-M0D Selected will Still be Loaded in [/dev/shm/addon]"
 echo "  Now Select any 0ther Desired D00M R0M and Launch with [lzdoom-dazi]"
+echo ""
+echo "DAZI includes [dazi-mod-loader] for [lzdoom-addon] + [lzdoom-dazi]"
+echo "[dazi-mod-loader] Loads when [lzdoom-addon]/[lzdoom-dazi] is Launched"
+echo "You can also access [dazi-mod-loader] from the this Script"
 )
 
 daziSH=$(
