@@ -327,6 +327,8 @@ mainMENU
 DMLmainMENU()
 {
 if [ ! -d $modDIRtmpfs ]; then mkdir $modDIRtmpfs; fi
+if [ ! -d $modDIRtmpfs ]; then mkdir $modDIRroms; fi
+if [ ! -d $modDIRtmpfs ]; then mkdir $modDIRzips; fi
 
 # WARN IF [..ports/doom/emlators.cfg] N0T Found 
 if [ ! -f /opt/retropie/configs/ports/doom/emulators.cfg ]; then
@@ -388,6 +390,10 @@ addonZIPmenuTMPFS()
 {
 tput reset
 # =====================================
+if [ "$(ls -1 $modDIRzips)" == '' ]; then
+	dialog --no-collapse --title "  NO FILES FOUND   " --ok-label CONTINUE --msgbox "[$modDIRzips] FreeSpace: [$(df -h $modDIRzips |awk '{print $4}' | grep -v Avail )] \n$(ls -1 $modDIRzips )\n"  25 75
+	DMLmainMENU
+fi
 
 let i=0 # define counting variable
 W=() # define working array
@@ -454,6 +460,10 @@ addonZIPmenuROMS()
 {
 tput reset
 # =====================================
+if [ "$(ls -1 $modDIRzips)" == '' ]; then
+	dialog --no-collapse --title "  NO FILES FOUND   " --ok-label CONTINUE --msgbox "[$modDIRzips] FreeSpace: [$(df -h $modDIRzips |awk '{print $4}' | grep -v Avail )] \n$(ls -1 $modDIRzips )\n"  25 75
+	DMLmainMENU
+fi
 
 let i=0 # define counting variable
 W=() # define working array
