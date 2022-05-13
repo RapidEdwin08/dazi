@@ -1,10 +1,15 @@
 #!/usr/bin/env bash
 versionDAZI=202205
 
-# [dazi-mod-loader.sh]
-# Should be placed in: [/opt/retropie/configs/ports/doom]
-# For use with [runcommand-onstart.sh]: 
-# echo "if [[ \"\$2\" == *\"lzdoom-addon\"* ]] || [[ \"\$2\" == *\"lzdoom-dazi\"* ]]; then echo \"\$3\" > /dev/shm/runcommand.log && sudo /home/$USER/RetroPie-Setup/retropie_packages.sh retropiemenu launch \"/opt/retropie/configs/ports/doom/dazi-mod-loader.sh\" </dev/tty > /dev/tty; fi #For Use With [lzdoom-dazi] + [ExitWithoutLaunching] #Line Should be LAST" >> /dev/shm/runcommand-onstart.sh 
+# Should be placed in:
+# /opt/retropie/configs/ports/doom/dazi-mod-loader.sh
+# /opt/retropie/configs/ports/doom/dazi-mod-loader.flag
+
+# Add to [runcommand-onstart.sh] with this one-liner echo command:
+# echo "if [[ \"\$2\" == *\"lzdoom\"* ]] && [[ \"\$(cat /opt/retropie/configs/ports/doom/dazi-mod-loader.flag)\" == '1' ]]; then echo \"\$3\" > /dev/shm/runcommand.log && sudo /home/$USER/RetroPie-Setup/retropie_packages.sh retropiemenu launch \"/opt/retropie/configs/ports/doom/dazi-mod-loader.sh\" </dev/tty > /dev/tty; fi #For Use With [lzdoom-dazi] #Line Should be LAST" >> /dev/shm/runcommand-onstart.sh
+
+# [dazi-mod-loader.flag] Should Contain 0NLY a 1 or 0:
+#  1 = ON   0 = OFF
 
 daziLOGO=$(
 #echo ""
