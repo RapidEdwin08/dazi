@@ -267,7 +267,7 @@ if [ "$(cat /opt/retropie/configs/all/runcommand-onstart.sh | tail -n 1 | grep -
 fi
 
 # Get DAZI M0D LOADER
-wget https://raw.githubusercontent.com/RapidEdwin08/dazi/main/dazi-mod-loader -P /dev/shm
+wget https://raw.githubusercontent.com/RapidEdwin08/dazi/main/dazi-mod-loader.sh -P /dev/shm
 mv /dev/shm/dazi-mod-loader.sh /opt/retropie/configs/ports/doom/dazi-mod-loader.sh
 sudo chmod 755 /opt/retropie/configs/ports/doom/dazi-mod-loader.sh
 
