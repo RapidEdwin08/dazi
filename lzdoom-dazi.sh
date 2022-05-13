@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 versionDAZI=202205
 modDIRzips=~/RetroPie/roms/ports/doom/mods/
-modDIRroms=/home/pi/RetroPie/roms/ports/doom/addon/
+modDIRroms=~/RetroPie/roms/ports/doom/addon/
 modDIRtmpfs=/dev/shm/addon/
 
 zdoomCFGrp=/opt/retropie/configs/ports/doom/lzdoom.ini
@@ -262,8 +262,7 @@ if [ ! -f /opt/retropie/configs/all/runcommand-onstart.sh.bakdazi ]; then cp /op
 if [ "$(cat /opt/retropie/configs/all/runcommand-onstart.sh | tail -n 1 | grep -q "lzdoom-dazi" ; echo $?)" == '1' ]; then
 	# Needs to be the LAST Line in [runcommand-onstart.sh] to Properly BLANK the [runcommand.log]
 	cat /opt/retropie/configs/all/runcommand-onstart.sh | grep -v 'lzdoom-dazi' > /dev/shm/runcommand-onstart.sh
-	#echo 'if [[ "$2" == *"lzdoom-dazi"* ]]; then cat /dev/null > /dev/shm/runcommand.log; fi #For Use With [lzdoom-dazi] + [ExitWithoutLaunching] #Line Should be LAST' >> /dev/shm/runcommand-onstart.sh
-	echo 'if [[ "$2" == *"lzdoom-addon"* ]] || [[ "$2" == *"lzdoom-dazi"* ]]; then echo "$3" > /dev/shm/runcommand.log && sudo /home/pi/RetroPie-Setup/retropie_packages.sh retropiemenu launch "/opt/retropie/configs/ports/doom/dazi-mod-loader.sh" </dev/tty > /dev/tty; fi #For Use With [lzdoom-dazi] + [ExitWithoutLaunching] #Line Should be LAST' >> /dev/shm/runcommand-onstart.sh
+	echo "if [[ \"\$2\" == *\"lzdoom-addon\"* ]] || [[ \"\$2\" == *\"lzdoom-dazi\"* ]]; then echo \"\$3\" > /dev/shm/runcommand.log && sudo /home/$USER/RetroPie-Setup/retropie_packages.sh retropiemenu launch \"/opt/retropie/configs/ports/doom/dazi-mod-loader.sh\" </dev/tty > /dev/tty; fi #For Use With [lzdoom-dazi] + [ExitWithoutLaunching] #Line Should be LAST" >> /dev/shm/runcommand-onstart.sh 
 	mv /dev/shm/runcommand-onstart.sh /opt/retropie/configs/all/runcommand-onstart.sh
 fi
 
