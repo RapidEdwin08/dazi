@@ -338,7 +338,7 @@ fi
 # Confirm Configurations
 DMLconfCONFIG=$(dialog --stdout --no-collapse --title " [DAZI] M0D LOADER for [lzdoom] by: RapidEdwin08 [$versionDAZI]" \
 	--ok-label SELECT --cancel-label "$MENUlaunchDOOM" \
-	--menu "\n[$modDIRroms] FreeSpace: [$(df -h $modDIRroms |awk '{print $4}' | grep -v Avail )] \n$(ls -1 $modDIRroms ) \n$daziHUD \n[$modDIRtmpfs] (tmpfs) FreeSpace: [$(df -h $modDIRtmpfs |awk '{print $4}' | grep -v Avail )] \n$(ls -1 $modDIRtmpfs ) \n" 25 75 20 \
+	--menu "\n[$modDIRroms] FreeSpace: [$(df -h $modDIRroms |awk '{print $4}' | grep -v Avail )] \n$(find $modDIRroms -maxdepth 1 -type f | sed 's|.*/||' | sort -n ) \n$daziHUD \n[$modDIRtmpfs] (tmpfs) FreeSpace: [$(df -h $modDIRtmpfs |awk '{print $4}' | grep -v Avail )] \n$(find $modDIRtmpfs -maxdepth 1 -type f | sed 's|.*/||' | sort -n ) \n" 25 75 20 \
 	1 ">< $MENUlaunchDOOM ><" \
 	2 ">< LOAD   [M0D] in [$modDIRtmpfs] (tmpfs) ><" \
 	3 ">< REMOVE [M0D] in [$modDIRtmpfs] (tmpfs) ><" \
@@ -367,8 +367,8 @@ if [ "$DMLconfCONFIG" == '6' ]; then
 		2 "><  BACK  ><")
 	# Uninstall Confirmed - Otherwise Back to Main Menu
 	if [ "$DMLconfDELETEcfg" == '1' ]; then
-		rm $zdoomCFGrp
-		rm $zdoomCFGroms
+		rm "$zdoomCFGrp"
+		rm "$zdoomCFGroms"
 		dialog --no-collapse --title "DELETE [lzdoom.ini] Configuration (RESET) *COMPLETE!*" --ok-label Back --msgbox "Default: [$zdoomCFGrp]  \nPorts:   [$zdoomCFGroms]\n"  25 75
 		DMLmainMENU
 	fi
@@ -391,8 +391,8 @@ addonZIPmenuTMPFS()
 {
 tput reset
 # =====================================
-if [ "$(ls -1 $modDIRzips)" == '' ]; then
-	dialog --no-collapse --title "  NO FILES FOUND   " --ok-label CONTINUE --msgbox "[$modDIRzips] FreeSpace: [$(df -h $modDIRzips |awk '{print $4}' | grep -v Avail )] \n$(ls -1 $modDIRzips )\n"  25 75
+if [ "$(find $modDIRzips -maxdepth 1 -type f | sed 's|.*/||' | sort -n )" == '' ]; then
+	dialog --no-collapse --title "  NO FILES FOUND   " --ok-label CONTINUE --msgbox "[$modDIRzips] FreeSpace: [$(df -h $modDIRzips |awk '{print $4}' | grep -v Avail )] \n"  25 75
 	DMLmainMENU
 fi
 
@@ -401,21 +401,20 @@ W=() # define working array
 while read -r line; do # process file by file
     let i=$i+1
     W+=($i "$line")
-done < <( ls -1 $modDIRzips )
-#done < <( find "$modDIRzips" -maxdepth 1 -type f -iname "*.zip" )
-FILE=$(dialog --title "Select M0D from $modDIRzips" --ok-label SELECT --cancel-label BACK --menu "[$modDIRtmpfs] (tmpfs) FreeSpace: [$(df -h $modDIRtmpfs |awk '{print $4}' | grep -v Avail )] \n$(ls -1 $modDIRtmpfs )\n" 25 75 20 "${W[@]}" 3>&2 2>&1 1>&3  </dev/tty > /dev/tty) # show dialog and store output
+#done < <( ls -1 $modDIRzips )
+done < <( find "$modDIRzips" -maxdepth 1 -type f | sed 's|.*/||' | sort -n )
+FILE=$(dialog --title "Select M0D from $modDIRzips" --ok-label SELECT --cancel-label BACK --menu "[$modDIRtmpfs] (tmpfs) FreeSpace: [$(df -h $modDIRtmpfs |awk '{print $4}' | grep -v Avail )] \n$(find $modDIRtmpfs -maxdepth 1 -type f | sed 's|.*/||' | sort -n )\n" 25 75 20 "${W[@]}" 3>&2 2>&1 1>&3  </dev/tty > /dev/tty) # show dialog and store output
 #clear
 tput reset
 #if [ $? -eq 0 ]; then # Exit with OK
 if [ ! "$FILE" == '' ]; then
-    #selectFILE=$(readlink -f $(ls -1 $modDIRzips | sed -n "`echo "$FILE p" | sed 's/ //'`"))
-	selectFILE=$(ls -1 $modDIRzips | sed -n "`echo "$FILE p" | sed 's/ //'`")
+	selectFILE=$(find $modDIRzips -maxdepth 1 -type f | sed 's|.*/||' | sort -n | sed -n "`echo "$FILE p" | sed 's/ //'`")
 	if [[ "$selectFILE" == *".zip" ]] || [[ "$selectFILE" == *".ZIP" ]]; then
-		unzip -qq -o $modDIRzips/$selectFILE -d $modDIRtmpfs
+		unzip -qq -o "$modDIRzips/$selectFILE" -d $modDIRtmpfs
 	else
-		cp $modDIRzips/$selectFILE $modDIRtmpfs
+		cp "$modDIRzips/$selectFILE" $modDIRtmpfs
 	fi
-	dialog --no-collapse --title "  M0D Added: [$selectFILE]   " --ok-label CONTINUE --msgbox "[$modDIRtmpfs] (tmpfs) FreeSpace: [$(df -h /dev/shm |awk '{print $4}' | grep -v Avail )] \n$(ls -1 $modDIRtmpfs )\n"  25 75
+	dialog --no-collapse --title "  M0D Added: [$selectFILE]   " --ok-label CONTINUE --msgbox "[$modDIRtmpfs] (tmpfs) FreeSpace: [$(df -h /dev/shm |awk '{print $4}' | grep -v Avail )] \n$(find $modDIRtmpfs -maxdepth 1 -type f | sed 's|.*/||' | sort -n )\n"  25 75
 	addonZIPmenuTMPFS
 fi
 
@@ -426,8 +425,8 @@ M0DremoveTMPFS()
 {
 tput reset
 # =====================================
-if [ "$(ls -1 $modDIRtmpfs)" == '' ]; then
-	dialog --no-collapse --title "  NO FILES FOUND   " --ok-label CONTINUE --msgbox "[$modDIRtmpfs] (tmpfs) FreeSpace: [$(df -h $modDIRtmpfs |awk '{print $4}' | grep -v Avail )] \n$(ls -1 $modDIRtmpfs )\n"  25 75
+if [ "$(find $modDIRtmpfs -maxdepth 1 -type f | sed 's|.*/||' | sort -n )" == '' ]; then
+	dialog --no-collapse --title "  NO FILES FOUND   " --ok-label CONTINUE --msgbox "[$modDIRtmpfs] (tmpfs) FreeSpace: [$(df -h $modDIRtmpfs |awk '{print $4}' | grep -v Avail )] \n"  25 75
 	DMLmainMENU
 fi
 
@@ -436,19 +435,17 @@ W=() # define working array
 while read -r line; do # process file by file
     let i=$i+1
     W+=($i "$line")
-done < <( ls -1 $modDIRtmpfs )
-#done < <( find "$modDIRzips" -maxdepth 1 -type f -iname "*.zip" )
-FILE=$(dialog --title "Remove M0D from $modDIRtmpfs" --ok-label SELECT --cancel-label BACK --menu "[$modDIRtmpfs] (tmpfs) FreeSpace: [$(df -h $modDIRtmpfs |awk '{print $4}' | grep -v Avail )] \n$(ls -1 $modDIRtmpfs )\n" 25 75 20 "${W[@]}" 3>&2 2>&1 1>&3  </dev/tty > /dev/tty) # show dialog and store output
+#done < <( ls -1 $modDIRtmpfs )
+done < <( find "$modDIRtmpfs" -maxdepth 1 -type f | sed 's|.*/||' | sort -n )
+FILE=$(dialog --title "Remove M0D from $modDIRtmpfs" --ok-label SELECT --cancel-label BACK --menu "[$modDIRtmpfs] (tmpfs) FreeSpace: [$(df -h $modDIRtmpfs |awk '{print $4}' | grep -v Avail )] \n$(find $modDIRtmpfs -maxdepth 1 -type f | sed 's|.*/||' | sort -n )\n" 25 75 20 "${W[@]}" 3>&2 2>&1 1>&3  </dev/tty > /dev/tty) # show dialog and store output
 #clear
 tput reset
 #if [ $? -eq 0 ]; then # Exit with OK
 if [ ! "$FILE" == '' ]; then
-    #selectFILE=$(readlink -f $(ls -1 $modDIRzips | sed -n "`echo "$FILE p" | sed 's/ //'`"))
-	selectFILE=$(ls -1 $modDIRtmpfs | sed -n "`echo "$FILE p" | sed 's/ //'`")
-	rm $modDIRtmpfs/$selectFILE
-	#dialog --no-collapse --title "  M0D Removed: [$selectFILE]   " --ok-label CONTINUE --msgbox "[$modDIRtmpfs] (tmpfs) FreeSpace: [$(df -h /dev/shm |awk '{print $4}' | grep -v Avail )] \n$(ls -1 $modDIRtmpfs )\n"  25 75
-	if [ "$(ls -1 $modDIRtmpfs)" == '' ]; then
-		dialog --no-collapse --title "  NO FILES FOUND   " --ok-label CONTINUE --msgbox "[$modDIRtmpfs] (tmpfs) FreeSpace: [$(df -h $modDIRtmpfs |awk '{print $4}' | grep -v Avail )] \n$(ls -1 $modDIRtmpfs )\n"  25 75
+	selectFILE=$(find $modDIRtmpfs -maxdepth 1 -type f | sed 's|.*/||' | sort -n | sed -n "`echo "$FILE p" | sed 's/ //'`")
+	rm "$modDIRtmpfs/$selectFILE"
+	if [ "$(find $modDIRtmpfs -maxdepth 1 -type f | sed 's|.*/||' | sort -n )" == '' ]; then
+		dialog --no-collapse --title "  NO FILES FOUND   " --ok-label CONTINUE --msgbox "[$modDIRtmpfs] (tmpfs) FreeSpace: [$(df -h $modDIRtmpfs |awk '{print $4}' | grep -v Avail )] \n"  25 75
 		DMLmainMENU
 	fi
 	M0DremoveTMPFS
@@ -461,8 +458,8 @@ addonZIPmenuROMS()
 {
 tput reset
 # =====================================
-if [ "$(ls -1 $modDIRzips)" == '' ]; then
-	dialog --no-collapse --title "  NO FILES FOUND   " --ok-label CONTINUE --msgbox "[$modDIRzips] FreeSpace: [$(df -h $modDIRzips |awk '{print $4}' | grep -v Avail )] \n$(ls -1 $modDIRzips )\n"  25 75
+if [ "$(find $modDIRzips -maxdepth 1 -type f | sed 's|.*/||' | sort -n )" == '' ]; then
+	dialog --no-collapse --title "  NO FILES FOUND   " --ok-label CONTINUE --msgbox "[$modDIRzips] FreeSpace: [$(df -h $modDIRzips |awk '{print $4}' | grep -v Avail )] \n"  25 75
 	DMLmainMENU
 fi
 
@@ -471,21 +468,20 @@ W=() # define working array
 while read -r line; do # process file by file
     let i=$i+1
     W+=($i "$line")
-done < <( ls -1 $modDIRzips )
-#done < <( find "$modDIRzips" -maxdepth 1 -type f -iname "*.zip" )
-FILE=$(dialog --title "Select M0D from $modDIRzips" --ok-label SELECT --cancel-label BACK --menu "[$modDIRroms] FreeSpace: [$(df -h $modDIRroms |awk '{print $4}' | grep -v Avail )] \n$(ls -1 $modDIRroms )\n" 25 75 20 "${W[@]}" 3>&2 2>&1 1>&3  </dev/tty > /dev/tty) # show dialog and store output
+#done < <( ls -1 $modDIRzips )
+done < <( find "$modDIRzips" -maxdepth 1 -type f | sed 's|.*/||' | sort -n )
+FILE=$(dialog --title "Select M0D from $modDIRzips" --ok-label SELECT --cancel-label BACK --menu "[$modDIRroms] FreeSpace: [$(df -h $modDIRroms |awk '{print $4}' | grep -v Avail )] \n$(find $modDIRroms -maxdepth 1 -type f | sed 's|.*/||' | sort -n )\n" 25 75 20 "${W[@]}" 3>&2 2>&1 1>&3  </dev/tty > /dev/tty) # show dialog and store output
 #clear
 tput reset
 #if [ $? -eq 0 ]; then # Exit with OK
 if [ ! "$FILE" == '' ]; then
-    #selectFILE=$(readlink -f $(ls -1 $modDIRzips | sed -n "`echo "$FILE p" | sed 's/ //'`"))
-	selectFILE=$(ls -1 $modDIRzips | sed -n "`echo "$FILE p" | sed 's/ //'`")
+	selectFILE=$(find $modDIRzips -maxdepth 1 -type f | sed 's|.*/||' | sort -n | sed -n "`echo "$FILE p" | sed 's/ //'`")
 	if [[ "$selectFILE" == *".zip" ]] || [[ "$selectFILE" == *".ZIP" ]]; then
-		unzip -qq -o $modDIRzips/$selectFILE -d $modDIRroms
+		unzip -qq -o "$modDIRzips/$selectFILE" -d $modDIRroms
 	else
-		cp $modDIRzips/$selectFILE $modDIRroms
+		cp "$modDIRzips/$selectFILE" $modDIRroms
 	fi
-	dialog --no-collapse --title "  M0D Added: [$selectFILE]   " --ok-label CONTINUE --msgbox "[$modDIRroms] FreeSpace: [$(df -h $modDIRroms |awk '{print $4}' | grep -v Avail )] \n$(ls -1 $modDIRroms )\n"  25 75
+	dialog --no-collapse --title "  M0D Added: [$selectFILE]   " --ok-label CONTINUE --msgbox "[$modDIRroms] FreeSpace: [$(df -h $modDIRroms |awk '{print $4}' | grep -v Avail )] \n$(find $modDIRroms -maxdepth 1 -type f | sed 's|.*/||' | sort -n )\n"  25 75
 	addonZIPmenuROMS
 fi
 
@@ -496,8 +492,8 @@ M0DremoveROMS()
 {
 tput reset
 # =====================================
-if [ "$(ls -1 $modDIRroms)" == '' ]; then
-	dialog --no-collapse --title "  NO FILES FOUND   " --ok-label CONTINUE --msgbox "[$modDIRroms] FreeSpace: [$(df -h $modDIRroms |awk '{print $4}' | grep -v Avail )] \n$(ls -1 $modDIRroms )\n"  25 75
+if [ "$(find $modDIRroms -maxdepth 1 -type f | sed 's|.*/||' | sort -n )" == '' ]; then
+	dialog --no-collapse --title "  NO FILES FOUND   " --ok-label CONTINUE --msgbox "[$modDIRroms] FreeSpace: [$(df -h $modDIRroms |awk '{print $4}' | grep -v Avail )] \n"  25 75
 	DMLmainMENU
 fi
 	
@@ -506,18 +502,17 @@ W=() # define working array
 while read -r line; do # process file by file
     let i=$i+1
     W+=($i "$line")
-done < <( ls -1 $modDIRroms )
-#done < <( find "$modDIRzips" -maxdepth 1 -type f -iname "*.zip" )
-FILE=$(dialog --title "Remove M0D from $modDIRroms" --ok-label SELECT --cancel-label BACK --menu "[$modDIRroms] FreeSpace: [$(df -h $modDIRroms |awk '{print $4}' | grep -v Avail )] \n$(ls -1 $modDIRroms )\n" 25 75 20 "${W[@]}" 3>&2 2>&1 1>&3  </dev/tty > /dev/tty) # show dialog and store output
+#done < <( ls -1 $modDIRroms )
+done < <( find "$modDIRroms" -maxdepth 1 -type f | sed 's|.*/||' | sort -n )
+FILE=$(dialog --title "Remove M0D from $modDIRroms" --ok-label SELECT --cancel-label BACK --menu "[$modDIRroms] FreeSpace: [$(df -h $modDIRroms |awk '{print $4}' | grep -v Avail )] \n$(find $modDIRroms -maxdepth 1 -type f | sed 's|.*/||' | sort -n )\n" 25 75 20 "${W[@]}" 3>&2 2>&1 1>&3  </dev/tty > /dev/tty) # show dialog and store output
 #clear
 tput reset
 #if [ $? -eq 0 ]; then # Exit with OK
 if [ ! "$FILE" == '' ]; then
-    #selectFILE=$(readlink -f $(ls -1 $modDIRzips | sed -n "`echo "$FILE p" | sed 's/ //'`"))
-	selectFILE=$(ls -1 $modDIRroms | sed -n "`echo "$FILE p" | sed 's/ //'`")
-	rm $modDIRroms/$selectFILE
-	if [ "$(ls -1 $modDIRroms)" == '' ]; then
-		dialog --no-collapse --title "  NO FILES FOUND   " --ok-label CONTINUE --msgbox "[$modDIRroms] FreeSpace: [$(df -h $modDIRroms |awk '{print $4}' | grep -v Avail )] \n$(ls -1 $modDIRroms )\n"  25 75
+	selectFILE=$(find $modDIRroms -maxdepth 1 -type f | sed 's|.*/||' | sort -n | sed -n "`echo "$FILE p" | sed 's/ //'`")
+	rm "$modDIRroms/$selectFILE"
+	if [ "$(find $modDIRroms -maxdepth 1 -type f | sed 's|.*/||' | sort -n )" == '' ]; then
+		dialog --no-collapse --title "  NO FILES FOUND   " --ok-label CONTINUE --msgbox "[$modDIRroms] FreeSpace: [$(df -h $modDIRroms |awk '{print $4}' | grep -v Avail )] \n"  25 75
 		DMLmainMENU
 	fi
 	M0DremoveROMS
