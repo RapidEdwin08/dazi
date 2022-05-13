@@ -328,8 +328,8 @@ mainMENU
 DMLmainMENU()
 {
 if [ ! -d $modDIRtmpfs ]; then mkdir $modDIRtmpfs; fi
-if [ ! -d $modDIRtmpfs ]; then mkdir $modDIRroms; fi
-if [ ! -d $modDIRtmpfs ]; then mkdir $modDIRzips; fi
+if [ ! -d $modDIRroms ]; then mkdir $modDIRroms; fi
+if [ ! -d $modDIRzips ]; then mkdir $modDIRzips; fi
 
 # WARN IF [..ports/doom/emlators.cfg] N0T Found 
 if [ ! -f /opt/retropie/configs/ports/doom/emulators.cfg ]; then
