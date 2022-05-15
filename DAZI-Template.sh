@@ -10,6 +10,9 @@ optionalZIP=~/RetroPie/roms/ports/doom/mods/HellOnEarthStarterPack.zip
 #addonDIR=~/RetroPie/roms/ports/doom/addon
 addonDIR=/dev/shm/addon
 
+# Display Loading Files by name
+echo LOADING $(echo "$modZIP" | sed 's|.*/||' ) $(echo "$optionalZIP" | sed 's|.*/||' )
+
 # Extract D00M-M0D.zip + 0ptional-D00M-M0D.zip into addonDIR If Defined
 mkdir "$addonDIR" > /dev/null 2>&1
 if [ ! "$modZIP" == "" ]; then unzip -qq -o $modZIP -d $addonDIR > /dev/null 2>&1; fi
