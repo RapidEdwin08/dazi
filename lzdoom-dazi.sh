@@ -1,4 +1,22 @@
 #!/usr/bin/env bash
+
+# This script will behave differently depending on the location it is ran from  
+# Running this Script from [/home/pi/RetroPie/retropiemenu] will access the BOTH the Installer + Mod Loader Menus  
+# Running this Script from [/opt/retropie/configs/ports/doom] will access 0NLY the Mod Loader Menu  
+# Automatic Install/Removal Provided in Main Installer Menu  
+
+# Manual Install of the [lzdoom-dazi.sh] should be placed in:  
+# /opt/retropie/configs/ports/doom/lzdoom-dazi.sh  
+
+# Settings Flag File used with [runcommand-onstart] should be placed in:  
+# /opt/retropie/configs/ports/doom/lzdoom-dazi.flag  
+
+# [lzdoom-dazi.flag] Should Contain 0NLY a 1 or 0:  
+# 1 = ON   0 = OFF  
+
+# For Manual Install to [runcommand-onstart.sh] use this one-liner [echo] command:  
+# echo "if [[ \"\$2\" == *\"lzdoom\"* ]] && [[ \"\$(cat /opt/retropie/configs/ports/doom/lzdoom-dazi.flag)\" == '1' ]]; then echo \"\$3\" > /dev/shm/runcommand.log && sudo /home/$USER/RetroPie-Setup/retropie_packages.sh retropiemenu launch \"/opt/retropie/configs/ports/doom/lzdoom-dazi.sh\" </dev/tty > /dev/tty; fi #For Use With [lzdoom-dazi] #Line Should be LAST" >> /dev/shm/runcommand-onstart.sh  
+
 versionDAZI=202205
 modDIRzips=~/RetroPie/roms/ports/doom/mods/
 modDIRroms=~/RetroPie/roms/ports/doom/addon/
@@ -7,7 +25,9 @@ modDIRtmpfs=/dev/shm/addon/
 zdoomCFGrp=/opt/retropie/configs/ports/doom/lzdoom.ini
 zdoomCFGroms=~/RetroPie/roms/ports/doom/lzdoom.ini
 
+# Location of Script determines Menu Launched
 MENUlaunchDOOM=BACK
+if [ "$0" == "/opt/retropie/configs/ports/doom/lzdoom-dazi.sh" ]; then MENUlaunchDOOM="LAUNCH $(cat /dev/shm/runcommand.log | sed 's/.*\///')"; fi
 
 daziLOGO=$(
 echo ""
@@ -165,22 +185,22 @@ confCONFIG=$(dialog --stdout --no-collapse --title " D00M AddOn ZIP Integration 
 if [ "$confCONFIG" == '1' ]; then DMLmainMENU; fi 
 
 if [ "$confCONFIG" == '2' ]; then 
-	if [ ! -f /opt/retropie/configs/ports/doom/dazi-mod-loader.sh ]; then
-		dialog --no-collapse --title " [/opt/retropie/configs/ports/doom/dazi-mod-loader.sh] NOT FOUND!  " --ok-label CONTINUE --msgbox "\n INSTALL [DAZI] FIRST...\n"  25 75
+	if [ ! -f /opt/retropie/configs/ports/doom/lzdoom-dazi.sh ]; then
+		dialog --no-collapse --title " [/opt/retropie/configs/ports/doom/lzdoom-dazi.sh] NOT FOUND!  " --ok-label CONTINUE --msgbox "\n INSTALL [DAZI] FIRST...\n"  25 75
 	else
 		# Toggle [runcommand] Flag ON [dazi-mod-loader]
-		echo '1' > /opt/retropie/configs/ports/doom/dazi-mod-loader.flag
+		echo '1' > /opt/retropie/configs/ports/doom/lzdoom-dazi.flag
 		dialog --no-collapse --title "ENABLE  [dazi-mod-loader] at [runcommand]  *COMPLETE!*" --ok-label Back --msgbox "ENABLED... \n$daziHUD"  25 75
 	fi
 mainMENU
 fi
 
 if [ "$confCONFIG" == '3' ]; then 
-	if [ ! -f /opt/retropie/configs/ports/doom/dazi-mod-loader.sh ]; then
-		dialog --no-collapse --title " [/opt/retropie/configs/ports/doom/dazi-mod-loader.sh] NOT FOUND!  " --ok-label CONTINUE --msgbox "\n INSTALL [DAZI] FIRST...\n"  25 75
+	if [ ! -f /opt/retropie/configs/ports/doom/lzdoom-dazi.sh ]; then
+		dialog --no-collapse --title " [/opt/retropie/configs/ports/doom/lzdoom-dazi.sh] NOT FOUND!  " --ok-label CONTINUE --msgbox "\n INSTALL [DAZI] FIRST...\n"  25 75
 	else
 		# Toggle [runcommand] Flag OFF [dazi-mod-loader]
-		echo '0' > /opt/retropie/configs/ports/doom/dazi-mod-loader.flag
+		echo '0' > /opt/retropie/configs/ports/doom/lzdoom-dazi.flag
 		dialog --no-collapse --title "DISABLE  [dazi-mod-loader] at [runcommand]  *COMPLETE!*" --ok-label Back --msgbox "DISABLED... \n$daziHUD"  25 75
 	fi
 mainMENU
@@ -191,35 +211,40 @@ if [ "$confCONFIG" == '4' ]; then
 	mainMENU
 fi
 
-if [ "$confCONFIG" == '5' ]; then installDAZI; fi
-if [ "$confCONFIG" == '6' ]; then getDAZIsh; fi 
+# INSTALL [lzdoom-dazi]
+if [ "$confCONFIG" == '5' ]; then
+	confINSTALLdazi=$(dialog --stdout --no-collapse --title "               INSTALL  [lzdoom-dazi] + [dazi-mod-loader]              " \
+		--ok-label OK --cancel-label BACK \
+		--menu "                          ? ARE YOU SURE ?             " 25 75 20 \
+		1 "><  INSTALL  [lzdoom-dazi] + [dazi-mod-loader]  ><" \
+		2 "><  BACK  ><")
+	# Install Confirmed - Otherwise Back to Main Menu
+	if [ "$confINSTALLdazi" == '1' ]; then installDAZI; fi
+mainMENU
+fi
 
-# WIPE [lzdoom-dazi] Settings
+# Get Templates
+if [ "$confCONFIG" == '6' ]; then
+	confGETdazi=$(dialog --stdout --no-collapse --title "               GET [DAZI-Templates.sh] for [/roms/ports]              " \
+		--ok-label OK --cancel-label BACK \
+		--menu "                          ? ARE YOU SURE ?             " 25 75 20 \
+		1 "><  GET [DAZI-Templates.sh] for [/roms/ports]  ><" \
+		2 "><  BACK  ><")
+	# Confirmed - Otherwise Back to Main Menu
+	if [ "$confGETdazi" == '1' ]; then getDAZIsh; fi
+mainMENU
+fi
+
+# REMOVE [lzdoom-dazi]
 if [ "$confCONFIG" == '7' ]; then
-	# Backup emulators.cfg if not exist already
-	if [ ! -f /opt/retropie/configs/ports/doom/emulators.cfg.bakdazi ]; then cp /opt/retropie/configs/ports/doom/emulators.cfg /opt/retropie/configs/ports/doom/emulators.cfg.bakdazi 2>/dev/null; fi
-	
-	cat /opt/retropie/configs/ports/doom/emulators.cfg | grep -v 'lzdoom-dazi-' | grep -v 'lzdoom-dazi =' | grep -v 'default =' > /dev/shm/emulators.cfg
-	echo 'default = "lzdoom"' >> /dev/shm/emulators.cfg
-	mv /dev/shm/emulators.cfg /opt/retropie/configs/ports/doom/emulators.cfg 2>/dev/null
-	
-	# Remove [lzdoom-dazi] from  [runcommand-onstart.sh]
-	if [ -f /opt/retropie/configs/all/runcommand-onstart.sh ]; then
-		# Backup [runcommand-onstart.sh] not exist already
-		if [ ! -f /opt/retropie/configs/all/runcommand-onstart.sh.bakdazi ]; then cp /opt/retropie/configs/all/runcommand-onstart.sh /opt/retropie/configs/all/runcommand-onstart.sh.bakdazi 2>/dev/null; fi	
-		
-		# Rebuild [runcommand-onstart.sh] without [lzdoom-dazi]
-		cat /opt/retropie/configs/all/runcommand-onstart.sh | grep -v 'lzdoom-dazi' > /dev/shm/runcommand-onstart.sh
-		mv /dev/shm/runcommand-onstart.sh /opt/retropie/configs/all/runcommand-onstart.sh
-	fi
-	
-	# Remove [dazi-mod-loader.sh]
-	rm /opt/retropie/configs/ports/doom/dazi-mod-loader.sh 2>/dev/null
-	rm /opt/retropie/configs/ports/doom/dazi-mod-loader.flag 2>/dev/null
-	
-	dialog --no-collapse --title "REMOVE [DAZI] for [RetroPie]  *COMPLETE!*" --ok-label Back --msgbox "$daziLOGO $daziFILES"  25 75
-	tput reset
-	mainMENU
+	confREMOVEdazi=$(dialog --stdout --no-collapse --title "               REMOVE  [lzdoom-dazi] + [dazi-mod-loader]              " \
+		--ok-label OK --cancel-label BACK \
+		--menu "                          ? ARE YOU SURE ?             " 25 75 20 \
+		1 "><  REMOVE  [lzdoom-dazi] + [dazi-mod-loader]  ><" \
+		2 "><  BACK  ><")
+	# Uninstall Confirmed - Otherwise Back to Main Menu
+	if [ "$confREMOVEdazi" == '1' ]; then removeDAZI; fi
+mainMENU
 fi
 
 # QUIT if N0T Confirmed
@@ -232,19 +257,51 @@ tput reset
 exit 0
 }
 
+removeDAZI()
+{
+tput reset
+
+# Backup emulators.cfg if not exist already
+if [ ! -f /opt/retropie/configs/ports/doom/emulators.cfg.bakdazi ]; then cp /opt/retropie/configs/ports/doom/emulators.cfg /opt/retropie/configs/ports/doom/emulators.cfg.bakdazi 2>/dev/null; fi
+
+cat /opt/retropie/configs/ports/doom/emulators.cfg | grep -v 'lzdoom-dazi-' | grep -v 'lzdoom-dazi =' | grep -v 'default =' > /dev/shm/emulators.cfg
+echo 'default = "lzdoom"' >> /dev/shm/emulators.cfg
+mv /dev/shm/emulators.cfg /opt/retropie/configs/ports/doom/emulators.cfg 2>/dev/null
+
+# Remove [lzdoom-dazi] from  [runcommand-onstart.sh]
+if [ -f /opt/retropie/configs/all/runcommand-onstart.sh ]; then
+	# Backup [runcommand-onstart.sh] not exist already
+	if [ ! -f /opt/retropie/configs/all/runcommand-onstart.sh.bakdazi ]; then cp /opt/retropie/configs/all/runcommand-onstart.sh /opt/retropie/configs/all/runcommand-onstart.sh.bakdazi 2>/dev/null; fi	
+	
+	# Rebuild [runcommand-onstart.sh] without [lzdoom-dazi]
+	cat /opt/retropie/configs/all/runcommand-onstart.sh | grep -v 'lzdoom-dazi' > /dev/shm/runcommand-onstart.sh
+	mv /dev/shm/runcommand-onstart.sh /opt/retropie/configs/all/runcommand-onstart.sh
+fi
+
+# Remove [zdoom-dazi.sh]
+rm /opt/retropie/configs/ports/doom/lzdoom-dazi.sh 2>/dev/null
+rm /opt/retropie/configs/ports/doom/lzdoom-dazi.flag 2>/dev/null
+
+dialog --no-collapse --title "REMOVE [DAZI] for [RetroPie]  *COMPLETE!*" --ok-label Back --msgbox "$daziLOGO $daziFILES"  25 75
+
+mainMENU
+}
+
 installDAZI()
 {
 tput reset
 # =====================================
-# Check If Internet Connection Available
-wget -q --spider http://google.com
-if [ $? -eq 0 ]; then
-	sudo apt-get install zip
-	sudo apt-get install unzip
-else
-	# No Internet - Back to Main Menu
-	dialog --no-collapse --title "               [ERROR]               " --msgbox "   *INTERNET CONNECTION REQUIRED*"  25 75
-	mainMENU
+# Install [ZIP/UNZIP] - Check If Internet Connection Available
+if [[ "$(dpkg -l | grep -F '  zip ')" == '' ]] || [[ "$(dpkg -l | grep -F '  unzip ')" == '' ]]; then
+	wget -q --spider http://google.com
+	if [ $? -eq 0 ]; then
+		sudo apt-get install zip
+		sudo apt-get install unzip
+	else
+		# No Internet - Back to Main Menu
+		dialog --no-collapse --title "               [ERROR]               " --msgbox "   *INTERNET CONNECTION REQUIRED* TO INSTALL [ZIP/UNZIP]"  25 75
+		mainMENU
+	fi
 fi
 
 # Create [emulators.cfg] from a verified working [emulators.cfg] file If N0T Found 
@@ -288,17 +345,17 @@ if [ ! -f /opt/retropie/configs/all/runcommand-onstart.sh.bakdazi ]; then cp /op
 if [ "$(cat /opt/retropie/configs/all/runcommand-onstart.sh | tail -n 1 | grep -q "lzdoom-dazi" ; echo $?)" == '1' ]; then
 	# Needs to be the LAST Line in [runcommand-onstart.sh] to Properly BLANK the [runcommand.log]
 	cat /opt/retropie/configs/all/runcommand-onstart.sh | grep -v 'lzdoom-dazi' > /dev/shm/runcommand-onstart.sh
-	echo "if [[ \"\$2\" == *\"lzdoom\"* ]] && [[ \"\$(cat /opt/retropie/configs/ports/doom/dazi-mod-loader.flag)\" == '1' ]]; then echo \"\$3\" > /dev/shm/runcommand.log && sudo /home/$USER/RetroPie-Setup/retropie_packages.sh retropiemenu launch \"/opt/retropie/configs/ports/doom/dazi-mod-loader.sh\" </dev/tty > /dev/tty; fi #For Use With [lzdoom-dazi] #Line Should be LAST" >> /dev/shm/runcommand-onstart.sh
+	echo "if [[ \"\$2\" == *\"lzdoom\"* ]] && [[ \"\$(cat /opt/retropie/configs/ports/doom/lzdoom-dazi.flag)\" == '1' ]]; then echo \"\$3\" > /dev/shm/runcommand.log && sudo /home/$USER/RetroPie-Setup/retropie_packages.sh retropiemenu launch \"/opt/retropie/configs/ports/doom/lzdoom-dazi.sh\" </dev/tty > /dev/tty; fi #For Use With [lzdoom-dazi] #Line Should be LAST" >> /dev/shm/runcommand-onstart.sh
 	mv /dev/shm/runcommand-onstart.sh /opt/retropie/configs/all/runcommand-onstart.sh
 fi
 
-# Get DAZI M0D LOADER
-wget https://raw.githubusercontent.com/RapidEdwin08/dazi/main/dazi-mod-loader.sh -P /dev/shm
-mv /dev/shm/dazi-mod-loader.sh /opt/retropie/configs/ports/doom/dazi-mod-loader.sh
-sudo chmod 755 /opt/retropie/configs/ports/doom/dazi-mod-loader.sh
+# This script will behave differently depending on the location - copy itself to install location
+cp "$0" /dev/shm/
+mv /dev/shm/lzdoom-dazi.sh /opt/retropie/configs/ports/doom/lzdoom-dazi.sh
+sudo chmod 755 /opt/retropie/configs/ports/doom/lzdoom-dazi.sh
 
 # Toggle [runcommand] Flag ON [dazi-mod-loader]
-echo '1' > /opt/retropie/configs/ports/doom/dazi-mod-loader.flag
+echo '1' > /opt/retropie/configs/ports/doom/lzdoom-dazi.flag
 
 # FINISHED
 dialog --no-collapse --title "INSTALL [DAZI] for [RetroPie]  *COMPLETE!* " --ok-label Back --msgbox "$daziLOGO $zipREFmod"  25 75
@@ -321,11 +378,13 @@ sed -i 's/doom1.wad/freedoom2.wad/g' ~/RetroPie/roms/ports/Freedoom\ Phase\ II\ 
 
 # Get SIGIL If Internet Connection Available
 wget -q --spider http://google.com
-if [ $? -eq 0 ]; then
+if [ $? -eq 0 ]; then	
+	if [[ "$(dpkg -l | grep -F '  zip ')" == '' ]] || [[ "$(dpkg -l | grep -F '  unzip ')" == '' ]]; then
+		sudo apt-get install zip
+		sudo apt-get install unzip
+	fi
 	wget --progress=bar:force https://romero.com/s/SIGIL_v1_21.zip -P /dev/shm
 	unzip -qq -o /dev/shm/SIGIL_v1_21.zip -d /dev/shm
-	sudo apt-get install zip
-	sudo apt-get install unzip
 	mv /dev/shm/SIGIL_v1_21/SIGIL_COMPAT_v1_21.wad /dev/shm/SIGIL_v1_21/01_SIGIL_COMPAT_v1_21.wad
 	mv /dev/shm/SIGIL_v1_21/SIGIL_v1_21.wad /dev/shm/SIGIL_v1_21/01_SIGIL_v1_21.wad
 	zip -mj /dev/shm/SIGIL_v1_21/SIGIL_COMPAT.zip /dev/shm/SIGIL_v1_21/01_SIGIL_COMPAT_v1_21.wad
@@ -375,9 +434,13 @@ DMLconfCONFIG=$(dialog --stdout --no-collapse --title " [DAZI] M0D LOADER for [l
 	6 ">< DELETE [lzdoom.ini] Configuration (RESET) ><")
 
 if [ "$DMLconfCONFIG" == '1' ]; then
-	cat /dev/null > /dev/shm/runcommand.log
-	tput reset
-	mainMENU
+	if [ "$0" == "/opt/retropie/configs/ports/doom/lzdoom-dazi.sh" ]; then
+		cat /dev/null > /dev/shm/runcommand.log
+		tput reset
+		exit 0
+	else
+		mainMENU
+	fi
 fi
 
 if [ "$DMLconfCONFIG" == '2' ]; then addonZIPmenuTMPFS; fi
@@ -404,13 +467,11 @@ DMLmainMENU
 fi
 
 # Back if N0T Confirmed
-if [ "$DMLconfCONFIG" == '' ]; then
+if [ "$0" == "/opt/retropie/configs/ports/doom/lzdoom-dazi.sh" ]; then
 	cat /dev/null > /dev/shm/runcommand.log
-	tput reset
-	mainMENU
+	exit 0
 fi
 
-cat /dev/null > /dev/shm/runcommand.log
 tput reset
 mainMENU
 }
@@ -549,8 +610,13 @@ fi
 DMLmainMENU
 }
 
-mainMENU
+# Location of Script determines Menu Launched
+if [ "$0" == "/opt/retropie/configs/ports/doom/lzdoom-dazi.sh" ]; then
+	DMLmainMENU
+else
+	mainMENU
+fi
 
-#cat /dev/null > /dev/shm/runcommand.log
+if [ "$0" == "/opt/retropie/configs/ports/doom/lzdoom-dazi.sh" ]; then cat /dev/null > /dev/shm/runcommand.log; fi
 tput reset
 exit 0
