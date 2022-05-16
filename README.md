@@ -8,33 +8,38 @@ Additionally make use of the *Runcommand Launch Menu* to Pre-Load D00M M0Ds.
 **Before you get started:**  
 **lzdoom** should be **INSTALLED**  
 The **Runcommand Launch Menu** should be **ENABLED**  
+Place your **[M0D].ZIP/PK3/PK7** Files in: **~/RetroPie/roms/ports/doom/mods/***  
 
 **HOW DOES IT WORK?**  
 [DAZI-Templates.sh] will Extract [D00M-M0D.ZIPs] into [/dev/shm/addon]  
 [lzdoom-dazi] Entry in [emulators.cfg] will point to [/dev/shm/addon/*]  
 
-**HOW TO USE:**  
-Place your [D00M-M0D] FILEs into a [.ZIP] in [..roms/ports/doom/mods/*]  
-Replace all [D00M.sh] Scripts with [DAZI-Templates.sh] in [/roms/ports]  
-CHOOSE [lzdoom-dazi] D00M P0RT to RUN [DAZI-Template.sh] + [*.ZIPs]  
+**HOW TO PRE-LOAD D00M M0Ds WITH [DAZI] FOR 0THER ROMs [0PTION 1]**  
+Select and Load a D00M-MOD using the [DAZI-Template.sh]  
+PRESS [A] BUTTON TO CONFIGURE *(Before the ROM Loads)*  
+** [EXIT WITHOUT LAUNCHING] **  
+The Last D00M-M0D Selected will Still be Loaded in [/dev/shm/addon]  
+Now Select any 0ther Desired D00M R0M and Launch with [lzdoom-dazi]  
 
-DAZI includes [dazi-mod-loader] for use with both [lzdoom-addon*] and [lzdoom-dazi*]  
-'INSTALL [lzdoom-dazi] to [emulators.cfg]' to access this Feature whenever [lzdoom-addon*] or [lzdoom-dazi*] is Launched  
-You can also access the 'DAZI [M0D Loader]' Feature from the Main Script without Installing  
+**HOW TO PRE-LOAD D00M M0Ds WITH [DAZI] FOR 0THER ROMs [0PTION 2]**  
+[dazi-mod-loader] Menu is Included for use with [lzdoom-addon]/[lzdoom-dazi]  
+Use [dazi-mod-loader] Menu from this Script directly, 0r *Install* it and...  
+Configure the Menu to *Always Load* when *[lzdoom-addon]/[lzdoom-dazi]* is Launched  
 
 ## INSTALLATION  
 
- Can be ran manually from any directory:  
+Can be ran from retropiemenu:  
+
+```bash
+wget https://raw.githubusercontent.com/RapidEdwin08/dazi/main/lzdoom-dazi.sh -P ~/RetroPie/retropiemenu
+```
+
+0R Can be ran manually from any directory:  
 ```bash
 cd ~
 git clone https://github.com/RapidEdwin08/dazi.git
 sudo chmod 755 ~/dazi/lzdoom-dazi.sh
 cd ~/dazi && ./lzdoom-dazi.sh
-```
-0r can be ran from retropiemenu:  
-
-```bash
-wget https://raw.githubusercontent.com/RapidEdwin08/dazi/main/lzdoom-dazi.sh -P ~/RetroPie/retropiemenu
 ```
 
 0ptionally you can Add an Entry and Icon to your retropiemenu [gamelist.xml]:  
@@ -68,9 +73,23 @@ MODIFY [DAZI-Template.sh] TO INCLUDE YOUR [IWAD] + [D00M-M0D.ZIP]
       modZIP=~/RetroPie/roms/ports/doom/mods/BrutalDoom.zip  
       optionalZIP=~/RetroPie/roms/ports/doom/mods/HellOnEarthStarterPack.zip  
 
-*HOW TO PRE-LOAD D00M M0Ds WITH [DAZI] FOR 0THER ROMs:*  
-Select and Load a D00M-MOD using the [DAZI-Template.sh]  
-PRESS [A] BUTTON TO CONFIGURE **(Before the ROM Loads)**  
-** [EXIT WITHOUT LAUNCHING] **  
-The Last D00M-M0D Selected will Still be Loaded in [/dev/shm/addon]  
-Now Select any 0ther Desired D00M R0M and Launch with [lzdoom-dazi]  
+SYMBOLIC LINKS for [doom.wads]:  
+Use To Differentiate Which ZDoom AddOn Directory to Select via Emulator  
+eg. [lzdoom-dazi] VS [lzdoom-addon]  
+
+The [lzdoom-dazi] Entry in [emulators.cfg] refers to [/dev/shm/addon/*]  
+But LARGER M0Ds may EXCEED the Size Limitation of [/dev/shm/addon/*]  
+We will want to use [lzdoom-addon] Emulator instead of [lzdoom-dazi]  
+
+Normally we would just [Select Emulator for ROM] from the [runcommand]  
+But D00M M0Ds use the same [doom.wad] as the [ROM] repeatedly, meaning  
+[Select Emulator for ROM] will APPLY TO ALL M0Ds using that [doom.wad]  
+
+We can Create Symbolic Links to [doom.wads] using Unique names, then...  
+Add [Unique.wads] into [LargeM0D.sh] scripts that need [lzdoom-addon]  
+eg. WADFile: [doom2.wad]  <->  SymbolicLink: [doom2-addon.wad]  
+
+    # EXAMPLE [DAZI-Template.sh] CONTENTS with SYMBOLIC LINK#  
+      doomWAD=~/RetroPie/roms/ports/doom/doom2-addon.wad 
+      modZIP=~/RetroPie/roms/ports/doom/mods/DragonSectorRemake.zip  
+      optionalZIP=~/RetroPie/roms/ports/doom/mods/BrutalDoomArthursEditionReloaded.zip  
