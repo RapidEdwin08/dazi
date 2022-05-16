@@ -62,6 +62,17 @@ echo '| AMMO | HEALTH |  5  6  7   |{}___)\)_|    ARMOR  |#| ..  dev...... |   '
 echo '+--------------------------------------------------------------------+   '
 )
 
+daziHUDoff=$(
+echo ""
+echo '+--------------------------------------------------------------------+   '
+echo '|      | /|  |  |            |         |     /|    |_| ..  ......... |   '
+echo '|      | /|  |  |  2  3  4   |         |     /|    |_| ..  ......... |   '
+echo '|      | ~|~ | %|            |         |     ~|~ % |_| ..  ......... |   '
+echo '|      | /|  |  |            |         |     /|    |_| ..  ......... |   '
+echo '| AMMO | HEALTH |  5  6  7   |         |    ARMOR  |#| ..  ......... |   '
+echo '+--------------------------------------------------------------------+   '
+)
+
 scriptREF=$(
 echo ""
 echo "- WHAT IS DAZI?"
@@ -105,16 +116,17 @@ echo '          doomWAD=~/RetroPie/roms/ports/doom/doom2.wad'
 echo '      modZIP=~/RetroPie/roms/ports/doom/mods/BrutalDoom.zip'
 echo ' optionalZIP=~/RetroPie/roms/ports/doom/mods/HellOnEarthStarterPack.zip'
 echo ""
-echo "     # HOW TO PRE-LOAD D00M M0Ds WITH [DAZI] FOR 0THER ROMs #"
+echo " #  HOW TO PRE-LOAD D00M M0Ds WITH [DAZI] FOR 0THER ROMs [0PTION 1]  #"
 echo "      Select and Load a D00M-MOD using the [DAZI-Template.sh]"
 echo "       PRESS [A] BUTTON TO CONFIGURE *(Before the ROM Loads)*"
 echo "                     * [EXIT WITHOUT LAUNCHING] *"
 echo "  The Last D00M-M0D Selected will Still be Loaded in [/dev/shm/addon]"
 echo "  Now Select any 0ther Desired D00M R0M and Launch with [lzdoom-dazi]"
 echo ""
-echo "DAZI includes [dazi-mod-loader] for [lzdoom-addon] + [lzdoom-dazi]"
-echo "[dazi-mod-loader] Loads when [lzdoom-addon]/[lzdoom-dazi] is Launched"
-echo "You can also access [dazi-mod-loader] from the this Script"
+echo " #  HOW TO PRE-LOAD D00M M0Ds WITH [DAZI] FOR 0THER ROMs [0PTION 2]  #"
+echo "[dazi-mod-loader] is Included for use with [lzdoom-addon]/[lzdoom-dazi]"
+echo "Use [dazi-mod-loader] from the this Script directly, 0r Install it and"
+echo "Configure it to Always Load when [lzdoom-addon]/[lzdoom-dazi] Launches"
 )
 
 daziSH=$(
@@ -129,6 +141,9 @@ echo ''
 echo '# Define addonDIR - Default RetroPie or Default DAZI tmpfs'
 echo '#addonDIR=~/RetroPie/roms/ports/doom/addon'
 echo 'addonDIR=/dev/shm/addon'
+echo ''
+echo '# Display Loading Files by name'
+echo "echo LOADING \$(echo \"\$modZIP\" | sed 's|.*/||' ) \$(echo \"\$optionalZIP\" | sed 's|.*/||' )"
 echo ''
 echo '# Extract D00M-M0D.zip + 0ptional-D00M-M0D.zip into addonDIR If Defined'
 echo 'mkdir "$addonDIR" > /dev/null 2>&1'
@@ -163,6 +178,43 @@ echo 'If N0T a GENERIC lzdoom based [emulators.cfg] will be Genterated...'
 echo "But you may experience Mixed Results with the GENERIC [emulators.cfg]"
 )
 
+symLINKSref=$(
+echo ""
+echo " SYMBOLIC LINKS for [doom.wads]:"
+echo 'Use To Differentiate Which ZDoom AddOn Directory to Select via Emulator'
+echo ""
+echo 'The [lzdoom-dazi] Entry in [emulators.cfg] refers to [/dev/shm/addon/*]'
+echo 'But LARGER M0Ds may EXCEED the Size Limitation of [/dev/shm/addon/*]'
+echo 'We will want to use [lzdoom-addon] Emulator instead of [lzdoom-dazi]'
+echo ""
+echo "Normally we would just [Select Emulator for ROM] from the [runcommand]"
+echo "But D00M M0Ds use the same [doom.wad] as the [ROM] repeatedly, meaning"
+echo "[Select Emulator for ROM] will APPLY TO ALL M0Ds using that [doom.wad]"
+echo ""
+echo "We can Create Symbolic Links to [doom.wads] using Unique names, then..."
+echo "Add [Unique.wads] into [LargeM0D.sh] scripts that need [lzdoom-addon]"
+echo ""
+echo ' eg. WADFile: [doom2.wad]  <->  SymbolicLink: [doom2-addon.wad]'
+echo ' eg. LargeM0D.sh: [doomWAD=~/RetroPie/roms/ports/doom/doom2-addon.wad]'
+echo ""
+)
+
+symLINKSwads=$(
+echo ""
+echo "======================================================================"
+echo "                    ~/RetroPie/roms/ports/doom/"
+echo "===========[WADFile]==========================(SymbolicLink)=========="
+echo "           doom.wad                           $(ls -1 ~/RetroPie/roms/ports/doom/ | grep doom-addon.wad )"
+echo "           doom2.wad                          $(ls -1 ~/RetroPie/roms/ports/doom/ | grep doom2-addon.wad | grep -v freedoom2 )"
+echo "           doomu.wad                          $(ls -1 ~/RetroPie/roms/ports/doom/ | grep doomu-addon.wad )"
+echo "           freedoom1.wad                      $(ls -1 ~/RetroPie/roms/ports/doom/ | grep freedoom1-addon.wad )"
+echo "           freedoom2.wad                      $(ls -1 ~/RetroPie/roms/ports/doom/ | grep freedoom2-addon.wad )"
+echo "           plutonia.wad                       $(ls -1 ~/RetroPie/roms/ports/doom/ | grep plutonia-addon.wad )"
+echo "           tnt.wad                            $(ls -1 ~/RetroPie/roms/ports/doom/ | grep tnt-addon.wad )"
+echo "======================================================================"
+echo ""
+)
+
 mainMENU()
 {
 
@@ -180,10 +232,12 @@ confCONFIG=$(dialog --stdout --no-collapse --title " D00M AddOn ZIP Integration 
 	4 "><  REFERENCES  ><" \
 	5 "><  INSTALL [lzdoom-dazi] + [dazi-mod-loader]  ><" \
 	6 "><  GET [DAZI-Templates.sh] for [/roms/ports]   ><" \
-	7 "><  REMOVE  [lzdoom-dazi] + [dazi-mod-loader]  ><")
+	7 "><  CREATE [SymbolicLinks] for [doom.wads]   ><" \
+	8 "><  REMOVE  [lzdoom-dazi] + [dazi-mod-loader]  ><")
 
 if [ "$confCONFIG" == '1' ]; then DMLmainMENU; fi 
 
+# Turn DAZI @runcommand-onstart ON
 if [ "$confCONFIG" == '2' ]; then 
 	if [ ! -f /opt/retropie/configs/ports/doom/lzdoom-dazi.sh ]; then
 		dialog --no-collapse --title " [/opt/retropie/configs/ports/doom/lzdoom-dazi.sh] NOT FOUND!  " --ok-label CONTINUE --msgbox "\n INSTALL [DAZI] FIRST...\n"  25 75
@@ -195,19 +249,21 @@ if [ "$confCONFIG" == '2' ]; then
 mainMENU
 fi
 
+# Turn DAZI @runcommand-onstart OFF
 if [ "$confCONFIG" == '3' ]; then 
 	if [ ! -f /opt/retropie/configs/ports/doom/lzdoom-dazi.sh ]; then
 		dialog --no-collapse --title " [/opt/retropie/configs/ports/doom/lzdoom-dazi.sh] NOT FOUND!  " --ok-label CONTINUE --msgbox "\n INSTALL [DAZI] FIRST...\n"  25 75
 	else
 		# Toggle [runcommand] Flag OFF [dazi-mod-loader]
 		echo '0' > /opt/retropie/configs/ports/doom/lzdoom-dazi.flag
-		dialog --no-collapse --title "DISABLE  [dazi-mod-loader] at [runcommand]  *COMPLETE!*" --ok-label Back --msgbox "DISABLED... \n$daziHUD"  25 75
+		dialog --no-collapse --title "DISABLE  [dazi-mod-loader] at [runcommand]  *COMPLETE!*" --ok-label Back --msgbox "DISABLED... \n$daziHUDoff"  25 75
 	fi
 mainMENU
 fi
 
+# REFERENCES
 if [ "$confCONFIG" == '4' ]; then
-	dialog --no-collapse --title "[DAZI] for [RetroPie] REFERENCES" --ok-label Back --msgbox "$daziLOGO $zipREFmod $daziHUD"  25 75
+	dialog --no-collapse --title "[DAZI] for [RetroPie] REFERENCES" --ok-label Back --msgbox "$daziLOGO $zipREFmod $daziHUD $symLINKSref $symLINKSwads"  25 75
 	mainMENU
 fi
 
@@ -235,8 +291,20 @@ if [ "$confCONFIG" == '6' ]; then
 mainMENU
 fi
 
-# REMOVE [lzdoom-dazi]
+# Create SymbolicLinks
 if [ "$confCONFIG" == '7' ]; then
+	confLINKSdazi=$(dialog --stdout --no-collapse --title "               CREATE [SymbolicLinks] for [doom.wads]              " \
+		--ok-label OK --cancel-label BACK \
+		--menu "$symLINKSref" 25 75 20 \
+		1 "><  CREATE [SymbolicLinks] for [doom.wads]  ><" \
+		2 "><  BACK  ><")
+	# Confirmed - Otherwise Back to Main Menu
+	if [ "$confLINKSdazi" == '1' ]; then symLINKSaddon; fi
+mainMENU
+fi
+
+# REMOVE [lzdoom-dazi]
+if [ "$confCONFIG" == '8' ]; then
 	confREMOVEdazi=$(dialog --stdout --no-collapse --title "               REMOVE  [lzdoom-dazi] + [dazi-mod-loader]              " \
 		--ok-label OK --cancel-label BACK \
 		--menu "                          ? ARE YOU SURE ?             " 25 75 20 \
@@ -608,6 +676,52 @@ if [ ! "$FILE" == '' ]; then
 fi
 
 DMLmainMENU
+}
+
+symLINKSaddon()
+{
+tput reset
+
+# Check for Main [doom.wad] Files - Create Symbolic Links If Found
+if [ -f ~/RetroPie/roms/ports/doom/doom.wad ]; then
+	rm ~/RetroPie/roms/ports/doom/doom-addon.wad 2>/dev/null
+	ln -s ~/RetroPie/roms/ports/doom/doom.wad ~/RetroPie/roms/ports/doom/doom-addon.wad 2>/dev/null
+fi
+
+if [ -f ~/RetroPie/roms/ports/doom/doom2.wad ]; then
+	rm ~/RetroPie/roms/ports/doom/doom2-addon.wad 2>/dev/null
+	ln -s ~/RetroPie/roms/ports/doom/doom2.wad ~/RetroPie/roms/ports/doom/doom2-addon.wad 2>/dev/null
+fi
+
+if [ -f ~/RetroPie/roms/ports/doom/doomu.wad ]; then
+	rm ~/RetroPie/roms/ports/doom/doomu-addon.wad 2>/dev/null
+	ln -s ~/RetroPie/roms/ports/doom/doomu.wad ~/RetroPie/roms/ports/doom/doomu-addon.wad 2>/dev/null
+fi
+
+if [ -f ~/RetroPie/roms/ports/doom/freedoom1.wad ]; then
+	rm ~/RetroPie/roms/ports/doom/freedoom1-addon.wad 2>/dev/null
+	ln -s ~/RetroPie/roms/ports/doom/freedoom1.wad ~/RetroPie/roms/ports/doom/freedoom1-addon.wad 2>/dev/null
+fi
+
+if [ -f ~/RetroPie/roms/ports/doom/freedoom2.wad ]; then
+	rm ~/RetroPie/roms/ports/doom/freedoom2-addon.wad 2>/dev/null
+	ln -s ~/RetroPie/roms/ports/doom/freedoom2.wad ~/RetroPie/roms/ports/doom/freedoom2-addon.wad 2>/dev/null
+fi
+
+if [ -f ~/RetroPie/roms/ports/doom/plutonia.wad ]; then
+	rm ~/RetroPie/roms/ports/doom/plutonia-addon.wad 2>/dev/null
+	ln -s ~/RetroPie/roms/ports/doom/plutonia.wad ~/RetroPie/roms/ports/doom/plutonia-addon.wad 2>/dev/null
+fi
+
+if [ -f ~/RetroPie/roms/ports/doom/tnt.wad ]; then
+	rm ~/RetroPie/roms/ports/doom/tnt-addon.wad 2>/dev/null
+	ln -s ~/RetroPie/roms/ports/doom/tnt.wad ~/RetroPie/roms/ports/doom/tnt-addon.wad 2>/dev/null
+fi
+
+# FINISHED
+dialog --no-collapse --title "CREATE [SymbolicLinks]  for [doom.wads] *COMPLETE!* " --ok-label Back --msgbox "$symLINKSwads $daziHUD"  25 75
+
+mainMENU
 }
 
 # Location of Script determines Menu Launched
