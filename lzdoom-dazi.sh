@@ -200,6 +200,9 @@ echo ' eg. LargeM0D.sh: [doomWAD=~/RetroPie/roms/ports/doom/doom2-addon.wad]'
 echo ""
 )
 
+mainMENU()
+{
+
 symLINKSwads=$(
 echo ""
 echo "======================================================================"
@@ -215,9 +218,6 @@ echo "           tnt.wad                            $(ls -1 ~/RetroPie/roms/port
 echo "======================================================================"
 echo ""
 )
-
-mainMENU()
-{
 
 # WARN IF [..ports/doom/emlators.cfg] N0T Found 
 if [ ! -f /opt/retropie/configs/ports/doom/emulators.cfg ]; then
@@ -718,6 +718,22 @@ if [ -f ~/RetroPie/roms/ports/doom/tnt.wad ]; then
 	rm ~/RetroPie/roms/ports/doom/tnt-addon.wad 2>/dev/null
 	ln -s ~/RetroPie/roms/ports/doom/tnt.wad ~/RetroPie/roms/ports/doom/tnt-addon.wad 2>/dev/null
 fi
+
+symLINKSwads=$(
+echo ""
+echo "======================================================================"
+echo "                    ~/RetroPie/roms/ports/doom/"
+echo "===========[WADFile]==========================(SymbolicLink)=========="
+echo "           doom.wad                           $(ls -1 ~/RetroPie/roms/ports/doom/ | grep doom-addon.wad )"
+echo "           doom2.wad                          $(ls -1 ~/RetroPie/roms/ports/doom/ | grep doom2-addon.wad | grep -v freedoom2 )"
+echo "           doomu.wad                          $(ls -1 ~/RetroPie/roms/ports/doom/ | grep doomu-addon.wad )"
+echo "           freedoom1.wad                      $(ls -1 ~/RetroPie/roms/ports/doom/ | grep freedoom1-addon.wad )"
+echo "           freedoom2.wad                      $(ls -1 ~/RetroPie/roms/ports/doom/ | grep freedoom2-addon.wad )"
+echo "           plutonia.wad                       $(ls -1 ~/RetroPie/roms/ports/doom/ | grep plutonia-addon.wad )"
+echo "           tnt.wad                            $(ls -1 ~/RetroPie/roms/ports/doom/ | grep tnt-addon.wad )"
+echo "======================================================================"
+echo ""
+)
 
 # FINISHED
 dialog --no-collapse --title "CREATE [SymbolicLinks]  for [doom.wads] *COMPLETE!* " --ok-label Back --msgbox "$symLINKSwads $daziHUD"  25 75
