@@ -94,7 +94,8 @@ echo 'CHOOSE [lzdoom-dazi] D00M P0RT to RUN [DAZI-Template.sh] + [*.ZIPs]'
 daziFILES=$(
 echo ""
 echo " [lzdoom] Config File: /opt/retropie/configs/ports/emulators.cfg"
-echo " [doom] Launch Files: ~/RetroPie/roms/ports/Doom/*D00M*.sh"
+echo " [doom] Launch Files: ~/RetroPie/roms/ports/doom/*D00M*.sh"
+echo " [doom] M0D Files: ~/RetroPie/roms/ports/doom/mods/*.zip"
 echo ""
 )
 
@@ -125,7 +126,7 @@ echo "  Now Select any 0ther Desired D00M R0M and Launch with [lzdoom-dazi]"
 echo ""
 echo " #  HOW TO PRE-LOAD D00M M0Ds WITH [DAZI] FOR 0THER ROMs [0PTION 2]  #"
 echo "[dazi-mod-loader] is Included for use with [lzdoom-addon]/[lzdoom-dazi]"
-echo "Use [dazi-mod-loader] from the this Script directly, 0r Install it and"
+echo "Use [dazi-mod-loader] from this Script directly, 0r Install it and..."
 echo "Configure it to Always Load when [lzdoom-addon]/[lzdoom-dazi] Launches"
 )
 
@@ -263,7 +264,7 @@ fi
 
 # REFERENCES
 if [ "$confCONFIG" == '4' ]; then
-	dialog --no-collapse --title "[DAZI] for [RetroPie] REFERENCES" --ok-label Back --msgbox "$daziLOGO $zipREFmod $daziHUD $symLINKSref $symLINKSwads"  25 75
+	dialog --no-collapse --title "[DAZI] for [RetroPie] REFERENCES" --ok-label Back --msgbox "$daziLOGO $zipREFmod $daziHUD $symLINKSref $symLINKSwads $daziFILES"  25 75
 	mainMENU
 fi
 
@@ -426,7 +427,7 @@ sudo chmod 755 /opt/retropie/configs/ports/doom/lzdoom-dazi.sh
 echo '1' > /opt/retropie/configs/ports/doom/lzdoom-dazi.flag
 
 # FINISHED
-dialog --no-collapse --title "INSTALL [DAZI] for [RetroPie]  *COMPLETE!* " --ok-label Back --msgbox "$daziLOGO $zipREFmod"  25 75
+dialog --no-collapse --title "INSTALL [DAZI] for [RetroPie]  *COMPLETE!* " --ok-label Back --msgbox "$daziLOGO $zipREFmod $daziHUD $symLINKSref $symLINKSwads $daziFILES"  25 75
 
 mainMENU
 }
@@ -475,7 +476,7 @@ if [ $? -eq 0 ]; then
 fi
 
 # FINISHED
-dialog --no-collapse --title "GET [DAZI-Templates.sh] for [../roms/ports] *COMPLETE!* " --ok-label Back --msgbox "$daziLOGO $zipREFmod"  25 75
+dialog --no-collapse --title "GET [DAZI-Templates.sh] for [../roms/ports] *COMPLETE!* " --ok-label Back --msgbox "$daziLOGO $daziFILES"  25 75
 
 mainMENU
 }
@@ -488,7 +489,7 @@ if [ ! -d $modDIRzips ]; then mkdir $modDIRzips; fi
 
 # WARN IF [..ports/doom/emlators.cfg] N0T Found 
 if [ ! -f /opt/retropie/configs/ports/doom/emulators.cfg ]; then
-	dialog --no-collapse --title "***N0TICE*** [..ports/doom/emlators.cfg] NOT FOUND!" --ok-label MENU --msgbox "$daziLOGO"  25 75
+	dialog --no-collapse --title "***N0TICE*** [..ports/doom/emlators.cfg] NOT FOUND!" --ok-label MENU --msgbox "MAKE SURE LZDOOM IS INSTALLED!"  25 75
 fi
 # Confirm Configurations
 DMLconfCONFIG=$(dialog --stdout --no-collapse --title " [DAZI] M0D LOADER for [lzdoom] by: RapidEdwin08 [$versionDAZI]" \
