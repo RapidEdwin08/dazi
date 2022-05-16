@@ -21,7 +21,7 @@ versionDAZI=202205
 modDIRzips=~/RetroPie/roms/ports/doom/mods/
 modDIRroms=~/RetroPie/roms/ports/doom/addon/
 modDIRtmpfs=/dev/shm/addon/
-
+doomDIRwads=~/RetroPie/roms/ports/doom
 zdoomCFGrp=/opt/retropie/configs/ports/doom/lzdoom.ini
 zdoomCFGroms=~/RetroPie/roms/ports/doom/lzdoom.ini
 
@@ -210,18 +210,22 @@ echo ""
 mainMENU()
 {
 
+# Update [symLINKSwads] when entering menu
 symLINKSwads=$(
 echo ""
 echo "======================================================================"
 echo "                    ~/RetroPie/roms/ports/doom/"
 echo '===========[WADFile]=========================={SymbolicLink}=========='
-echo "           doom.wad                           $(ls -1 ~/RetroPie/roms/ports/doom/ | grep doom-addon.wad )"
-echo "           doom2.wad                          $(ls -1 ~/RetroPie/roms/ports/doom/ | grep doom2-addon.wad | grep -v freedoom2 )"
-echo "           doomu.wad                          $(ls -1 ~/RetroPie/roms/ports/doom/ | grep doomu-addon.wad )"
-echo "           freedoom1.wad                      $(ls -1 ~/RetroPie/roms/ports/doom/ | grep freedoom1-addon.wad )"
-echo "           freedoom2.wad                      $(ls -1 ~/RetroPie/roms/ports/doom/ | grep freedoom2-addon.wad )"
-echo "           plutonia.wad                       $(ls -1 ~/RetroPie/roms/ports/doom/ | grep plutonia-addon.wad )"
-echo "           tnt.wad                            $(ls -1 ~/RetroPie/roms/ports/doom/ | grep tnt-addon.wad )"
+echo "         freedoom1.wad $(if [ ! -f ~/RetroPie/roms/ports/doom/freedoom1.wad ]; then echo "???"; fi)                      $(ls -1 ~/RetroPie/roms/ports/doom/ | grep freedoom1-addon.wad )"
+echo "         freedoom2.wad $(if [ ! -f ~/RetroPie/roms/ports/doom/freedoom2.wad ]; then echo "???"; fi)                      $(ls -1 ~/RetroPie/roms/ports/doom/ | grep freedoom2-addon.wad )"
+echo "         doom.wad $(if [ ! -f ~/RetroPie/roms/ports/doom/doom.wad ]; then echo "???"; fi)                           $(ls -1 ~/RetroPie/roms/ports/doom/ | grep doom-addon.wad )"
+echo "         doom2.wad $(if [ ! -f ~/RetroPie/roms/ports/doom/doom2.wad ]; then echo "???"; fi)                          $(ls -1 ~/RetroPie/roms/ports/doom/ | grep doom2-addon.wad | grep -v freedoom2 )"
+echo "         doomu.wad $(if [ ! -f ~/RetroPie/roms/ports/doom/doomu.wad ]; then echo "???"; fi)                          $(ls -1 ~/RetroPie/roms/ports/doom/ | grep doomu-addon.wad )"
+echo "         plutonia.wad $(if [ ! -f ~/RetroPie/roms/ports/doom/plutonia.wad ]; then echo "???"; fi)                       $(ls -1 ~/RetroPie/roms/ports/doom/ | grep plutonia-addon.wad )"
+echo "         tnt.wad $(if [ ! -f ~/RetroPie/roms/ports/doom/tnt.wad ]; then echo "???"; fi)                            $(ls -1 ~/RetroPie/roms/ports/doom/ | grep tnt-addon.wad )"
+echo "         heretic.wad $(if [ ! -f ~/RetroPie/roms/ports/doom/heretic.wad ]; then echo "???"; fi)                        $(ls -1 ~/RetroPie/roms/ports/doom/ | grep heretic-addon.wad )"
+echo "         hexen.wad $(if [ ! -f ~/RetroPie/roms/ports/doom/hexen.wad ]; then echo "???"; fi)                          $(ls -1 ~/RetroPie/roms/ports/doom/ | grep hexen-addon.wad )"
+echo "         strife1.wad $(if [ ! -f ~/RetroPie/roms/ports/doom/strife1.wad ]; then echo "???"; fi)                        $(ls -1 ~/RetroPie/roms/ports/doom/ | grep strife1-addon.wad )"
 echo "======================================================================"
 echo ""
 )
@@ -240,7 +244,7 @@ confCONFIG=$(dialog --stdout --no-collapse --title " D00M AddOn ZIP Integration 
 	4 "><  REFERENCES  ><" \
 	5 "><  INSTALL [lzdoom-dazi] + [dazi-mod-loader]  ><" \
 	6 "><  GET [DAZI-Templates.sh] for [/roms/ports]   ><" \
-	7 "><  CREATE [SymbolicLinks] for [doom.wads]   ><" \
+	7 "><  MANAGE [SymbolicLinks] for [doom.wads]   ><" \
 	8 "><  REMOVE  [lzdoom-dazi] + [dazi-mod-loader]  ><")
 
 if [ "$confCONFIG" == '1' ]; then DMLmainMENU; fi 
@@ -300,16 +304,7 @@ mainMENU
 fi
 
 # Create SymbolicLinks
-if [ "$confCONFIG" == '7' ]; then
-	confLINKSdazi=$(dialog --stdout --no-collapse --title " CREATE [SymbolicLinks] for [doom.wads]: {ln -s doom.wad doom-symlink.wad}" \
-		--ok-label OK --cancel-label BACK \
-		--menu "$symLINKSref" 25 75 20 \
-		1 "><  CREATE [SymbolicLinks] for [doom.wads]  ><" \
-		2 "><  BACK  ><")
-	# Confirmed - Otherwise Back to Main Menu
-	if [ "$confLINKSdazi" == '1' ]; then symLINKSaddon; fi
-mainMENU
-fi
+if [ "$confCONFIG" == '7' ]; then symLINKSmenu; fi
 
 # REMOVE [lzdoom-dazi]
 if [ "$confCONFIG" == '8' ]; then
@@ -331,6 +326,125 @@ fi
 
 tput reset
 exit 0
+}
+
+symLINKSmenu()
+{
+
+# Update [symLINKSwads] when entering menu
+symLINKSwads=$(
+#echo ""
+echo "======================================================================"
+echo "                    ~/RetroPie/roms/ports/doom/"
+echo '===========[WADFile]=========================={SymbolicLink}=========='
+echo "         freedoom1.wad $(if [ ! -f ~/RetroPie/roms/ports/doom/freedoom1.wad ]; then echo "???"; fi)                      $(ls -1 ~/RetroPie/roms/ports/doom/ | grep freedoom1-addon.wad )"
+echo "         freedoom2.wad $(if [ ! -f ~/RetroPie/roms/ports/doom/freedoom2.wad ]; then echo "???"; fi)                      $(ls -1 ~/RetroPie/roms/ports/doom/ | grep freedoom2-addon.wad )"
+echo "         doom.wad $(if [ ! -f ~/RetroPie/roms/ports/doom/doom.wad ]; then echo "???"; fi)                           $(ls -1 ~/RetroPie/roms/ports/doom/ | grep doom-addon.wad )"
+echo "         doom2.wad $(if [ ! -f ~/RetroPie/roms/ports/doom/doom2.wad ]; then echo "???"; fi)                          $(ls -1 ~/RetroPie/roms/ports/doom/ | grep doom2-addon.wad | grep -v freedoom2 )"
+echo "         doomu.wad $(if [ ! -f ~/RetroPie/roms/ports/doom/doomu.wad ]; then echo "???"; fi)                          $(ls -1 ~/RetroPie/roms/ports/doom/ | grep doomu-addon.wad )"
+echo "         plutonia.wad $(if [ ! -f ~/RetroPie/roms/ports/doom/plutonia.wad ]; then echo "???"; fi)                       $(ls -1 ~/RetroPie/roms/ports/doom/ | grep plutonia-addon.wad )"
+echo "         tnt.wad $(if [ ! -f ~/RetroPie/roms/ports/doom/tnt.wad ]; then echo "???"; fi)                            $(ls -1 ~/RetroPie/roms/ports/doom/ | grep tnt-addon.wad )"
+echo "         heretic.wad $(if [ ! -f ~/RetroPie/roms/ports/doom/heretic.wad ]; then echo "???"; fi)                        $(ls -1 ~/RetroPie/roms/ports/doom/ | grep heretic-addon.wad )"
+echo "         hexen.wad $(if [ ! -f ~/RetroPie/roms/ports/doom/hexen.wad ]; then echo "???"; fi)                          $(ls -1 ~/RetroPie/roms/ports/doom/ | grep hexen-addon.wad )"
+echo "         strife1.wad $(if [ ! -f ~/RetroPie/roms/ports/doom/strife1.wad ]; then echo "???"; fi)                        $(ls -1 ~/RetroPie/roms/ports/doom/ | grep strife1-addon.wad )"
+echo "======================================================================"
+echo ""
+)
+
+# Create SymbolicLinks
+confLINKSdazi=$(dialog --stdout --no-collapse --title " CREATE [SymbolicLinks] for [doom.wads]: {ln -s doom.wad doom-symlink.wad}" \
+	--ok-label OK --cancel-label BACK \
+	--menu "$symLINKSwads" 25 75 20 \
+	1 "><  CREATE [SymbolicLinks] for STANDARD [doom.wads]  ><" \
+	2 "><  REMOVE [SymbolicLinks] for STANDARD [doom.wads]  ><" \
+	3 "><  CREATE [SymbolicLinks] for 0THER [doom.wads]  ><" \
+	4 "><  REMOVE [SymbolicLinks] for 0THER [doom.wads]  ><" \
+	5 "><  REFERENCES for [SymbolicLinks]  ><" \
+	6 "><  BACK  ><")
+# Confirmed - Otherwise Back to Main Menu
+if [ "$confLINKSdazi" == '1' ]; then symLINKSaddon; fi
+if [ "$confLINKSdazi" == '2' ]; then symLINKSremove; fi
+if [ "$confLINKSdazi" == '3' ]; then ADDsymLINKSwadUSER; fi
+if [ "$confLINKSdazi" == '4' ]; then REMOVEsymLINKSwadUSER; fi
+
+# REFERENCES for SymbolicLinks
+if [ "$confLINKSdazi" == '5' ]; then
+	dialog --no-collapse --title "[SymbolicLinks] for [doom.wads] REFERENCES" --ok-label Back --msgbox "$symLINKSref $symLINKSwads $(find $doomDIRwads -maxdepth 1 -type l | sed 's|.*/||' | sort -n )"  25 75
+	symLINKSmenu
+fi
+mainMENU
+}
+
+ADDsymLINKSwadUSER()
+{
+tput reset
+# =====================================
+if [ "$(find $doomDIRwads -maxdepth 1 -type f | sed 's|.*/||' | sort -n )" == '' ]; then
+	dialog --no-collapse --title "  NO FILES FOUND   " --ok-label CONTINUE --msgbox "[$doomDIRwads] FreeSpace: [$(df -h $doomDIRwads |awk '{print $4}' | grep -v Avail )] \n"  25 75
+	symLINKSmenu
+fi
+
+let i=0 # define counting variable
+W=() # define working array
+while read -r line; do # process file by file
+    let i=$i+1
+    W+=($i "$line")
+#done < <( ls -1 $doomDIRwads )
+done < <( find "$doomDIRwads" -maxdepth 1 -type f | sed 's|.*/||' | sort -n )
+FILE=$(dialog --title "Select WAD from $doomDIRwads" --ok-label SELECT --cancel-label BACK --menu "[$doomDIRwads] FreeSpace: [$(df -h $doomDIRwads |awk '{print $4}' | grep -v Avail )] \n$(find $doomDIRwads -maxdepth 1 -type l | sed 's|.*/||' | sort -n )\n" 25 75 20 "${W[@]}" 3>&2 2>&1 1>&3  </dev/tty > /dev/tty) # show dialog and store output
+#clear
+tput reset
+#if [ $? -eq 0 ]; then # Exit with OK
+if [ ! "$FILE" == '' ]; then
+	selectFILE=$(find $doomDIRwads -maxdepth 1 -type f | sed 's|.*/||' | sort -n | sed -n "`echo "$FILE p" | sed 's/ //'`")
+	if [[ "$selectFILE" == *".wad" ]] || [[ "$selectFILE" == *".WAD" ]]; then
+		userWADlink="$(echo $selectFILE | perl -ple 'chop' | perl -ple 'chop' | perl -ple 'chop' | perl -ple 'chop' )-addon.wad"
+		rm "$doomDIRwads/$userWADlink" 2>/dev/null
+		ln -s "$doomDIRwads/$selectFILE" "$doomDIRwads/$userWADlink"
+	else
+		dialog --no-collapse --title "  NOT A WAD FILE: [$selectFILE]   " --ok-label CONTINUE --msgbox "[$doomDIRwads] FreeSpace: [$(df -h $doomDIRwads |awk '{print $4}' | grep -v Avail )]\n \n$(find $doomDIRwads -maxdepth 1 -type l | sed 's|.*/||' | sort -n )\n"  25 75
+		ADDsymLINKSwadUSER
+	fi
+	dialog --no-collapse --title "  SYMBOLIC LINK to WAD Added: [$selectFILE] <-> [$userWADlink]  " --ok-label CONTINUE --msgbox "[$doomDIRwads] FreeSpace: [$(df -h $doomDIRwads |awk '{print $4}' | grep -v Avail )]\n  \n$(find $doomDIRwads -maxdepth 1 -type l | sed 's|.*/||' | sort -n )\n"  25 75
+	ADDsymLINKSwadUSER
+fi
+
+symLINKSmenu
+}
+
+REMOVEsymLINKSwadUSER()
+{
+tput reset
+# =====================================
+if [ "$(find $doomDIRwads -maxdepth 1 -type l | sed 's|.*/||' | sort -n )" == '' ]; then
+	dialog --no-collapse --title "  NO FILES FOUND   " --ok-label CONTINUE --msgbox "[$doomDIRwads] FreeSpace: [$(df -h $doomDIRwads |awk '{print $4}' | grep -v Avail )] \n$(find $doomDIRwads -maxdepth 1 -type l | sed 's|.*/||' | sort -n )\n"  25 75
+	symLINKSmenu
+fi
+
+let i=0 # define counting variable
+W=() # define working array
+while read -r line; do # process file by file
+    let i=$i+1
+    W+=($i "$line")
+#done < <( ls -1 $doomDIRwads )
+done < <( find "$doomDIRwads" -maxdepth 1 -type l | sed 's|.*/||' | sort -n )
+FILE=$(dialog --title "Select WAD from $doomDIRwads" --ok-label SELECT --cancel-label BACK --menu "[$doomDIRwads] FreeSpace: [$(df -h $doomDIRwads |awk '{print $4}' | grep -v Avail )] \n" 25 75 20 "${W[@]}" 3>&2 2>&1 1>&3  </dev/tty > /dev/tty) # show dialog and store output
+#clear
+tput reset
+#if [ $? -eq 0 ]; then # Exit with OK
+if [ ! "$FILE" == '' ]; then
+	selectFILE=$(find $doomDIRwads -maxdepth 1 -type l | sed 's|.*/||' | sort -n | sed -n "`echo "$FILE p" | sed 's/ //'`")
+	if [[ "$selectFILE" == *".wad" ]] || [[ "$selectFILE" == *".WAD" ]]; then
+		rm "$doomDIRwads/$selectFILE" 2>/dev/null
+		# dialog --no-collapse --title "  SYMBOLIC LINK REMOVED: [$selectFILE] " --ok-label CONTINUE --msgbox "[$doomDIRwads] FreeSpace: [$(df -h $doomDIRwads |awk '{print $4}' | grep -v Avail )]\n  \n$(find $doomDIRwads -maxdepth 1 -type l | sed 's|.*/||' | sort -n )\n"  25 75
+		REMOVEsymLINKSwadUSER
+	else
+		dialog --no-collapse --title "  NOT A WAD FILE: [$selectFILE]   " --ok-label CONTINUE --msgbox "[$doomDIRwads] FreeSpace: [$(df -h $doomDIRwads |awk '{print $4}' | grep -v Avail )]\n \n$(find $doomDIRwads -maxdepth 1 -type l | sed 's|.*/||' | sort -n )\n"  25 75
+		REMOVEsymLINKSwadUSER
+	fi
+fi
+
+symLINKSmenu
 }
 
 removeDAZI()
@@ -726,26 +840,87 @@ if [ -f ~/RetroPie/roms/ports/doom/tnt.wad ]; then
 	ln -s ~/RetroPie/roms/ports/doom/tnt.wad ~/RetroPie/roms/ports/doom/tnt-addon.wad 2>/dev/null
 fi
 
+if [ -f ~/RetroPie/roms/ports/doom/heretic.wad ]; then
+	rm ~/RetroPie/roms/ports/doom/heretic-addon.wad 2>/dev/null
+	ln -s ~/RetroPie/roms/ports/doom/heretic.wad ~/RetroPie/roms/ports/doom/heretic-addon.wad 2>/dev/null
+fi
+
+if [ -f ~/RetroPie/roms/ports/doom/hexen.wad ]; then
+	rm ~/RetroPie/roms/ports/doom/hexen-addon.wad 2>/dev/null
+	ln -s ~/RetroPie/roms/ports/doom/hexen.wad ~/RetroPie/roms/ports/doom/hexen-addon.wad 2>/dev/null
+fi
+
+if [ -f ~/RetroPie/roms/ports/doom/strife1.wad ]; then
+	rm ~/RetroPie/roms/ports/doom/strife1-addon.wad 2>/dev/null
+	ln -s ~/RetroPie/roms/ports/doom/strife1.wad ~/RetroPie/roms/ports/doom/strife1-addon.wad 2>/dev/null
+fi
+
+# Update [symLINKSwads] when entering menu
 symLINKSwads=$(
-echo ""
+#echo ""
 echo "======================================================================"
 echo "                    ~/RetroPie/roms/ports/doom/"
-echo "===========[WADFile]==========================(SymbolicLink)=========="
-echo "           doom.wad                           $(ls -1 ~/RetroPie/roms/ports/doom/ | grep doom-addon.wad )"
-echo "           doom2.wad                          $(ls -1 ~/RetroPie/roms/ports/doom/ | grep doom2-addon.wad | grep -v freedoom2 )"
-echo "           doomu.wad                          $(ls -1 ~/RetroPie/roms/ports/doom/ | grep doomu-addon.wad )"
-echo "           freedoom1.wad                      $(ls -1 ~/RetroPie/roms/ports/doom/ | grep freedoom1-addon.wad )"
-echo "           freedoom2.wad                      $(ls -1 ~/RetroPie/roms/ports/doom/ | grep freedoom2-addon.wad )"
-echo "           plutonia.wad                       $(ls -1 ~/RetroPie/roms/ports/doom/ | grep plutonia-addon.wad )"
-echo "           tnt.wad                            $(ls -1 ~/RetroPie/roms/ports/doom/ | grep tnt-addon.wad )"
+echo '===========[WADFile]=========================={SymbolicLink}=========='
+echo "         freedoom1.wad $(if [ ! -f ~/RetroPie/roms/ports/doom/freedoom1.wad ]; then echo "???"; fi)                      $(ls -1 ~/RetroPie/roms/ports/doom/ | grep freedoom1-addon.wad )"
+echo "         freedoom2.wad $(if [ ! -f ~/RetroPie/roms/ports/doom/freedoom2.wad ]; then echo "???"; fi)                      $(ls -1 ~/RetroPie/roms/ports/doom/ | grep freedoom2-addon.wad )"
+echo "         doom.wad $(if [ ! -f ~/RetroPie/roms/ports/doom/doom.wad ]; then echo "???"; fi)                           $(ls -1 ~/RetroPie/roms/ports/doom/ | grep doom-addon.wad )"
+echo "         doom2.wad $(if [ ! -f ~/RetroPie/roms/ports/doom/doom2.wad ]; then echo "???"; fi)                          $(ls -1 ~/RetroPie/roms/ports/doom/ | grep doom2-addon.wad | grep -v freedoom2 )"
+echo "         doomu.wad $(if [ ! -f ~/RetroPie/roms/ports/doom/doomu.wad ]; then echo "???"; fi)                          $(ls -1 ~/RetroPie/roms/ports/doom/ | grep doomu-addon.wad )"
+echo "         plutonia.wad $(if [ ! -f ~/RetroPie/roms/ports/doom/plutonia.wad ]; then echo "???"; fi)                       $(ls -1 ~/RetroPie/roms/ports/doom/ | grep plutonia-addon.wad )"
+echo "         tnt.wad $(if [ ! -f ~/RetroPie/roms/ports/doom/tnt.wad ]; then echo "???"; fi)                            $(ls -1 ~/RetroPie/roms/ports/doom/ | grep tnt-addon.wad )"
+echo "         heretic.wad $(if [ ! -f ~/RetroPie/roms/ports/doom/heretic.wad ]; then echo "???"; fi)                        $(ls -1 ~/RetroPie/roms/ports/doom/ | grep heretic-addon.wad )"
+echo "         hexen.wad $(if [ ! -f ~/RetroPie/roms/ports/doom/hexen.wad ]; then echo "???"; fi)                          $(ls -1 ~/RetroPie/roms/ports/doom/ | grep hexen-addon.wad )"
+echo "         strife1.wad $(if [ ! -f ~/RetroPie/roms/ports/doom/strife1.wad ]; then echo "???"; fi)                        $(ls -1 ~/RetroPie/roms/ports/doom/ | grep strife1-addon.wad )"
 echo "======================================================================"
 echo ""
 )
 
 # FINISHED
-dialog --no-collapse --title "CREATE [SymbolicLinks]  for [doom.wads] *COMPLETE!* " --ok-label Back --msgbox "$symLINKSwads $daziHUD"  25 75
+dialog --no-collapse --title "CREATE [SymbolicLinks] for STANDARD [doom.wads] *COMPLETE!* " --ok-label Back --msgbox "$symLINKSwads $daziHUD"  25 75
 
-mainMENU
+symLINKSmenu
+}
+
+symLINKSremove()
+{
+tput reset
+
+# REMOVE Symbolic Links
+rm ~/RetroPie/roms/ports/doom/freedoom1-addon.wad 2>/dev/null
+rm ~/RetroPie/roms/ports/doom/freedoom2-addon.wad 2>/dev/null
+rm ~/RetroPie/roms/ports/doom/doom-addon.wad 2>/dev/null
+rm ~/RetroPie/roms/ports/doom/doom2-addon.wad 2>/dev/null
+rm ~/RetroPie/roms/ports/doom/doomu-addon.wad 2>/dev/null
+rm ~/RetroPie/roms/ports/doom/plutonia-addon.wad 2>/dev/null
+rm ~/RetroPie/roms/ports/doom/tnt-addon.wad 2>/dev/null
+rm ~/RetroPie/roms/ports/doom/heretic-addon.wad 2>/dev/null
+rm ~/RetroPie/roms/ports/doom/hexen-addon.wad 2>/dev/null
+rm ~/RetroPie/roms/ports/doom/strife1-addon.wad 2>/dev/null
+
+# Update [symLINKSwads] when entering menu
+symLINKSwads=$(
+#echo ""
+echo "======================================================================"
+echo "                    ~/RetroPie/roms/ports/doom/"
+echo '===========[WADFile]=========================={SymbolicLink}=========='
+echo "         freedoom1.wad $(if [ ! -f ~/RetroPie/roms/ports/doom/freedoom1.wad ]; then echo "???"; fi)                      $(ls -1 ~/RetroPie/roms/ports/doom/ | grep freedoom1-addon.wad )"
+echo "         freedoom2.wad $(if [ ! -f ~/RetroPie/roms/ports/doom/freedoom2.wad ]; then echo "???"; fi)                      $(ls -1 ~/RetroPie/roms/ports/doom/ | grep freedoom2-addon.wad )"
+echo "         doom.wad $(if [ ! -f ~/RetroPie/roms/ports/doom/doom.wad ]; then echo "???"; fi)                           $(ls -1 ~/RetroPie/roms/ports/doom/ | grep doom-addon.wad )"
+echo "         doom2.wad $(if [ ! -f ~/RetroPie/roms/ports/doom/doom2.wad ]; then echo "???"; fi)                          $(ls -1 ~/RetroPie/roms/ports/doom/ | grep doom2-addon.wad | grep -v freedoom2 )"
+echo "         doomu.wad $(if [ ! -f ~/RetroPie/roms/ports/doom/doomu.wad ]; then echo "???"; fi)                          $(ls -1 ~/RetroPie/roms/ports/doom/ | grep doomu-addon.wad )"
+echo "         plutonia.wad $(if [ ! -f ~/RetroPie/roms/ports/doom/plutonia.wad ]; then echo "???"; fi)                       $(ls -1 ~/RetroPie/roms/ports/doom/ | grep plutonia-addon.wad )"
+echo "         tnt.wad $(if [ ! -f ~/RetroPie/roms/ports/doom/tnt.wad ]; then echo "???"; fi)                            $(ls -1 ~/RetroPie/roms/ports/doom/ | grep tnt-addon.wad )"
+echo "         heretic.wad $(if [ ! -f ~/RetroPie/roms/ports/doom/heretic.wad ]; then echo "???"; fi)                        $(ls -1 ~/RetroPie/roms/ports/doom/ | grep heretic-addon.wad )"
+echo "         hexen.wad $(if [ ! -f ~/RetroPie/roms/ports/doom/hexen.wad ]; then echo "???"; fi)                          $(ls -1 ~/RetroPie/roms/ports/doom/ | grep hexen-addon.wad )"
+echo "         strife1.wad $(if [ ! -f ~/RetroPie/roms/ports/doom/strife1.wad ]; then echo "???"; fi)                        $(ls -1 ~/RetroPie/roms/ports/doom/ | grep strife1-addon.wad )"
+echo "======================================================================"
+echo ""
+)
+
+# FINISHED
+dialog --no-collapse --title "REMOVE [SymbolicLinks]  for STANDARD [doom.wads] *COMPLETE!* " --ok-label Back --msgbox "$symLINKSwads $daziHUD"  25 75
+
+symLINKSmenu
 }
 
 # Location of Script determines Menu Launched
