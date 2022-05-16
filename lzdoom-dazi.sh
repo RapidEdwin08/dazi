@@ -93,9 +93,16 @@ echo 'CHOOSE [lzdoom-dazi] D00M P0RT to RUN [DAZI-Template.sh] + [*.ZIPs]'
 
 daziFILES=$(
 echo ""
-echo " [lzdoom] Config File: /opt/retropie/configs/ports/emulators.cfg"
-echo " [doom] Launch Files: ~/RetroPie/roms/ports/doom/*D00M*.sh"
-echo " [doom] M0D Files: ~/RetroPie/roms/ports/doom/mods/*.zip"
+echo " [doom] Port Config: /opt/retropie/configs/ports/emulators.cfg"
+echo " [doom] Launch Scripts: ~/RetroPie/roms/ports/doom/*D00M*.sh"
+echo " [doom] M0D Files: ~/RetroPie/roms/ports/doom/mods/*.zip/pk3/wad"
+echo ""
+)
+
+zdoomCFGinis=$(
+echo ""
+echo " [ZDoom] Config Default: [$zdoomCFGrp]"
+echo " [ZDoom] Config Roms: [$zdoomCFGroms]"
 echo ""
 )
 
@@ -207,7 +214,7 @@ symLINKSwads=$(
 echo ""
 echo "======================================================================"
 echo "                    ~/RetroPie/roms/ports/doom/"
-echo "===========[WADFile]==========================(SymbolicLink)=========="
+echo '===========[WADFile]=========================={SymbolicLink}=========='
 echo "           doom.wad                           $(ls -1 ~/RetroPie/roms/ports/doom/ | grep doom-addon.wad )"
 echo "           doom2.wad                          $(ls -1 ~/RetroPie/roms/ports/doom/ | grep doom2-addon.wad | grep -v freedoom2 )"
 echo "           doomu.wad                          $(ls -1 ~/RetroPie/roms/ports/doom/ | grep doomu-addon.wad )"
@@ -264,7 +271,7 @@ fi
 
 # REFERENCES
 if [ "$confCONFIG" == '4' ]; then
-	dialog --no-collapse --title "[DAZI] for [RetroPie] REFERENCES" --ok-label Back --msgbox "$daziLOGO $zipREFmod $daziHUD $symLINKSref $symLINKSwads $daziFILES"  25 75
+	dialog --no-collapse --title "[DAZI] for [RetroPie] REFERENCES" --ok-label Back --msgbox "$daziLOGO $zipREFmod $daziHUD $symLINKSref $symLINKSwads $daziFILES $zdoomCFGinis"  25 75
 	mainMENU
 fi
 
@@ -294,7 +301,7 @@ fi
 
 # Create SymbolicLinks
 if [ "$confCONFIG" == '7' ]; then
-	confLINKSdazi=$(dialog --stdout --no-collapse --title "               CREATE [SymbolicLinks] for [doom.wads]              " \
+	confLINKSdazi=$(dialog --stdout --no-collapse --title " CREATE [SymbolicLinks] for [doom.wads]: {ln -s doom.wad doom-symlink.wad}" \
 		--ok-label OK --cancel-label BACK \
 		--menu "$symLINKSref" 25 75 20 \
 		1 "><  CREATE [SymbolicLinks] for [doom.wads]  ><" \
