@@ -125,16 +125,16 @@ echo '      modZIP=~/RetroPie/roms/ports/doom/mods/BrutalDoom.zip'
 echo ' optionalZIP=~/RetroPie/roms/ports/doom/mods/HellOnEarthStarterPack.zip'
 echo ""
 echo " #  HOW TO PRE-LOAD D00M M0Ds WITH [DAZI] FOR 0THER ROMs [0PTION 1]  #"
+echo "[dazi-mod-loader] is Included for use with [lzdoom-addon]/[lzdoom-dazi]"
+echo "Use [dazi-mod-loader] from this Script directly, 0r Install it and..."
+echo "Configure it to Always Load when [lzdoom-addon]/[lzdoom-dazi] Launches"
+echo ""
+echo " #  HOW TO PRE-LOAD D00M M0Ds WITH [DAZI] FOR 0THER ROMs [0PTION 2]  #"
 echo "      Select and Load a D00M-MOD using the [DAZI-Template.sh]"
 echo "       PRESS [A] BUTTON TO CONFIGURE *(Before the ROM Loads)*"
 echo "                     * [EXIT WITHOUT LAUNCHING] *"
 echo "  The Last D00M-M0D Selected will Still be Loaded in [/dev/shm/addon]"
 echo "  Now Select any 0ther Desired D00M R0M and Launch with [lzdoom-dazi]"
-echo ""
-echo " #  HOW TO PRE-LOAD D00M M0Ds WITH [DAZI] FOR 0THER ROMs [0PTION 2]  #"
-echo "[dazi-mod-loader] is Included for use with [lzdoom-addon]/[lzdoom-dazi]"
-echo "Use [dazi-mod-loader] from this Script directly, 0r Install it and..."
-echo "Configure it to Always Load when [lzdoom-addon]/[lzdoom-dazi] Launches"
 )
 
 daziSH=$(
@@ -198,8 +198,8 @@ echo " SYMBOLIC LINKS for [doom.wads]:"
 echo 'Use To Differentiate Which ZDoom AddOn Directory to Select via Emulator'
 echo ""
 echo 'The [lzdoom-dazi] Entry in [emulators.cfg] refers to [/dev/shm/addon/*]'
-echo 'But LARGER M0Ds may EXCEED the Size Limitation of [/dev/shm/addon/*]'
-echo 'We will want to use [lzdoom-addon] Emulator instead of [lzdoom-dazi]'
+echo 'The [lzdoom-addon] Entry in [emulators.cfg] refers to [roms/../addon/]'
+echo 'We may want to Differentiate the x2 Emulators when using AddOns'
 echo ""
 echo "Normally we would just [Select Emulator for ROM] from the [runcommand]"
 echo "But D00M M0Ds use the same [doom.wad] as the [ROM] repeatedly, meaning"
