@@ -15,16 +15,16 @@ Place your **[M0D].ZIP/PK3/PK7** Files in: **~/RetroPie/roms/ports/doom/mods/***
 [lzdoom-dazi] Entry in [emulators.cfg] will point to [/dev/shm/addon/*]  
 
 **HOW TO PRE-LOAD D00M M0Ds WITH [DAZI] FOR 0THER ROMs [0PTION 1]**  
+[dazi-mod-loader] Menu is Included for use with [lzdoom-addon]/[lzdoom-dazi]  
+Use [dazi-mod-loader] Menu from this Script directly, 0r *Install* it and...  
+Configure the Menu to *Always Load* when *[lzdoom-addon]/[lzdoom-dazi]* is Launched  
+
+**HOW TO PRE-LOAD D00M M0Ds WITH [DAZI] FOR 0THER ROMs [0PTION 2]**  
 Select and Load a D00M-MOD using the [DAZI-Template.sh]  
 PRESS [A] BUTTON TO CONFIGURE *(Before the ROM Loads)*  
 ** [EXIT WITHOUT LAUNCHING] **  
 The Last D00M-M0D Selected will Still be Loaded in [/dev/shm/addon]  
 Now Select any 0ther Desired D00M R0M and Launch with [lzdoom-dazi]  
-
-**HOW TO PRE-LOAD D00M M0Ds WITH [DAZI] FOR 0THER ROMs [0PTION 2]**  
-[dazi-mod-loader] Menu is Included for use with [lzdoom-addon]/[lzdoom-dazi]  
-Use [dazi-mod-loader] Menu from this Script directly, 0r *Install* it and...  
-Configure the Menu to *Always Load* when *[lzdoom-addon]/[lzdoom-dazi]* is Launched  
 
 ## INSTALLATION  
 
