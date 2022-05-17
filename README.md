@@ -2,6 +2,7 @@
 ![lzdoom-dazi.png](https://raw.githubusercontent.com/RapidEdwin08/dazi/main/lzdoom-dazi.png)  
 
 Integration of D00M-M0D.ZIP files into RetroPie.  
+D00M M0D Loader Menu can be Launched from anywhere or Installed.  
 Additionally make use of the *Runcommand Launch Menu* to Pre-Load D00M M0Ds.  
 **Press [A] to Configure** -> **EXIT WITHOUT LAUNCHING** to Pre-Load One *or MORE* D00M M0Ds.  
 
@@ -55,7 +56,7 @@ Example Entry:
 		<image>/home/pi/RetroPie/retropiemenu/icons/lzdoom-dazi.png</image>
 	</game>
 ```
-## REFERENCES  
+## REFERENCES   
 
 PLACE YOUR [D00M-M0D] FILES INTO A [D00M-M0D.ZIP]  
 NAME THEM ACCORDINGLY IF A PARTICULAR L0ADING 0RDER IS NEEDED  
@@ -66,20 +67,20 @@ NAME THEM ACCORDINGLY IF A PARTICULAR L0ADING 0RDER IS NEEDED
       ./D00M-M0D.ZIP/03-FileToLoad.pk3  
 
 MODIFY [DAZI-Template.sh] TO INCLUDE YOUR [IWAD] + [D00M-M0D.ZIP]  
-0ptional D00M-M0D.ZIP Entry Available if needed  
+0ptional D00M-M0D Entries Available if needed  
 
     # EXAMPLE [DAZI-Template.sh] CONTENTS #  
       doomWAD=~/RetroPie/roms/ports/doom/doom2.wad  
-      modZIP=~/RetroPie/roms/ports/doom/mods/BrutalDoom.zip  
-      optionalZIP=~/RetroPie/roms/ports/doom/mods/HellOnEarthStarterPack.zip  
+      doomM0D=~/RetroPie/roms/ports/doom/mods/SIGIL.zip 
+      doomM0D2=~/RetroPie/roms/ports/doom/mods/WOSHUD.pk3 
 
 SYMBOLIC LINKS for [doom.wads]:  
 Use To Differentiate Which ZDoom AddOn Directory to Select via Emulator  
 eg. [lzdoom-dazi] VS [lzdoom-addon]  
 
-The [lzdoom-dazi] Entry in [emulators.cfg] refers to [/dev/shm/addon/*]  
-But LARGER M0Ds may EXCEED the Size Limitation of [/dev/shm/addon/*]  
-We will want to use [lzdoom-addon] Emulator instead of [lzdoom-dazi]  
+The [lzdoom-dazi] Entry in [emulators.cfg] refers to [/dev/shm/addon/]  
+The [lzdoom-addon] Entry in [emulators.cfg] refers to [/roms/ports/addon/]  
+We may want to Differentiate the x2 Emulators when using AddOns  
 
 Normally we would just [Select Emulator for ROM] from the [runcommand]  
 But D00M M0Ds use the same [doom.wad] as the [ROM] repeatedly, meaning  
@@ -93,3 +94,9 @@ eg. WADFile: [doom2.wad]  <->  SymbolicLink: [doom2-addon.wad]
       doomWAD=~/RetroPie/roms/ports/doom/doom2-addon.wad 
       modZIP=~/RetroPie/roms/ports/doom/mods/DragonSectorRemake.zip  
       optionalZIP=~/RetroPie/roms/ports/doom/mods/BrutalDoomArthursEditionReloaded.zip  
+
+**TIPs:**  
+*ZIPs are 0ptional and can be usefull for Smaller M0Ds with more than 5 Files to load*  
+*LARGER M0D.ZIPs may EXCEED the Size Limitation of [/dev/shm/addon/*]*  
+*DAZI will create Symbolic Links in the AddOn DIR to all Files that are NOT ZIPs*  
+*Recommend avoid using ZIPs for LARGE M0Ds that may EXCEED (tmpfs)* 
