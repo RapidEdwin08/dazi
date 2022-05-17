@@ -572,6 +572,8 @@ if [ -f ~/RetroPie/roms/ports/doom/freedoom1.wad ]; then
 	ln -s ~/RetroPie/roms/ports/doom/freedoom1.wad ~/RetroPie/roms/ports/doom/freedoom1-addon.wad 2>/dev/null
 	echo "$daziSH" > ~/RetroPie/roms/ports/Freedoom\ Phase\ I\ \(ADDON\).sh
 	sed -i 's/doom1.wad/freedoom1-addon.wad/g' ~/RetroPie/roms/ports/Freedoom\ Phase\ I\ \(ADDON\).sh
+	sed -i 's+#addonDIR=~/RetroPie/roms/ports/doom/addon+addonDIR=~/RetroPie/roms/ports/doom/addon+g' ~/RetroPie/roms/ports/Freedoom\ Phase\ I\ \(ADDON\).sh
+	sed -i 's+addonDIR=/dev/shm/addon+#addonDIR=/dev/shm/addon+g' ~/RetroPie/roms/ports/Freedoom\ Phase\ I\ \(ADDON\).sh
 fi
 
 if [ -f ~/RetroPie/roms/ports/doom/freedoom2.wad ]; then
@@ -579,6 +581,8 @@ if [ -f ~/RetroPie/roms/ports/doom/freedoom2.wad ]; then
 	ln -s ~/RetroPie/roms/ports/doom/freedoom2.wad ~/RetroPie/roms/ports/doom/freedoom2-addon.wad 2>/dev/null
 	echo "$daziSH" > ~/RetroPie/roms/ports/Freedoom\ Phase\ II\ \(ADDON\).sh
 	sed -i 's/doom1.wad/freedoom2-addon.wad/g' ~/RetroPie/roms/ports/Freedoom\ Phase\ II\ \(ADDON\).sh
+	sed -i 's+#addonDIR=~/RetroPie/roms/ports/doom/addon+addonDIR=~/RetroPie/roms/ports/doom/addon+g' ~/RetroPie/roms/ports/Freedoom\ Phase\ II\ \(ADDON\).sh
+	sed -i 's+addonDIR=/dev/shm/addon+#addonDIR=/dev/shm/addon+g' ~/RetroPie/roms/ports/Freedoom\ Phase\ II\ \(ADDON\).sh
 fi
 
 # Get SIGIL If Internet Connection Available
