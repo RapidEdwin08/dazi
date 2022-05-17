@@ -1,22 +1,28 @@
 #!/bin/bash
 # https://github.com/RapidEdwin08/dazi
 
-# INPUT D00M.WAD + D00M-M0D.ZIPs
-doomWAD=~/RetroPie/roms/ports/doom/doom2.wad
-modZIP=~/RetroPie/roms/ports/doom/mods/BrutalDoom.zip
-optionalZIP=~/RetroPie/roms/ports/doom/mods/HellOnEarthStarterPack.zip
+# INPUT D00M.WAD + M0D.WAD/PK3/PK7/ZIPs
+doomWAD=~/RetroPie/roms/ports/doom/doom.wad
+doomM0D=~/RetroPie/roms/ports/doom/mods/SIGIL.zip
+doomM0D2=~/RetroPie/roms/ports/doom/mods/WOSHUD.pk3
+doomM0D3=
+doomM0D4=
+doomM0D5=
 
-# Define addonDIR - Default RetroPie or Default DAZI tmpfs
+# Define addonDIR - Default RetroPie or DAZI tmpfs
 #addonDIR=~/RetroPie/roms/ports/doom/addon
 addonDIR=/dev/shm/addon
 
-# Display Loading Files by name
-echo LOADING $(echo "$modZIP" | sed 's|.*/||' ) $(echo "$optionalZIP" | sed 's|.*/||' )
+# UNCOMMENT to Display Loading Files by name
+#echo LOADING $(basename "$doomM0D" ) $(basename "$doomM0D2" ) $(basename "$doomM0D3" ) $(basename "$doomM0D4" ) $(basename "$doomM0D5" )
 
-# Extract D00M-M0D.zip + 0ptional-D00M-M0D.zip into addonDIR If Defined
+# Prepare addonDIR + M0Ds
 mkdir "$addonDIR" > /dev/null 2>&1
-if [ ! "$modZIP" == "" ]; then unzip -qq -o $modZIP -d $addonDIR > /dev/null 2>&1; fi
-if [ ! "$optionalZIP" == "" ]; then unzip -qq -o $optionalZIP -d $addonDIR > /dev/null 2>&1; fi
+if [ ! "$doomM0D" == "" ]; then if [[ "$doomM0D" == *".zip" ]] || [[ "$doomM0D" == *".ZIP" ]]; then unzip -qq -o "$doomM0D" -d "$addonDIR" > /dev/null 2>&1; else ln -s "$doomM0D" "$addonDIR/$(basename "$doomM0D" )"; fi; fi > /dev/null 2>&1
+if [ ! "$doomM0D2" == "" ]; then if [[ "$doomM0D2" == *".zip" ]] || [[ "$doomM0D2" == *".ZIP" ]]; then unzip -qq -o "$doomM0D2" -d "$addonDIR" > /dev/null 2>&1; else ln -s "$doomM0D2" "$addonDIR/$(basename "$doomM0D2" )"; fi; fi > /dev/null 2>&1
+if [ ! "$doomM0D3" == "" ]; then if [[ "$doomM0D3" == *".zip" ]] || [[ "$doomM0D3" == *".ZIP" ]]; then unzip -qq -o "$doomM0D3" -d "$addonDIR" > /dev/null 2>&1; else ln -s "$doomM0D3" "$addonDIR/$(basename "$doomM0D3" )"; fi; fi > /dev/null 2>&1
+if [ ! "$doomM0D4" == "" ]; then if [[ "$doomM0D4" == *".zip" ]] || [[ "$doomM0D4" == *".ZIP" ]]; then unzip -qq -o "$doomM0D4" -d "$addonDIR" > /dev/null 2>&1; else ln -s "$doomM0D4" "$addonDIR/$(basename "$doomM0D4" )"; fi; fi > /dev/null 2>&1
+if [ ! "$doomM0D5" == "" ]; then if [[ "$doomM0D5" == *".zip" ]] || [[ "$doomM0D5" == *".ZIP" ]]; then unzip -qq -o "$doomM0D5" -d "$addonDIR" > /dev/null 2>&1; else ln -s "$doomM0D5" "$addonDIR/$(basename "$doomM0D5" )"; fi; fi > /dev/null 2>&1
 
 # RUN D00M P0RT
 "/opt/retropie/supplementary/runcommand/runcommand.sh" 0 _PORT_ "doom" "${doomWAD}"
