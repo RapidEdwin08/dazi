@@ -141,22 +141,28 @@ daziSH=$(
 echo '#!/bin/bash'
 echo '# https://github.com/RapidEdwin08/dazi'
 echo ''
-echo '# INPUT D00M.WAD + D00M-M0D.ZIPs'
+echo '# INPUT D00M.WAD + M0D.WAD/PK3/PK7/ZIPs'
 echo 'doomWAD=~/RetroPie/roms/ports/doom/doom1.wad'
-echo 'modZIP='
-echo 'optionalZIP='
+echo 'doomM0D='
+echo 'doomM0D2='
+echo 'doomM0D3='
+echo 'doomM0D4='
+echo 'doomM0D5='
 echo ''
-echo '# Define addonDIR - Default RetroPie or Default DAZI tmpfs'
+echo '# Define addonDIR - Default RetroPie or DAZI tmpfs'
 echo '#addonDIR=~/RetroPie/roms/ports/doom/addon'
 echo 'addonDIR=/dev/shm/addon'
 echo ''
-echo '# Display Loading Files by name'
-echo "echo LOADING \$(echo \"\$modZIP\" | sed 's|.*/||' ) \$(echo \"\$optionalZIP\" | sed 's|.*/||' )"
+echo '# UNCOMMENT to Display Loading Files by name'
+echo "#echo LOADING \$(basename \"\$doomM0D\" ) \$(basename \"\$doomM0D2\" ) \$(basename \"\$doomM0D3\" ) \$(basename \"\$doomM0D4\" ) \$(basename \"\$doomM0D5\" )"
 echo ''
-echo '# Extract D00M-M0D.zip + 0ptional-D00M-M0D.zip into addonDIR If Defined'
+echo '# Prepare addonDIR + M0Ds'
 echo 'mkdir "$addonDIR" > /dev/null 2>&1'
-echo 'if [ ! "$modZIP" == "" ]; then unzip -qq -o $modZIP -d $addonDIR > /dev/null 2>&1; fi'
-echo 'if [ ! "$optionalZIP" == "" ]; then unzip -qq -o $optionalZIP -d $addonDIR > /dev/null 2>&1; fi'
+echo 'if [ ! "$doomM0D" == "" ]; then if [[ "$doomM0D" == *".zip" ]] || [[ "$doomM0D" == *".ZIP" ]]; then unzip -qq -o "$doomM0D" -d "$addonDIR" > /dev/null 2>&1; else ln -s "$doomM0D" "$addonDIR/$(basename "$doomM0D" )"; fi; fi > /dev/null 2>&1'
+echo 'if [ ! "$doomM0D2" == "" ]; then if [[ "$doomM0D2" == *".zip" ]] || [[ "$doomM0D2" == *".ZIP" ]]; then unzip -qq -o "$doomM0D2" -d "$addonDIR" > /dev/null 2>&1; else ln -s "$doomM0D2" "$addonDIR/$(basename "$doomM0D2" )"; fi; fi > /dev/null 2>&1'
+echo 'if [ ! "$doomM0D3" == "" ]; then if [[ "$doomM0D3" == *".zip" ]] || [[ "$doomM0D3" == *".ZIP" ]]; then unzip -qq -o "$doomM0D3" -d "$addonDIR" > /dev/null 2>&1; else ln -s "$doomM0D3" "$addonDIR/$(basename "$doomM0D3" )"; fi; fi > /dev/null 2>&1'
+echo 'if [ ! "$doomM0D4" == "" ]; then if [[ "$doomM0D4" == *".zip" ]] || [[ "$doomM0D4" == *".ZIP" ]]; then unzip -qq -o "$doomM0D4" -d "$addonDIR" > /dev/null 2>&1; else ln -s "$doomM0D4" "$addonDIR/$(basename "$doomM0D4" )"; fi; fi > /dev/null 2>&1'
+echo 'if [ ! "$doomM0D5" == "" ]; then if [[ "$doomM0D5" == *".zip" ]] || [[ "$doomM0D5" == *".ZIP" ]]; then unzip -qq -o "$doomM0D5" -d "$addonDIR" > /dev/null 2>&1; else ln -s "$doomM0D5" "$addonDIR/$(basename "$doomM0D5" )"; fi; fi > /dev/null 2>&1'
 echo ''
 echo '# RUN D00M P0RT'
 echo '"/opt/retropie/supplementary/runcommand/runcommand.sh" 0 _PORT_ "doom" "${doomWAD}"'
@@ -557,30 +563,47 @@ getDAZIsh()
 {
 tput reset
 # =====================================
-echo "$daziSH" > ~/RetroPie/roms/ports/Doom\ \(DAZI\).sh
-sed -i 's/doom1.wad/doom1.wad/g' ~/RetroPie/roms/ports/Doom\ \(DAZI\).sh
+# DAZI Templates
+if [ -f ~/RetroPie/roms/ports/doom/doom.wad ]; then
+	echo "$daziSH" > ~/RetroPie/roms/ports/Doom\ I\ \(DAZI\).sh
+	sed -i 's/doom1.wad/doom.wad/g' ~/RetroPie/roms/ports/Doom\ I\ \(DAZI\).sh
+	cp ~/RetroPie/roms/ports/Doom\ I\ \(DAZI\).sh ~/RetroPie/roms/ports/Doom\ I\ \(ADDON\).sh
+	rm ~/RetroPie/roms/ports/doom/doom-addon.wad 2>/dev/null
+	ln -s ~/RetroPie/roms/ports/doom/doom.wad ~/RetroPie/roms/ports/doom/doom-addon.wad 2>/dev/null
+	sed -i 's/doom.wad/doom-addon.wad/g' ~/RetroPie/roms/ports/Doom\ I\ \(ADDON\).sh
+	sed -i 's+#addonDIR=~/RetroPie/roms/ports/doom/addon+addonDIR=~/RetroPie/roms/ports/doom/addon+g' ~/RetroPie/roms/ports/Doom\ I\ \(ADDON\).sh
+	sed -i 's+addonDIR=/dev/shm/addon+#addonDIR=/dev/shm/addon+g' ~/RetroPie/roms/ports/Doom\ I\ \(ADDON\).sh
+fi
 
-echo "$daziSH" > ~/RetroPie/roms/ports/Freedoom\ Phase\ I\ \(DAZI\).sh
-sed -i 's/doom1.wad/freedoom1.wad/g' ~/RetroPie/roms/ports/Freedoom\ Phase\ I\ \(DAZI\).sh
+if [ -f ~/RetroPie/roms/ports/doom/doom2.wad ]; then
+	echo "$daziSH" > ~/RetroPie/roms/ports/Doom\ II\ \(DAZI\).sh
+	sed -i 's/doom1.wad/doom2.wad/g' ~/RetroPie/roms/ports/Doom\ II\ \(DAZI\).sh
+	cp ~/RetroPie/roms/ports/Doom\ II\ \(DAZI\).sh ~/RetroPie/roms/ports/Doom\ II\ \(ADDON\).sh
+	rm ~/RetroPie/roms/ports/doom/doom2-addon.wad 2>/dev/null
+	ln -s ~/RetroPie/roms/ports/doom/doom2.wad ~/RetroPie/roms/ports/doom/doom2-addon.wad 2>/dev/null
+	sed -i 's/doom2.wad/doom2-addon.wad/g' ~/RetroPie/roms/ports/Doom\ II\ \(ADDON\).sh
+	sed -i 's+#addonDIR=~/RetroPie/roms/ports/doom/addon+addonDIR=~/RetroPie/roms/ports/doom/addon+g' ~/RetroPie/roms/ports/Doom\ II\ \(ADDON\).sh
+	sed -i 's+addonDIR=/dev/shm/addon+#addonDIR=/dev/shm/addon+g' ~/RetroPie/roms/ports/Doom\ II\ \(ADDON\).sh
+fi
 
-echo "$daziSH" > ~/RetroPie/roms/ports/Freedoom\ Phase\ II\ \(DAZI\).sh
-sed -i 's/doom1.wad/freedoom2.wad/g' ~/RetroPie/roms/ports/Freedoom\ Phase\ II\ \(DAZI\).sh
-
-# ADDON Templates
 if [ -f ~/RetroPie/roms/ports/doom/freedoom1.wad ]; then
+	echo "$daziSH" > ~/RetroPie/roms/ports/Freedoom\ Phase\ I\ \(DAZI\).sh
+	sed -i 's/doom1.wad/freedoom1.wad/g' ~/RetroPie/roms/ports/Freedoom\ Phase\ I\ \(DAZI\).sh
+	cp ~/RetroPie/roms/ports/Freedoom\ Phase\ I\ \(DAZI\).sh ~/RetroPie/roms/ports/Freedoom\ Phase\ I\ \(ADDON\).sh
 	rm ~/RetroPie/roms/ports/doom/freedoom1-addon.wad 2>/dev/null
 	ln -s ~/RetroPie/roms/ports/doom/freedoom1.wad ~/RetroPie/roms/ports/doom/freedoom1-addon.wad 2>/dev/null
-	echo "$daziSH" > ~/RetroPie/roms/ports/Freedoom\ Phase\ I\ \(ADDON\).sh
-	sed -i 's/doom1.wad/freedoom1-addon.wad/g' ~/RetroPie/roms/ports/Freedoom\ Phase\ I\ \(ADDON\).sh
+	sed -i 's/freedoom1.wad/freedoom1-addon.wad/g' ~/RetroPie/roms/ports/Freedoom\ Phase\ I\ \(ADDON\).sh
 	sed -i 's+#addonDIR=~/RetroPie/roms/ports/doom/addon+addonDIR=~/RetroPie/roms/ports/doom/addon+g' ~/RetroPie/roms/ports/Freedoom\ Phase\ I\ \(ADDON\).sh
 	sed -i 's+addonDIR=/dev/shm/addon+#addonDIR=/dev/shm/addon+g' ~/RetroPie/roms/ports/Freedoom\ Phase\ I\ \(ADDON\).sh
 fi
 
 if [ -f ~/RetroPie/roms/ports/doom/freedoom2.wad ]; then
+	echo "$daziSH" > ~/RetroPie/roms/ports/Freedoom\ Phase\ II\ \(DAZI\).sh
+	sed -i 's/doom1.wad/freedoom2.wad/g' ~/RetroPie/roms/ports/Freedoom\ Phase\ II\ \(DAZI\).sh
+	cp ~/RetroPie/roms/ports/Freedoom\ Phase\ II\ \(DAZI\).sh ~/RetroPie/roms/ports/Freedoom\ Phase\ II\ \(ADDON\).sh
 	rm ~/RetroPie/roms/ports/doom/freedoom2-addon.wad 2>/dev/null
 	ln -s ~/RetroPie/roms/ports/doom/freedoom2.wad ~/RetroPie/roms/ports/doom/freedoom2-addon.wad 2>/dev/null
-	echo "$daziSH" > ~/RetroPie/roms/ports/Freedoom\ Phase\ II\ \(ADDON\).sh
-	sed -i 's/doom1.wad/freedoom2-addon.wad/g' ~/RetroPie/roms/ports/Freedoom\ Phase\ II\ \(ADDON\).sh
+	sed -i 's/freedoom2.wad/freedoom2-addon.wad/g' ~/RetroPie/roms/ports/Freedoom\ Phase\ II\ \(ADDON\).sh
 	sed -i 's+#addonDIR=~/RetroPie/roms/ports/doom/addon+addonDIR=~/RetroPie/roms/ports/doom/addon+g' ~/RetroPie/roms/ports/Freedoom\ Phase\ II\ \(ADDON\).sh
 	sed -i 's+addonDIR=/dev/shm/addon+#addonDIR=/dev/shm/addon+g' ~/RetroPie/roms/ports/Freedoom\ Phase\ II\ \(ADDON\).sh
 fi
@@ -609,7 +632,7 @@ if [ $? -eq 0 ]; then
 		#mv /dev/shm/SIGIL_v1_21/SIGIL_v1_21.wad ~/RetroPie/roms/ports/doom 2>/dev/null
 		sed -i 's/doom1.wad/freedoom1.wad/g' ~/RetroPie/roms/ports/Doom\ SIGIL\ \(DAZI\).sh
 	fi
-	sed -i 's/modZIP=.*/modZIP=~\/RetroPie\/roms\/ports\/doom\/mods\/SIGIL.zip/g' ~/RetroPie/roms/ports/Doom\ SIGIL\ \(DAZI\).sh
+	sed -i 's/doomM0D=.*/doomM0D=~\/RetroPie\/roms\/ports\/doom\/mods\/SIGIL.zip/g' ~/RetroPie/roms/ports/Doom\ SIGIL\ \(DAZI\).sh
 	rm /dev/shm/SIGIL_v1_21.zip 2>/dev/null
 	rm /dev/shm/SIGIL_v1_21 -R -f 2>/dev/null
 	rm /dev/shm/__MACOSX -R -f 2>/dev/null
