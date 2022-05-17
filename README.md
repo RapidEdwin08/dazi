@@ -97,5 +97,5 @@ eg. WADFile: [doom2.wad]  <->  SymbolicLink: [doom2-addon.wad]
 **TIPs:**  
 *ZIPs are 0ptional and can be usefull for Smaller M0Ds with more than 5 Files to load*  
 *LARGER M0D.ZIPs may EXCEED the Size Limitation of [/dev/shm/addon/*]*  
-*Recommend avoid using ZIPs for LARGE M0Ds that may EXCEED (tmpfs)* 
+*Recommend avoid using ZIPs for LARGE M0Ds that may EXCEED (tmpfs)*  
 *DAZI will create Symbolic Links in the AddOn DIR to all Files that are NOT ZIPs*  
