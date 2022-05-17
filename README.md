@@ -90,10 +90,9 @@ We can Create Symbolic Links to [doom.wads] using Unique names, then...
 Add [Unique.wads] into [LargeM0D.sh] scripts that need [lzdoom-addon]  
 eg. WADFile: [doom2.wad]  <->  SymbolicLink: [doom2-addon.wad]  
 
-    # EXAMPLE [DAZI-Template.sh] CONTENTS with SYMBOLIC LINK#  
+    # EXAMPLE [DAZI-Template.sh] CONTENTS with SYMBOLIC LINK [doom2-addon.wad]#  
       doomWAD=~/RetroPie/roms/ports/doom/doom2-addon.wad 
-      modZIP=~/RetroPie/roms/ports/doom/mods/DragonSectorRemake.zip  
-      optionalZIP=~/RetroPie/roms/ports/doom/mods/BrutalDoomArthursEditionReloaded.zip  
+      doomM0D=~/RetroPie/roms/ports/doom/mods/Brutalv21ArthursEdition.pk3 
 
 **TIPs:**  
 *ZIPs are 0ptional and can be usefull for Smaller M0Ds with more than 5 Files to load*  
