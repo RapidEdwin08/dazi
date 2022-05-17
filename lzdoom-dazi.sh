@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 
 # This script will behave differently depending on the location it is ran from  
-# Running this Script from [/home/pi/RetroPie/retropiemenu] will access the BOTH the Installer + Mod Loader Menus  
 # Running this Script from [/opt/retropie/configs/ports/doom] will access 0NLY the Mod Loader Menu  
+# Running this Script from any 0THER Location will access the BOTH the Installer + Mod Loader Menus  
 # Automatic Install/Removal Provided in Main Installer Menu  
 
 # Manual Install of the [lzdoom-dazi.sh] should be placed in:  
@@ -18,9 +18,9 @@
 # echo "if [[ \"\$2\" == *\"lzdoom\"* ]] && [[ \"\$(cat /opt/retropie/configs/ports/doom/lzdoom-dazi.flag)\" == '1' ]]; then echo \"\$3\" > /dev/shm/runcommand.log && sudo /home/$USER/RetroPie-Setup/retropie_packages.sh retropiemenu launch \"/opt/retropie/configs/ports/doom/lzdoom-dazi.sh\" </dev/tty > /dev/tty; fi #For Use With [lzdoom-dazi] #Line Should be LAST" >> /dev/shm/runcommand-onstart.sh  
 
 versionDAZI=202205
-modDIRzips=~/RetroPie/roms/ports/doom/mods/
-modDIRroms=~/RetroPie/roms/ports/doom/addon/
-modDIRtmpfs=/dev/shm/addon/
+modDIRzips=~/RetroPie/roms/ports/doom/mods
+modDIRroms=~/RetroPie/roms/ports/doom/addon
+modDIRtmpfs=/dev/shm/addon
 doomDIRwads=~/RetroPie/roms/ports/doom
 zdoomCFGrp=/opt/retropie/configs/ports/doom/lzdoom.ini
 zdoomCFGroms=~/RetroPie/roms/ports/doom/lzdoom.ini
@@ -634,7 +634,7 @@ fi
 # Confirm Configurations
 DMLconfCONFIG=$(dialog --stdout --no-collapse --title " [DAZI] M0D LOADER for [lzdoom] by: RapidEdwin08 [$versionDAZI]" \
 	--ok-label SELECT --cancel-label "$MENUlaunchDOOM" \
-	--menu "\n[$modDIRroms] FreeSpace: [$(df -h $modDIRroms |awk '{print $4}' | grep -v Avail )] \n$(find $modDIRroms -maxdepth 1 -type f | sed 's|.*/||' | sort -n ) \n$daziHUD \n[$modDIRtmpfs] (tmpfs) FreeSpace: [$(df -h $modDIRtmpfs |awk '{print $4}' | grep -v Avail )] \n$(find $modDIRtmpfs -maxdepth 1 -type f | sed 's|.*/||' | sort -n ) \n" 25 75 20 \
+	--menu "\n[$modDIRroms] FreeSpace: [$(df -h $modDIRroms |awk '{print $4}' | grep -v Avail )] \n$(find $modDIRroms -maxdepth 1 -type f | sed 's|.*/||' | sort -n ) $(find $modDIRroms -maxdepth 1 -type l | sed 's|.*/||' | sort -n ) \n$daziHUD \n[$modDIRtmpfs] (tmpfs) FreeSpace: [$(df -h $modDIRtmpfs |awk '{print $4}' | grep -v Avail )] \n$(find $modDIRtmpfs -maxdepth 1 -type f | sed 's|.*/||' | sort -n ) $(find $modDIRtmpfs -maxdepth 1 -type l | sed 's|.*/||' | sort -n ) \n" 25 75 20 \
 	1 ">< $MENUlaunchDOOM ><" \
 	2 ">< LOAD   [M0D] in [$modDIRtmpfs] (tmpfs) ><" \
 	3 ">< REMOVE [M0D] in [$modDIRtmpfs] (tmpfs) ><" \
@@ -652,11 +652,25 @@ if [ "$DMLconfCONFIG" == '1' ]; then
 	fi
 fi
 
-if [ "$DMLconfCONFIG" == '2' ]; then addonZIPmenuTMPFS; fi
-if [ "$DMLconfCONFIG" == '3' ]; then M0DremoveTMPFS; fi
+if [ "$DMLconfCONFIG" == '2' ]; then
+	currentMODdir=$modDIRzips
+	currentADDONdir=$modDIRtmpfs
+	M0DaddMENU
+fi
+if [ "$DMLconfCONFIG" == '3' ]; then
+	currentADDONdir=$modDIRtmpfs
+	M0DremoveMENU
+fi
 
-if [ "$DMLconfCONFIG" == '4' ]; then addonZIPmenuROMS; fi
-if [ "$DMLconfCONFIG" == '5' ]; then M0DremoveROMS; fi
+if [ "$DMLconfCONFIG" == '4' ]; then
+	currentMODdir=$modDIRzips
+	currentADDONdir=$modDIRroms
+	M0DaddMENU
+fi
+if [ "$DMLconfCONFIG" == '5' ]; then
+	currentADDONdir=$modDIRroms
+	M0DremoveMENU
+fi
 
 # DELETE Confirmed - Otherwise Back to Main Menu
 if [ "$DMLconfCONFIG" == '6' ]; then
@@ -685,135 +699,129 @@ tput reset
 mainMENU
 }
 
-addonZIPmenuTMPFS()
+M0DremoveMENU()
 {
 tput reset
 # =====================================
-if [ "$(find $modDIRzips -maxdepth 1 -type f | sed 's|.*/||' | sort -n )" == '' ]; then
-	dialog --no-collapse --title "  NO FILES FOUND   " --ok-label CONTINUE --msgbox "[$modDIRzips] FreeSpace: [$(df -h $modDIRzips |awk '{print $4}' | grep -v Avail )] \n"  25 75
-	DMLmainMENU
-fi
-
-let i=0 # define counting variable
-W=() # define working array
-while read -r line; do # process file by file
-    let i=$i+1
-    W+=($i "$line")
-#done < <( ls -1 $modDIRzips )
-done < <( find "$modDIRzips" -maxdepth 1 -type f | sed 's|.*/||' | sort -n )
-FILE=$(dialog --title "Select M0D from $modDIRzips" --ok-label SELECT --cancel-label BACK --menu "[$modDIRtmpfs] (tmpfs) FreeSpace: [$(df -h $modDIRtmpfs |awk '{print $4}' | grep -v Avail )] \n$(find $modDIRtmpfs -maxdepth 1 -type f | sed 's|.*/||' | sort -n )\n" 25 75 20 "${W[@]}" 3>&2 2>&1 1>&3  </dev/tty > /dev/tty) # show dialog and store output
-#clear
-tput reset
-#if [ $? -eq 0 ]; then # Exit with OK
-if [ ! "$FILE" == '' ]; then
-	selectFILE=$(find $modDIRzips -maxdepth 1 -type f | sed 's|.*/||' | sort -n | sed -n "`echo "$FILE p" | sed 's/ //'`")
-	if [[ "$selectFILE" == *".zip" ]] || [[ "$selectFILE" == *".ZIP" ]]; then
-		unzip -qq -o "$modDIRzips/$selectFILE" -d $modDIRtmpfs
-	else
-		cp "$modDIRzips/$selectFILE" $modDIRtmpfs
-	fi
-	dialog --no-collapse --title "  M0D Added: [$selectFILE]   " --ok-label CONTINUE --msgbox "[$modDIRtmpfs] (tmpfs) FreeSpace: [$(df -h /dev/shm |awk '{print $4}' | grep -v Avail )] \n$(find $modDIRtmpfs -maxdepth 1 -type f | sed 's|.*/||' | sort -n )\n"  25 75
-	addonZIPmenuTMPFS
-fi
-
-DMLmainMENU
-}
-
-M0DremoveTMPFS()
-{
-tput reset
-# =====================================
-if [ "$(find $modDIRtmpfs -maxdepth 1 -type f | sed 's|.*/||' | sort -n )" == '' ]; then
-	dialog --no-collapse --title "  NO FILES FOUND   " --ok-label CONTINUE --msgbox "[$modDIRtmpfs] (tmpfs) FreeSpace: [$(df -h $modDIRtmpfs |awk '{print $4}' | grep -v Avail )] \n"  25 75
-	DMLmainMENU
-fi
-
-let i=0 # define counting variable
-W=() # define working array
-while read -r line; do # process file by file
-    let i=$i+1
-    W+=($i "$line")
-#done < <( ls -1 $modDIRtmpfs )
-done < <( find "$modDIRtmpfs" -maxdepth 1 -type f | sed 's|.*/||' | sort -n )
-FILE=$(dialog --title "Remove M0D from $modDIRtmpfs" --ok-label SELECT --cancel-label BACK --menu "[$modDIRtmpfs] (tmpfs) FreeSpace: [$(df -h $modDIRtmpfs |awk '{print $4}' | grep -v Avail )] \n$(find $modDIRtmpfs -maxdepth 1 -type f | sed 's|.*/||' | sort -n )\n" 25 75 20 "${W[@]}" 3>&2 2>&1 1>&3  </dev/tty > /dev/tty) # show dialog and store output
-#clear
-tput reset
-#if [ $? -eq 0 ]; then # Exit with OK
-if [ ! "$FILE" == '' ]; then
-	selectFILE=$(find $modDIRtmpfs -maxdepth 1 -type f | sed 's|.*/||' | sort -n | sed -n "`echo "$FILE p" | sed 's/ //'`")
-	rm "$modDIRtmpfs/$selectFILE"
-	if [ "$(find $modDIRtmpfs -maxdepth 1 -type f | sed 's|.*/||' | sort -n )" == '' ]; then
-		dialog --no-collapse --title "  NO FILES FOUND   " --ok-label CONTINUE --msgbox "[$modDIRtmpfs] (tmpfs) FreeSpace: [$(df -h $modDIRtmpfs |awk '{print $4}' | grep -v Avail )] \n"  25 75
+# Check if NO Files/Folders
+if [ "$(ls -1 $currentADDONdir)" == '' ]; then
+	dialog --no-collapse --title "  NO FILES FOUND   " --ok-label CONTINUE --msgbox "[$currentADDONdir] FreeSpace: [$(df -h $currentADDONdir |awk '{print $4}' | grep -v Avail )] \n"  25 75
+	if [ $currentADDONdir == $modDIRtmpfs ] || [ $currentADDONdir == $modDIRroms ]; then
 		DMLmainMENU
-	fi
-	M0DremoveTMPFS
-fi
-
-DMLmainMENU
-}
-
-addonZIPmenuROMS()
-{
-tput reset
-# =====================================
-if [ "$(find $modDIRzips -maxdepth 1 -type f | sed 's|.*/||' | sort -n )" == '' ]; then
-	dialog --no-collapse --title "  NO FILES FOUND   " --ok-label CONTINUE --msgbox "[$modDIRzips] FreeSpace: [$(df -h $modDIRzips |awk '{print $4}' | grep -v Avail )] \n"  25 75
-	DMLmainMENU
-fi
-
-let i=0 # define counting variable
-W=() # define working array
-while read -r line; do # process file by file
-    let i=$i+1
-    W+=($i "$line")
-#done < <( ls -1 $modDIRzips )
-done < <( find "$modDIRzips" -maxdepth 1 -type f | sed 's|.*/||' | sort -n )
-FILE=$(dialog --title "Select M0D from $modDIRzips" --ok-label SELECT --cancel-label BACK --menu "[$modDIRroms] FreeSpace: [$(df -h $modDIRroms |awk '{print $4}' | grep -v Avail )] \n$(find $modDIRroms -maxdepth 1 -type f | sed 's|.*/||' | sort -n )\n" 25 75 20 "${W[@]}" 3>&2 2>&1 1>&3  </dev/tty > /dev/tty) # show dialog and store output
-#clear
-tput reset
-#if [ $? -eq 0 ]; then # Exit with OK
-if [ ! "$FILE" == '' ]; then
-	selectFILE=$(find $modDIRzips -maxdepth 1 -type f | sed 's|.*/||' | sort -n | sed -n "`echo "$FILE p" | sed 's/ //'`")
-	if [[ "$selectFILE" == *".zip" ]] || [[ "$selectFILE" == *".ZIP" ]]; then
-		unzip -qq -o "$modDIRzips/$selectFILE" -d $modDIRroms
 	else
-		cp "$modDIRzips/$selectFILE" $modDIRroms
+		# Go up a Directory
+		currentADDONdir=$(dirname $currentADDONdir)
+		M0DremoveMENU
 	fi
-	dialog --no-collapse --title "  M0D Added: [$selectFILE]   " --ok-label CONTINUE --msgbox "[$modDIRroms] FreeSpace: [$(df -h $modDIRroms |awk '{print $4}' | grep -v Avail )] \n$(find $modDIRroms -maxdepth 1 -type f | sed 's|.*/||' | sort -n )\n"  25 75
-	addonZIPmenuROMS
 fi
 
-DMLmainMENU
-}
-
-M0DremoveROMS()
-{
-tput reset
-# =====================================
-if [ "$(find $modDIRroms -maxdepth 1 -type f | sed 's|.*/||' | sort -n )" == '' ]; then
-	dialog --no-collapse --title "  NO FILES FOUND   " --ok-label CONTINUE --msgbox "[$modDIRroms] FreeSpace: [$(df -h $modDIRroms |awk '{print $4}' | grep -v Avail )] \n"  25 75
-	DMLmainMENU
-fi
-	
 let i=0 # define counting variable
 W=() # define working array
 while read -r line; do # process file by file
     let i=$i+1
     W+=($i "$line")
-#done < <( ls -1 $modDIRroms )
-done < <( find "$modDIRroms" -maxdepth 1 -type f | sed 's|.*/||' | sort -n )
-FILE=$(dialog --title "Remove M0D from $modDIRroms" --ok-label SELECT --cancel-label BACK --menu "[$modDIRroms] FreeSpace: [$(df -h $modDIRroms |awk '{print $4}' | grep -v Avail )] \n$(find $modDIRroms -maxdepth 1 -type f | sed 's|.*/||' | sort -n )\n" 25 75 20 "${W[@]}" 3>&2 2>&1 1>&3  </dev/tty > /dev/tty) # show dialog and store output
+done < <( ls -1 $currentADDONdir )
+FILE=$(dialog --title "Remove M0D from $currentADDONdir" --ok-label SELECT --cancel-label BACK --menu "[$currentADDONdir] FreeSpace: [$(df -h $currentADDONdir |awk '{print $4}' | grep -v Avail )] \n$(ls -1 $currentADDONdir | sort -n )\n" 25 75 20 "${W[@]}" 3>&2 2>&1 1>&3  </dev/tty > /dev/tty) # show dialog and store output
 #clear
 tput reset
 #if [ $? -eq 0 ]; then # Exit with OK
 if [ ! "$FILE" == '' ]; then
-	selectFILE=$(find $modDIRroms -maxdepth 1 -type f | sed 's|.*/||' | sort -n | sed -n "`echo "$FILE p" | sed 's/ //'`")
-	rm "$modDIRroms/$selectFILE"
-	if [ "$(find $modDIRroms -maxdepth 1 -type f | sed 's|.*/||' | sort -n )" == '' ]; then
-		dialog --no-collapse --title "  NO FILES FOUND   " --ok-label CONTINUE --msgbox "[$modDIRroms] FreeSpace: [$(df -h $modDIRroms |awk '{print $4}' | grep -v Avail )] \n"  25 75
-		DMLmainMENU
+	selectFILE=$(ls -1 $currentADDONdir | sed -n "`echo "$FILE p" | sed 's/ //'`")
+	# Change to Sub-Directory IF NOT a FILE
+	if [ -d "$currentADDONdir/$selectFILE" ]; then
+		currentADDONdir="$currentADDONdir/$selectFILE"
+		M0DremoveMENU
+	else
+		# Perform desired Action for selectFILE
+		rm "$currentADDONdir/$selectFILE"
 	fi
-	M0DremoveROMS
+	# Check if NO Files/Folders
+	if [ "$(ls -1 $currentADDONdir)" == '' ]; then
+		dialog --no-collapse --title "  NO FILES FOUND   " --ok-label CONTINUE --msgbox "[$currentADDONdir] FreeSpace: [$(df -h $currentADDONdir |awk '{print $4}' | grep -v Avail )] \n"  25 75
+		# Back to Menu IF in MAIN DIR
+		if [ $currentADDONdir == $modDIRtmpfs ] || [ $currentADDONdir == $modDIRroms ]; then
+			DMLmainMENU
+		else
+			# Go up a Directory
+			currentADDONdir=$(dirname $currentADDONdir)
+			M0DremoveMENU
+		fi
+	fi
+	M0DremoveMENU
+fi
+
+# Go up Directory IF NO INPUT + NOT MAIN DIRs
+if [ ! $currentADDONdir == $modDIRtmpfs ] && [ ! $currentADDONdir == $modDIRroms ]; then
+	# Go up Directory Minus selectFILE
+	currentADDONdir=$(dirname $currentADDONdir)
+	M0DremoveMENU
+fi
+
+DMLmainMENU
+}
+
+M0DaddMENU()
+{
+tput reset
+# =====================================
+# Check if NO Files/Folders
+if [ "$(ls -1 $currentMODdir)" == '' ]; then
+	dialog --no-collapse --title "  NO FILES FOUND   " --ok-label CONTINUE --msgbox "[$currentADDONdir] FreeSpace: [$(df -h $currentADDONdir |awk '{print $4}' | grep -v Avail )] \n"  25 75
+	if [ $currentMODdir == $modDIRzips ]; then
+		DMLmainMENU
+	else
+		# Go up a Directory
+		currentMODdir=$(dirname $currentMODdir)
+		M0DaddMENU
+	fi
+fi
+
+let i=0 # define counting variable
+W=() # define working array
+while read -r line; do # process file by file
+    let i=$i+1
+    W+=($i "$line")
+done < <( ls -1 $currentMODdir )
+FILE=$(dialog --title "Load M0D from $currentMODdir" --ok-label SELECT --cancel-label BACK --menu "[$currentADDONdir] FreeSpace: [$(df -h $currentADDONdir |awk '{print $4}' | grep -v Avail )] \n$(ls -1 $currentADDONdir | sort -n )\n" 25 75 20 "${W[@]}" 3>&2 2>&1 1>&3  </dev/tty > /dev/tty) # show dialog and store output
+#clear
+tput reset
+#if [ $? -eq 0 ]; then # Exit with OK
+if [ ! "$FILE" == '' ]; then
+	selectFILE=$(ls -1 $currentMODdir | sed -n "`echo "$FILE p" | sed 's/ //'`")
+	# Change to Sub-Directory IF NOT a FILE
+	if [ -d "$currentMODdir/$selectFILE" ]; then
+		currentMODdir="$currentMODdir/$selectFILE"
+		M0DaddMENU
+	else
+		# Perform desired Action for selectFILE
+		if [[ "$selectFILE" == *".zip" ]] || [[ "$selectFILE" == *".ZIP" ]]; then
+			unzip -qq -o "$currentMODdir/$selectFILE" -d "$currentADDONdir"
+		else
+			# cp "$currentMODdir/$selectFILE" $currentADDONdir #Too Slow - Wears on Storage - Size Limitations
+			ln -s "$currentMODdir/$selectFILE" "$currentADDONdir/$selectFILE"
+		fi
+		dialog --no-collapse --title "  M0D Added: [$selectFILE]   " --ok-label CONTINUE --msgbox "[$currentADDONdir] FreeSpace: [$(df -h $currentADDONdir |awk '{print $4}' | grep -v Avail )] \n \n$(ls -1 $currentADDONdir | sort -n )\n"  25 75
+	fi
+	# Check if NO Files/Folders
+	if [ "$(ls -1 $currentMODdir)" == '' ]; then
+		dialog --no-collapse --title "  NO FILES FOUND   " --ok-label CONTINUE --msgbox "[$currentADDONdir] FreeSpace: [$(df -h $currentADDONdir |awk '{print $4}' | grep -v Avail )] \n"  25 75
+		# Back to Menu IF in MAIN DIR
+		if [ $currentMODdir == $modDIRzips ]; then
+			DMLmainMENU
+		else
+			# Go up a Directory
+			currentMODdir=$(dirname $currentMODdir)
+			M0DaddMENU
+		fi
+	fi
+	M0DaddMENU
+fi
+
+# Go up Directory IF NO INPUT + NOT MAIN ADDON DIRs
+if [ ! $currentMODdir == $modDIRzips ]; then
+	# Go up Directory Minus selectFILE
+	currentMODdir=$(dirname $currentMODdir)
+	M0DaddMENU
 fi
 
 DMLmainMENU
