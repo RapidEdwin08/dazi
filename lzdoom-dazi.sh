@@ -566,6 +566,21 @@ sed -i 's/doom1.wad/freedoom1.wad/g' ~/RetroPie/roms/ports/Freedoom\ Phase\ I\ \
 echo "$daziSH" > ~/RetroPie/roms/ports/Freedoom\ Phase\ II\ \(DAZI\).sh
 sed -i 's/doom1.wad/freedoom2.wad/g' ~/RetroPie/roms/ports/Freedoom\ Phase\ II\ \(DAZI\).sh
 
+# ADDON Templates
+if [ -f ~/RetroPie/roms/ports/doom/freedoom1.wad ]; then
+	rm ~/RetroPie/roms/ports/doom/freedoom1-addon.wad 2>/dev/null
+	ln -s ~/RetroPie/roms/ports/doom/freedoom1.wad ~/RetroPie/roms/ports/doom/freedoom1-addon.wad 2>/dev/null
+	echo "$daziSH" > ~/RetroPie/roms/ports/Freedoom\ Phase\ I\ \(ADDON\).sh
+	sed -i 's/doom1.wad/freedoom1-addon.wad/g' ~/RetroPie/roms/ports/Freedoom\ Phase\ I\ \(ADDON\).sh
+fi
+
+if [ -f ~/RetroPie/roms/ports/doom/freedoom2.wad ]; then
+	rm ~/RetroPie/roms/ports/doom/freedoom2-addon.wad 2>/dev/null
+	ln -s ~/RetroPie/roms/ports/doom/freedoom2.wad ~/RetroPie/roms/ports/doom/freedoom2-addon.wad 2>/dev/null
+	echo "$daziSH" > ~/RetroPie/roms/ports/Freedoom\ Phase\ II\ \(ADDON\).sh
+	sed -i 's/doom1.wad/freedoom2-addon.wad/g' ~/RetroPie/roms/ports/Freedoom\ Phase\ II\ \(ADDON\).sh
+fi
+
 # Get SIGIL If Internet Connection Available
 wget -q --spider http://google.com
 if [ $? -eq 0 ]; then	
