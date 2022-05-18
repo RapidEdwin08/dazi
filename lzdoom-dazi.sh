@@ -149,20 +149,20 @@ echo 'doomM0D3='
 echo 'doomM0D4='
 echo 'doomM0D5='
 echo ''
-echo '# Define addonDIR - Default RetroPie or DAZI tmpfs'
-echo '#addonDIR=~/RetroPie/roms/ports/doom/addon'
+echo '# Define addonDIR - DAZI tmpfs or Default RetroPie'
 echo 'addonDIR=/dev/shm/addon'
+echo '#addonDIR=~/RetroPie/roms/ports/doom/addon'
 echo ''
 echo '# UNCOMMENT to Display Loading Files by name'
 echo "#echo LOADING \$(basename \"\$doomM0D\" ) \$(basename \"\$doomM0D2\" ) \$(basename \"\$doomM0D3\" ) \$(basename \"\$doomM0D4\" ) \$(basename \"\$doomM0D5\" )"
 echo ''
-echo '# Prepare addonDIR + M0Ds'
+echo '# Prepare addonDIR + M0Ds in Numeric 0rder'
 echo 'mkdir "$addonDIR" > /dev/null 2>&1'
-echo 'if [ ! "$doomM0D" == "" ]; then if [[ "$doomM0D" == *".zip" ]] || [[ "$doomM0D" == *".ZIP" ]]; then unzip -qq -o "$doomM0D" -d "$addonDIR" > /dev/null 2>&1; else ln -s "$doomM0D" "$addonDIR/$(basename "$doomM0D" )"; fi; fi > /dev/null 2>&1'
-echo 'if [ ! "$doomM0D2" == "" ]; then if [[ "$doomM0D2" == *".zip" ]] || [[ "$doomM0D2" == *".ZIP" ]]; then unzip -qq -o "$doomM0D2" -d "$addonDIR" > /dev/null 2>&1; else ln -s "$doomM0D2" "$addonDIR/$(basename "$doomM0D2" )"; fi; fi > /dev/null 2>&1'
-echo 'if [ ! "$doomM0D3" == "" ]; then if [[ "$doomM0D3" == *".zip" ]] || [[ "$doomM0D3" == *".ZIP" ]]; then unzip -qq -o "$doomM0D3" -d "$addonDIR" > /dev/null 2>&1; else ln -s "$doomM0D3" "$addonDIR/$(basename "$doomM0D3" )"; fi; fi > /dev/null 2>&1'
-echo 'if [ ! "$doomM0D4" == "" ]; then if [[ "$doomM0D4" == *".zip" ]] || [[ "$doomM0D4" == *".ZIP" ]]; then unzip -qq -o "$doomM0D4" -d "$addonDIR" > /dev/null 2>&1; else ln -s "$doomM0D4" "$addonDIR/$(basename "$doomM0D4" )"; fi; fi > /dev/null 2>&1'
-echo 'if [ ! "$doomM0D5" == "" ]; then if [[ "$doomM0D5" == *".zip" ]] || [[ "$doomM0D5" == *".ZIP" ]]; then unzip -qq -o "$doomM0D5" -d "$addonDIR" > /dev/null 2>&1; else ln -s "$doomM0D5" "$addonDIR/$(basename "$doomM0D5" )"; fi; fi > /dev/null 2>&1'
+echo 'if [ ! "$doomM0D" == "" ]; then if [[ "$doomM0D" == *".zip" ]] || [[ "$doomM0D" == *".ZIP" ]]; then unzip -qq -o "$doomM0D" -d "$addonDIR" > /dev/null 2>&1; else ln -s "$doomM0D" "$addonDIR/01_$(basename "$doomM0D" )"; fi; fi > /dev/null 2>&1'
+echo 'if [ ! "$doomM0D2" == "" ]; then if [[ "$doomM0D2" == *".zip" ]] || [[ "$doomM0D2" == *".ZIP" ]]; then unzip -qq -o "$doomM0D2" -d "$addonDIR" > /dev/null 2>&1; else ln -s "$doomM0D2" "$addonDIR/02_$(basename "$doomM0D2" )"; fi; fi > /dev/null 2>&1'
+echo 'if [ ! "$doomM0D3" == "" ]; then if [[ "$doomM0D3" == *".zip" ]] || [[ "$doomM0D3" == *".ZIP" ]]; then unzip -qq -o "$doomM0D3" -d "$addonDIR" > /dev/null 2>&1; else ln -s "$doomM0D3" "$addonDIR/03_$(basename "$doomM0D3" )"; fi; fi > /dev/null 2>&1'
+echo 'if [ ! "$doomM0D4" == "" ]; then if [[ "$doomM0D4" == *".zip" ]] || [[ "$doomM0D4" == *".ZIP" ]]; then unzip -qq -o "$doomM0D4" -d "$addonDIR" > /dev/null 2>&1; else ln -s "$doomM0D4" "$addonDIR/04_$(basename "$doomM0D4" )"; fi; fi > /dev/null 2>&1'
+echo 'if [ ! "$doomM0D5" == "" ]; then if [[ "$doomM0D5" == *".zip" ]] || [[ "$doomM0D5" == *".ZIP" ]]; then unzip -qq -o "$doomM0D5" -d "$addonDIR" > /dev/null 2>&1; else ln -s "$doomM0D5" "$addonDIR/05_$(basename "$doomM0D5" )"; fi; fi > /dev/null 2>&1'
 echo ''
 echo '# RUN D00M P0RT'
 echo '"/opt/retropie/supplementary/runcommand/runcommand.sh" 0 _PORT_ "doom" "${doomWAD}"'
@@ -678,6 +678,7 @@ fi
 if [ "$DMLconfCONFIG" == '2' ]; then
 	currentMODdir=$modDIRzips
 	currentADDONdir=$modDIRtmpfs
+	count=0
 	M0DaddMENU
 fi
 if [ "$DMLconfCONFIG" == '3' ]; then
@@ -688,6 +689,7 @@ fi
 if [ "$DMLconfCONFIG" == '4' ]; then
 	currentMODdir=$modDIRzips
 	currentADDONdir=$modDIRroms
+	count=0
 	M0DaddMENU
 fi
 if [ "$DMLconfCONFIG" == '5' ]; then
@@ -820,8 +822,9 @@ if [ ! "$FILE" == '' ]; then
 		if [[ "$selectFILE" == *".zip" ]] || [[ "$selectFILE" == *".ZIP" ]]; then
 			unzip -qq -o "$currentMODdir/$selectFILE" -d "$currentADDONdir"
 		else
+			count=$(( $count + 1 ))
 			# cp "$currentMODdir/$selectFILE" $currentADDONdir #Too Slow - Wears on Storage - Size Limitations
-			ln -s "$currentMODdir/$selectFILE" "$currentADDONdir/$selectFILE"
+			ln -s "$currentMODdir/$selectFILE" "$currentADDONdir/0"$count"_"$selectFILE""
 		fi
 		dialog --no-collapse --title "  M0D Added: [$selectFILE]   " --ok-label CONTINUE --msgbox "[$currentADDONdir] FreeSpace: [$(df -h $currentADDONdir |awk '{print $4}' | grep -v Avail )] \n \n$(ls -1 $currentADDONdir | sort -n )\n"  25 75
 	fi
