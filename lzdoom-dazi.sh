@@ -788,6 +788,7 @@ DMLmainMENU
 M0DaddMENU()
 {
 tput reset
+count=0
 # =====================================
 # Check if NO Files/Folders
 if [ "$(ls -1 $currentMODdir)" == '' ]; then
@@ -822,6 +823,8 @@ if [ ! "$FILE" == '' ]; then
 		if [[ "$selectFILE" == *".zip" ]] || [[ "$selectFILE" == *".ZIP" ]]; then
 			unzip -qq -o "$currentMODdir/$selectFILE" -d "$currentADDONdir"
 		else
+			# Count Current Files/Links in ADDONS - Update Count
+			if [ ! "$(find $currentADDONdir -maxdepth 1 -type f | wc -l )" == '0' ] || [ ! "$(find $currentADDONdir -maxdepth 1 -type l | wc -l )" == '0' ]; then count=$(( $count + $(find $currentADDONdir -maxdepth 1 -type f | wc -l ) + $(find $currentADDONdir -maxdepth 1 -type l | wc -l ) )); fi
 			count=$(( $count + 1 ))
 			# cp "$currentMODdir/$selectFILE" $currentADDONdir #Too Slow - Wears on Storage - Size Limitations
 			ln -s "$currentMODdir/$selectFILE" "$currentADDONdir/0"$count"_"$selectFILE""
