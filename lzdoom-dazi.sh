@@ -854,55 +854,119 @@ symLINKSaddon()
 {
 tput reset
 
-# Check for Main [doom.wad] Files - Create Symbolic Links If Found
+# Backup emulators.cfg if not exist already
+if [ ! -f /opt/retropie/configs/all/emulators.cfg ]; then touch /opt/retropie/configs/all/emulators.cfg 2>/dev/null; fi
+if [ ! -f /opt/retropie/configs/all/emulators.cfg.b4dazi ]; then cp /opt/retropie/configs/all/emulators.cfg /opt/retropie/configs/all/emulators.cfg.b4dazi 2>/dev/null; fi
+
+# Check for Main [doom.wad] Files - Create Symbolic Links If Found - Set [lzdoom-addon] for all FOUND LINKS in [emulators.cfg]
 if [ -f ~/RetroPie/roms/ports/doom/doom.wad ]; then
 	rm ~/RetroPie/roms/ports/doom/doom-addon.wad 2>/dev/null
 	ln -s ~/RetroPie/roms/ports/doom/doom.wad ~/RetroPie/roms/ports/doom/doom-addon.wad 2>/dev/null
+	# Add [to emulators.cfg]
+	if [ ! $(cat /opt/retropie/configs/all/emulators.cfg | grep -q 'doom_doom-addon =' ; echo $?) == '0' ]; then
+		echo 'doom_doom-addon = "lzdoom-addon"' >> /opt/retropie/configs/all/emulators.cfg
+	else
+		sed -i 's/doom\_doom-addon\ =.*/doom\_doom-addon\ =\ \"lzdoom-addon\"/g' /opt/retropie/configs/all/emulators.cfg
+	fi
 fi
 
 if [ -f ~/RetroPie/roms/ports/doom/doom2.wad ]; then
 	rm ~/RetroPie/roms/ports/doom/doom2-addon.wad 2>/dev/null
 	ln -s ~/RetroPie/roms/ports/doom/doom2.wad ~/RetroPie/roms/ports/doom/doom2-addon.wad 2>/dev/null
+	# Add [to emulators.cfg]
+	if [ ! $(cat /opt/retropie/configs/all/emulators.cfg | grep -q 'doom2_doom-addon =' ; echo $?) == '0' ]; then
+		echo 'doom_doom2-addon = "lzdoom-addon"' >> /opt/retropie/configs/all/emulators.cfg
+	else
+		sed -i 's/doom\_doom2-addon\ =.*/doom\_doom2-addon\ =\ \"lzdoom-addon\"/g' /opt/retropie/configs/all/emulators.cfg
+	fi
 fi
 
 if [ -f ~/RetroPie/roms/ports/doom/doomu.wad ]; then
 	rm ~/RetroPie/roms/ports/doom/doomu-addon.wad 2>/dev/null
 	ln -s ~/RetroPie/roms/ports/doom/doomu.wad ~/RetroPie/roms/ports/doom/doomu-addon.wad 2>/dev/null
+	# Add [to emulators.cfg]
+	if [ ! $(cat /opt/retropie/configs/all/emulators.cfg | grep -q 'doom_doomu-addon =' ; echo $?) == '0' ]; then
+		echo 'doom_doomu-addon = "lzdoom-addon"' >> /opt/retropie/configs/all/emulators.cfg
+	else
+		sed -i 's/doom\_doomu-addon\ =.*/doom\_doomu-addon\ =\ \"lzdoom-addon\"/g' /opt/retropie/configs/all/emulators.cfg
+	fi
 fi
 
 if [ -f ~/RetroPie/roms/ports/doom/freedoom1.wad ]; then
 	rm ~/RetroPie/roms/ports/doom/freedoom1-addon.wad 2>/dev/null
 	ln -s ~/RetroPie/roms/ports/doom/freedoom1.wad ~/RetroPie/roms/ports/doom/freedoom1-addon.wad 2>/dev/null
+	# Add [to emulators.cfg]
+	if [ ! $(cat /opt/retropie/configs/all/emulators.cfg | grep -q 'doom_freedoom1-addon =' ; echo $?) == '0' ]; then
+		echo 'doom_freedoom1-addon = "lzdoom-addon"' >> /opt/retropie/configs/all/emulators.cfg
+	else
+		sed -i 's/doom\_freedoom1-addon\ =.*/doom\_freedoom1-addon\ =\ \"lzdoom-addon\"/g' /opt/retropie/configs/all/emulators.cfg
+	fi
 fi
 
 if [ -f ~/RetroPie/roms/ports/doom/freedoom2.wad ]; then
 	rm ~/RetroPie/roms/ports/doom/freedoom2-addon.wad 2>/dev/null
 	ln -s ~/RetroPie/roms/ports/doom/freedoom2.wad ~/RetroPie/roms/ports/doom/freedoom2-addon.wad 2>/dev/null
+	# Add [to emulators.cfg]
+	if [ ! $(cat /opt/retropie/configs/all/emulators.cfg | grep -q 'doom_freedoom2-addon =' ; echo $?) == '0' ]; then
+		echo 'doom_freedoom2-addon = "lzdoom-addon"' >> /opt/retropie/configs/all/emulators.cfg
+	else
+		sed -i 's/doom\_freedoom2-addon\ =.*/doom\_freedoom2-addon\ =\ \"lzdoom-addon\"/g' /opt/retropie/configs/all/emulators.cfg
+	fi
 fi
 
 if [ -f ~/RetroPie/roms/ports/doom/plutonia.wad ]; then
 	rm ~/RetroPie/roms/ports/doom/plutonia-addon.wad 2>/dev/null
 	ln -s ~/RetroPie/roms/ports/doom/plutonia.wad ~/RetroPie/roms/ports/doom/plutonia-addon.wad 2>/dev/null
+	# Add [to emulators.cfg]
+	if [ ! $(cat /opt/retropie/configs/all/emulators.cfg | grep -q 'doom_plutonia-addon =' ; echo $?) == '0' ]; then
+		echo 'doom_plutonia-addon = "lzdoom-addon"' >> /opt/retropie/configs/all/emulators.cfg
+	else
+		sed -i 's/doom\_plutonia-addon\ =.*/doom\_plutonia-addon\ =\ \"lzdoom-addon\"/g' /opt/retropie/configs/all/emulators.cfg
+	fi
 fi
 
 if [ -f ~/RetroPie/roms/ports/doom/tnt.wad ]; then
 	rm ~/RetroPie/roms/ports/doom/tnt-addon.wad 2>/dev/null
 	ln -s ~/RetroPie/roms/ports/doom/tnt.wad ~/RetroPie/roms/ports/doom/tnt-addon.wad 2>/dev/null
+	# Add [to emulators.cfg]
+	if [ ! $(cat /opt/retropie/configs/all/emulators.cfg | grep -q 'doom_tnt-addon =' ; echo $?) == '0' ]; then
+		echo 'doom_tnt-addon = "lzdoom-addon"' >> /opt/retropie/configs/all/emulators.cfg
+	else
+		sed -i 's/doom\_tnt-addon\ =.*/doom\_tnt-addon\ =\ \"lzdoom-addon\"/g' /opt/retropie/configs/all/emulators.cfg
+	fi
 fi
 
 if [ -f ~/RetroPie/roms/ports/doom/heretic.wad ]; then
 	rm ~/RetroPie/roms/ports/doom/heretic-addon.wad 2>/dev/null
 	ln -s ~/RetroPie/roms/ports/doom/heretic.wad ~/RetroPie/roms/ports/doom/heretic-addon.wad 2>/dev/null
+	# Add [to emulators.cfg]
+	if [ ! $(cat /opt/retropie/configs/all/emulators.cfg | grep -q 'doom_heretic-addon =' ; echo $?) == '0' ]; then
+		echo 'doom_heretic-addon = "lzdoom-addon"' >> /opt/retropie/configs/all/emulators.cfg
+	else
+		sed -i 's/doom\_heretic-addon\ =.*/doom\_heretic-addon\ =\ \"lzdoom-addon\"/g' /opt/retropie/configs/all/emulators.cfg
+	fi
 fi
 
 if [ -f ~/RetroPie/roms/ports/doom/hexen.wad ]; then
 	rm ~/RetroPie/roms/ports/doom/hexen-addon.wad 2>/dev/null
 	ln -s ~/RetroPie/roms/ports/doom/hexen.wad ~/RetroPie/roms/ports/doom/hexen-addon.wad 2>/dev/null
+	# Add [to emulators.cfg]
+	if [ ! $(cat /opt/retropie/configs/all/emulators.cfg | grep -q 'doom_hexen-addon =' ; echo $?) == '0' ]; then
+		echo 'doom_hexen-addon = "lzdoom-addon"' >> /opt/retropie/configs/all/emulators.cfg
+	else
+		sed -i 's/doom\_hexen-addon\ =.*/doom\_hexen-addon\ =\ \"lzdoom-addon\"/g' /opt/retropie/configs/all/emulators.cfg
+	fi
 fi
 
 if [ -f ~/RetroPie/roms/ports/doom/strife1.wad ]; then
 	rm ~/RetroPie/roms/ports/doom/strife1-addon.wad 2>/dev/null
 	ln -s ~/RetroPie/roms/ports/doom/strife1.wad ~/RetroPie/roms/ports/doom/strife1-addon.wad 2>/dev/null
+	# Add [to emulators.cfg]
+	if [ ! $(cat /opt/retropie/configs/all/emulators.cfg | grep -q 'doom_strife1-addon =' ; echo $?) == '0' ]; then
+		echo 'doom_strife1-addon = "lzdoom-addon"' >> /opt/retropie/configs/all/emulators.cfg
+	else
+		sed -i 's/doom\_strife1-addon\ =.*/doom\_strife1-addon\ =\ \"lzdoom-addon\"/g' /opt/retropie/configs/all/emulators.cfg
+	fi
 fi
 
 # Update [symLINKSwads] when entering menu
