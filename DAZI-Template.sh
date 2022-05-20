@@ -1,28 +1,33 @@
 #!/bin/bash
-# https://github.com/RapidEdwin08/dazi
+# https://github.com/RapidEdwin08/dazi  #v2022.05
 
-# INPUT D00M.WAD + M0D.WAD/PK3/PK7/ZIPs
+# Define [D00M.WAD] -  /full/path/to/doom.wad
 doomWAD=~/RetroPie/roms/ports/doom/doom.wad
-doomM0D=~/RetroPie/roms/ports/doom/mods/SIGIL.zip
-doomM0D2=~/RetroPie/roms/ports/doom/mods/weapons_of_saturn.pk3
-doomM0D3=~/RetroPie/roms/ports/doom/mods/WOSHUD.pk3
-doomM0D4=
-doomM0D5=
 
-# Define addonDIR - Default RetroPie or DAZI tmpfs
+# Define As Many [doomMOD#s] As Needed - Ascending Numeric 0rder - [doomMOD#=/full/path/to/mod.pk3]
+doomMOD1=~/RetroPie/roms/ports/doom/mods/SIGIL.zip
+doomMOD2=~/RetroPie/roms/ports/doom/mods/WeaponsOfSaturn/weapons_of_saturn.pk3
+doomMOD3=~/RetroPie/roms/ports/doom/mods/WOSHUD.pk3
+doomMOD4=~/RetroPie/roms/ports/doom/mods/DooM_-_Double_Jump.pk3
+
+# Define addonDIR - tmpfs or Default RetroPie
 addonDIR=/dev/shm/addon
 #addonDIR=~/RetroPie/roms/ports/doom/addon
 
-# UNCOMMENT to Display Loading Files by name
-#echo LOADING $(basename "$doomM0D" ) $(basename "$doomM0D2" ) $(basename "$doomM0D3" ) $(basename "$doomM0D4" ) $(basename "$doomM0D5" )
+# ==========================================
+loadM0Ds() # Scripted L00P Supports Loading Any Number of [doomMOD#s] when Defined
+{
+# Prepare [doomMOD#s] IF DEFINED - ZIPs are Extracted to [addonDIR] - Symbolic LInks created for ALL 0THER File Types
+if [[ ! "${!rollingM0D}" == "" ]]; then if [[ "${!rollingM0D}" == *".zip" ]] || [[ "${!rollingM0D}" == *".ZIP" ]]; then unzip -qq -o "${!rollingM0D}" -d "$addonDIR" > /dev/null 2>&1; else ln -s "${!rollingM0D}" "$addonDIR/0${count}_$(basename "${!rollingM0D}" )"; fi; fi > /dev/null 2>&1
+count=$(( $count + 1 )) # Increase count by+1
+rollingM0D="doomMOD${count}" # Apply Increased count to [doomMOD#]
+if [[ ! "${!rollingM0D}" == "" ]]; then loadM0Ds; fi # Prepare more [doomMOD#s] IF DEFINED
+}
 
-# Prepare addonDIR + M0Ds in Numeric 0rder
-mkdir "$addonDIR" > /dev/null 2>&1
-if [ ! "$doomM0D" == "" ]; then if [[ "$doomM0D" == *".zip" ]] || [[ "$doomM0D" == *".ZIP" ]]; then unzip -qq -o "$doomM0D" -d "$addonDIR" > /dev/null 2>&1; else ln -s "$doomM0D" "$addonDIR/01_$(basename "$doomM0D" )"; fi; fi > /dev/null 2>&1
-if [ ! "$doomM0D2" == "" ]; then if [[ "$doomM0D2" == *".zip" ]] || [[ "$doomM0D2" == *".ZIP" ]]; then unzip -qq -o "$doomM0D2" -d "$addonDIR" > /dev/null 2>&1; else ln -s "$doomM0D2" "$addonDIR/02_$(basename "$doomM0D2" )"; fi; fi > /dev/null 2>&1
-if [ ! "$doomM0D3" == "" ]; then if [[ "$doomM0D3" == *".zip" ]] || [[ "$doomM0D3" == *".ZIP" ]]; then unzip -qq -o "$doomM0D3" -d "$addonDIR" > /dev/null 2>&1; else ln -s "$doomM0D3" "$addonDIR/03_$(basename "$doomM0D3" )"; fi; fi > /dev/null 2>&1
-if [ ! "$doomM0D4" == "" ]; then if [[ "$doomM0D4" == *".zip" ]] || [[ "$doomM0D4" == *".ZIP" ]]; then unzip -qq -o "$doomM0D4" -d "$addonDIR" > /dev/null 2>&1; else ln -s "$doomM0D4" "$addonDIR/04_$(basename "$doomM0D4" )"; fi; fi > /dev/null 2>&1
-if [ ! "$doomM0D5" == "" ]; then if [[ "$doomM0D5" == *".zip" ]] || [[ "$doomM0D5" == *".ZIP" ]]; then unzip -qq -o "$doomM0D5" -d "$addonDIR" > /dev/null 2>&1; else ln -s "$doomM0D5" "$addonDIR/05_$(basename "$doomM0D5" )"; fi; fi > /dev/null 2>&1
+mkdir "$addonDIR" > /dev/null 2>&1 # Prepare addonDIR
+count=1 # Set Initial Count
+rollingM0D="doomMOD${count}"
+loadM0Ds # Load D00M M0Ds in Numeric 0rder
 
 # RUN D00M P0RT
 "/opt/retropie/supplementary/runcommand/runcommand.sh" 0 _PORT_ "doom" "${doomWAD}"
