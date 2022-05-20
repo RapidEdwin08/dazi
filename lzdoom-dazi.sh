@@ -17,7 +17,7 @@
 # For Manual Install to [runcommand-onstart.sh] use this one-liner [echo] command:  
 # echo "if [[ \"\$2\" == *\"lzdoom\"* ]] && [[ \"\$(cat /opt/retropie/configs/ports/doom/lzdoom-dazi.flag)\" == '1' ]]; then echo \"\$3\" > /dev/shm/runcommand.log && sudo /home/$USER/RetroPie-Setup/retropie_packages.sh retropiemenu launch \"/opt/retropie/configs/ports/doom/lzdoom-dazi.sh\" </dev/tty > /dev/tty; fi #For Use With [lzdoom-dazi] #Line Should be LAST" >> /dev/shm/runcommand-onstart.sh  
 
-versionDAZI=202205
+versionDAZI=2022.05
 modDIRzips=~/RetroPie/roms/ports/doom/mods
 modDIRroms=~/RetroPie/roms/ports/doom/addon
 modDIRtmpfs=/dev/shm/addon
@@ -139,30 +139,32 @@ echo "  Now Select any 0ther Desired D00M R0M and Launch with [lzdoom-dazi]"
 
 daziSH=$(
 echo '#!/bin/bash'
-echo '# https://github.com/RapidEdwin08/dazi'
+echo '# https://github.com/RapidEdwin08/dazi  #v2022.05'
 echo ''
-echo '# INPUT D00M.WAD + M0D.WAD/PK3/PK7/ZIPs'
+echo '# Define [D00M.WAD] -  /full/path/to/doom.wad'
 echo 'doomWAD=~/RetroPie/roms/ports/doom/doom1.wad'
-echo 'doomM0D='
-echo 'doomM0D2='
-echo 'doomM0D3='
-echo 'doomM0D4='
-echo 'doomM0D5='
 echo ''
-echo '# Define addonDIR - DAZI tmpfs or Default RetroPie'
+echo '# Define As Many [doomMOD#s] As Needed - Ascending Numeric 0rder - [doomMOD#=/full/path/to/mod.pk3]'
+echo 'doomMOD1=~/RetroPie/roms/ports/doom/mods/SIGIL.zip'
+echo ''
+echo '# Define addonDIR - tmpfs or Default RetroPie'
 echo 'addonDIR=/dev/shm/addon'
 echo '#addonDIR=~/RetroPie/roms/ports/doom/addon'
 echo ''
-echo '# UNCOMMENT to Display Loading Files by name'
-echo "#echo LOADING \$(basename \"\$doomM0D\" ) \$(basename \"\$doomM0D2\" ) \$(basename \"\$doomM0D3\" ) \$(basename \"\$doomM0D4\" ) \$(basename \"\$doomM0D5\" )"
+echo '# =========================================='
+echo 'loadM0Ds() # Scripted L00P Supports Loading Any Number of [doomMOD#s] when Defined'
+echo '{'
+echo '# Prepare [doomMOD#s] IF DEFINED - ZIPs are Extracted to [addonDIR] - Symbolic LInks created for ALL 0THER File Types'
+echo 'if [[ ! "${!rollingM0D}" == "" ]]; then if [[ "${!rollingM0D}" == *".zip" ]] || [[ "${!rollingM0D}" == *".ZIP" ]]; then unzip -qq -o "${!rollingM0D}" -d "$addonDIR" > /dev/null 2>&1; else ln -s "${!rollingM0D}" "$addonDIR/0${count}_$(basename "${!rollingM0D}" )"; fi; fi > /dev/null 2>&1'
+echo 'count=$(( $count + 1 )) # Increase count by+1'
+echo 'rollingM0D="doomMOD${count}" # Apply Increased count to [doomMOD#]'
+echo 'if [[ ! "${!rollingM0D}" == "" ]]; then loadM0Ds; fi # Prepare more [doomMOD#s] IF DEFINED'
+echo '}'
 echo ''
-echo '# Prepare addonDIR + M0Ds in Numeric 0rder'
-echo 'mkdir "$addonDIR" > /dev/null 2>&1'
-echo 'if [ ! "$doomM0D" == "" ]; then if [[ "$doomM0D" == *".zip" ]] || [[ "$doomM0D" == *".ZIP" ]]; then unzip -qq -o "$doomM0D" -d "$addonDIR" > /dev/null 2>&1; else ln -s "$doomM0D" "$addonDIR/01_$(basename "$doomM0D" )"; fi; fi > /dev/null 2>&1'
-echo 'if [ ! "$doomM0D2" == "" ]; then if [[ "$doomM0D2" == *".zip" ]] || [[ "$doomM0D2" == *".ZIP" ]]; then unzip -qq -o "$doomM0D2" -d "$addonDIR" > /dev/null 2>&1; else ln -s "$doomM0D2" "$addonDIR/02_$(basename "$doomM0D2" )"; fi; fi > /dev/null 2>&1'
-echo 'if [ ! "$doomM0D3" == "" ]; then if [[ "$doomM0D3" == *".zip" ]] || [[ "$doomM0D3" == *".ZIP" ]]; then unzip -qq -o "$doomM0D3" -d "$addonDIR" > /dev/null 2>&1; else ln -s "$doomM0D3" "$addonDIR/03_$(basename "$doomM0D3" )"; fi; fi > /dev/null 2>&1'
-echo 'if [ ! "$doomM0D4" == "" ]; then if [[ "$doomM0D4" == *".zip" ]] || [[ "$doomM0D4" == *".ZIP" ]]; then unzip -qq -o "$doomM0D4" -d "$addonDIR" > /dev/null 2>&1; else ln -s "$doomM0D4" "$addonDIR/04_$(basename "$doomM0D4" )"; fi; fi > /dev/null 2>&1'
-echo 'if [ ! "$doomM0D5" == "" ]; then if [[ "$doomM0D5" == *".zip" ]] || [[ "$doomM0D5" == *".ZIP" ]]; then unzip -qq -o "$doomM0D5" -d "$addonDIR" > /dev/null 2>&1; else ln -s "$doomM0D5" "$addonDIR/05_$(basename "$doomM0D5" )"; fi; fi > /dev/null 2>&1'
+echo 'mkdir "$addonDIR" > /dev/null 2>&1 # Prepare addonDIR'
+echo 'count=1 # Set Initial Count'
+echo 'rollingM0D="doomMOD${count}"'
+echo 'loadM0Ds # Load D00M M0Ds in Numeric 0rder'
 echo ''
 echo '# RUN D00M P0RT'
 echo '"/opt/retropie/supplementary/runcommand/runcommand.sh" 0 _PORT_ "doom" "${doomWAD}"'
@@ -170,7 +172,7 @@ echo ''
 echo '# CASE#1: [runcommand.log] FILLED = ROM was Launched/Played -> DELETE the [addonDIR]'
 echo '# CASE#2: [runcommand.log] BLANK = EXIT WITHOUT LAUNCHING -> KEEP the [addonDIR]'
 echo '# USE CASE#2 to Pre-Load a M0D in [addonDIR] BY SELECTING [EXIT WITHOUT LAUNCHING]'
-echo 'if [ ! "$(cat /dev/shm/runcommand.log)" == "''" ]; then rm "$addonDIR" -R -f && mkdir "$addonDIR" > /dev/null 2>&1; fi'
+echo 'if [ ! "$(cat /dev/shm/runcommand.log)" == "" ]; then rm "$addonDIR" -R -f && mkdir "$addonDIR" > /dev/null 2>&1; fi'
 echo ''
 )
 
@@ -632,7 +634,7 @@ if [ $? -eq 0 ]; then
 		#mv /dev/shm/SIGIL_v1_21/SIGIL_v1_21.wad ~/RetroPie/roms/ports/doom 2>/dev/null
 		sed -i 's/doom1.wad/freedoom1.wad/g' ~/RetroPie/roms/ports/Doom\ SIGIL\ \(DAZI\).sh
 	fi
-	sed -i 's/doomM0D=.*/doomM0D=~\/RetroPie\/roms\/ports\/doom\/mods\/SIGIL.zip/g' ~/RetroPie/roms/ports/Doom\ SIGIL\ \(DAZI\).sh
+	sed -i 's/doomMOD1=.*/doomMOD1=~\/RetroPie\/roms\/ports\/doom\/mods\/SIGIL.zip/g' ~/RetroPie/roms/ports/Doom\ SIGIL\ \(DAZI\).sh
 	rm /dev/shm/SIGIL_v1_21.zip 2>/dev/null
 	rm /dev/shm/SIGIL_v1_21 -R -f 2>/dev/null
 	rm /dev/shm/__MACOSX -R -f 2>/dev/null
