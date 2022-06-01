@@ -1,5 +1,4 @@
-#!/bin/bash
-# https://github.com/RapidEdwin08/dazi  #v2022.05
+# https://github.com/RapidEdwin08/dazi  #v2022.06
 
 # Define [D00M.WAD] -  /full/path/to/doom.wad
 doomWAD=~/RetroPie/roms/ports/doom/doom.wad
