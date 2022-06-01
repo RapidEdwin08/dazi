@@ -17,7 +17,7 @@
 # For Manual Install to [runcommand-onstart.sh] use this one-liner [echo] command:  
 # echo "if [[ \"\$2\" == *\"lzdoom\"* ]] && [[ \"\$(cat /opt/retropie/configs/ports/doom/lzdoom-dazi.flag)\" == '1' ]]; then echo \"\$3\" > /dev/shm/runcommand.log && sudo /home/$USER/RetroPie-Setup/retropie_packages.sh retropiemenu launch \"/opt/retropie/configs/ports/doom/lzdoom-dazi.sh\" </dev/tty > /dev/tty; fi #For Use With [lzdoom-dazi] #Line Should be LAST" >> /dev/shm/runcommand-onstart.sh  
 
-versionDAZI=2022.05
+versionDAZI=2022.06
 modDIRzips=~/RetroPie/roms/ports/doom/mods
 modDIRroms=~/RetroPie/roms/ports/doom/addon
 modDIRtmpfs=/dev/shm/addon
@@ -73,29 +73,57 @@ echo '| AMMO | HEALTH |  5  6  7   |         |    ARMOR  |#| ..  ......... |   '
 echo '+--------------------------------------------------------------------+   '
 )
 
+daziHUDsrb2=$(
+echo ""
+echo '+--------------------------------------------------------------------+   '
+echo '|      | /|  |  |       |       ___------__   |  /|   |_|. ......... |   '
+echo '|      | /|  |  |       | |\__-- /\       _-  |  /|   |_|. ......... |   '
+echo '|      | /|  |  |       | |/    __      -     |  /|   |_|. ~/....... |   '
+echo '|      | /|  |  | 2 3 4 | //\  /  \    /__    |  /|   |_|. ./srb2... |   '
+echo '|      | ~|~ | %|       | |  o|  0|__     --_ |  ~|~ %|_|. ...addons |   '
+echo '|      | /|  |  |       | \\____-- __ \   ___-|  /|   |_|. ./srb2kart|   '
+echo '|      | /|  |  |       | (@@    __/  / /_    |  /|   |_|. ~/....... |   '
+echo '| AMMO | HEALTH | 5 6 7 |    -_____---   --_  | ARMOR |#|. ......... |   '
+echo '+--------------------------------------------------------------------+   '
+)
+
 scriptREF=$(
-echo ""
-echo "- WHAT IS DAZI?"
-echo 'D00M AddOn Zip Integration'
-echo ""
-echo "- WHAT DOES IT DO?"
-echo "Integration of [D00M-M0D.ZIPs] for [lzdoom] in RetroPie"
 echo ""
 echo "- HOW DOES IT WORK?"
 echo '[DAZI-Templates.sh] will Extract [D00M-M0D.ZIPs] into [/dev/shm/addon]'
 echo '[lzdoom-dazi] Entry in [emulators.cfg] will point to [/dev/shm/addon/*]'
+echo ''
+echo "- HOW TO LOAD M0Ds:"
+echo 'Place [D00M-M0D] FILEs [WAD/PK3/PK7/ZIPs] in [..roms/ports/doom/mods/*]'
+echo "Use [dazi-mod-loader] to Load M0Ds for [lzdoom-addon] or [lzdoom-dazi]"
+echo "Alternatively use runcommand [Exit-Without-Launching] to Pre-Load M0Ds"
 echo ""
-echo "- HOW TO USE:"
-echo 'Place your [D00M-M0D] FILEs into a [.ZIP] in [..roms/ports/doom/mods/*]'
-echo 'Replace all [D00M.sh] Scripts with [DAZI-Templates.sh] in [/roms/ports]'
-echo 'CHOOSE [lzdoom-dazi] D00M P0RT to RUN [DAZI-Template.sh] + [*.ZIPs]'
+echo "- HOW CREATE ROM ENTRIES FOR D00M M0Ds:"
+echo 'Create a [D00M-M0D.sh] based on a [DAZI-Template.sh] in [/roms/ports]'
+echo 'ADD [doomMOD#s] to [D00M-M0D.sh] and MODIFY [addonDIR] if needed'
+echo 'RUN [lzdoom-dazi] or [lzdoom-addon] based on the [D00M-M0D.sh] addonDIR'
 )
 
 daziFILES=$(
 echo ""
 echo " [doom] Port Config: /opt/retropie/configs/ports/emulators.cfg"
 echo " [doom] Launch Scripts: ~/RetroPie/roms/ports/doom/*D00M*.sh"
-echo " [doom] M0D Files: ~/RetroPie/roms/ports/doom/mods/*.zip/pk3/wad"
+echo " [doom] M0D Files: ~/RetroPie/roms/ports/doom/mods/*.zip/pk3/pk7/wad"
+echo ""
+)
+
+srb2FILES=$(
+echo ""
+echo "======================================================================"
+echo " [srb2] Configs: [/opt/retropie/configs/ports/srb2/config.cfg]"
+echo "               : [/opt/retropie/configs/ports/srb2kart/kartconfig.cfg]"
+echo ""
+echo " [srb2] AddOns DEFAULT: [/opt/retropie/configs/ports/srb2/addons]"
+echo "                      : [/opt/retropie/configs/ports/srb2kart/addons]"
+echo "                      : [/opt/retropie/configs/ports/srb2kart/DOWNLOAD]"
+echo ""
+echo " [srb2] AddOns D00M M0Ds: [~/RetroPie/roms/ports/doom/mods/srb2]"
+echo "                        : [~/RetroPie/roms/ports/doom/mods/srb2kart]"
 echo ""
 )
 
@@ -108,38 +136,50 @@ echo ""
 
 zipREFmod=$(
 echo ""
+echo '                             # * TIPs * #'
+echo ' [pk3/pk7] are Compressed Files Already, NO NEED to ZIP Individually'
+echo ' [WADs] can be Compressed, but can take time to Extract if LARGE'
+echo 'LARGE [WADs] might EXCEED the Size of [/dev/shm/] (tmpfs) on some HW'
+echo ' [ipk3] files typically do not Require you to Load a Main [iwad] but...'
+echo 'You can RENAME [ipk3] -> [pk3] and load a [fakeiwad.wad] or [doom2.wad]'
+echo ""
+echo ' [ZIPs] are good to use with Smaller M0Ds that have lots of files'
+echo ' eg. The 0riginal [AliensTC] is Small and has numerous files to Load'
+echo ""
 echo "        # PLACE YOUR [D00M-M0D] FILES INTO A [D00M-M0D.ZIP] #"
 echo "    NAME THEM ACCORDINGLY IF A PARTICULAR L0ADING 0RDER IS NEEDED"
 echo ""
 echo '                # EXAMPLE [D00M-M0D.ZIP] CONTENTS #'
 echo '                 ./D00M-M0D.ZIP/01-FileToLoad.wad'
-echo '                 ./D00M-M0D.ZIP/02-FileToLoad.deh'
-echo '                 ./D00M-M0D.ZIP/03-FileToLoad.pk3'
+echo '                 ./D00M-M0D.ZIP/02-FileToLoad.pk3'
+echo '                 ./D00M-M0D.ZIP/03-FileToLoad.pk7'
 echo ''
-echo " # MODIFY [DAZI-Template.sh] TO INCLUDE YOUR [IWAD] + [D00M-M0D.ZIP] #"
-echo "            0ptional D00M-M0D.ZIP Entry Available if needed"
+echo " # MODIFY [DAZI-Template.sh] TO INCLUDE YOUR [doomWAD] + [doomMOD#s] #"
+echo '  * Use FULL PATHs and AVOID SPACES for your [doomWAD] + [doomMOD#s] *'
 echo ""
 echo '              # EXAMPLE [DAZI-Template.sh] CONTENTS #'
 echo '          doomWAD=~/RetroPie/roms/ports/doom/doom2.wad'
-echo '      modZIP=~/RetroPie/roms/ports/doom/mods/BrutalDoom.zip'
-echo ' optionalZIP=~/RetroPie/roms/ports/doom/mods/HellOnEarthStarterPack.zip'
+echo '      doomMOD1=~/RetroPie/roms/ports/doom/mods/brutalv21.pk3'
+echo ' doomMOD2=~/RetroPie/roms/ports/doom/mods/hellonearthstarterpack.wad'
 echo ""
-echo " #  HOW TO PRE-LOAD D00M M0Ds WITH [DAZI] FOR 0THER ROMs [0PTION 1]  #"
+echo "      #  HOW TO PRE-LOAD D00M M0Ds WITH [DAZI] 0PTION 1:  #"
 echo "[dazi-mod-loader] is Included for use with [lzdoom-addon]/[lzdoom-dazi]"
 echo "Use [dazi-mod-loader] from this Script directly, 0r Install it and..."
 echo "Configure it to Always Load when [lzdoom-addon]/[lzdoom-dazi] Launches"
 echo ""
-echo " #  HOW TO PRE-LOAD D00M M0Ds WITH [DAZI] FOR 0THER ROMs [0PTION 2]  #"
+echo "      #  HOW TO PRE-LOAD D00M M0Ds WITH [DAZI] 0PTION 2:  #"
 echo "      Select and Load a D00M-MOD using the [DAZI-Template.sh]"
 echo "       PRESS [A] BUTTON TO CONFIGURE *(Before the ROM Loads)*"
 echo "                     * [EXIT WITHOUT LAUNCHING] *"
 echo "  The Last D00M-M0D Selected will Still be Loaded in [/dev/shm/addon]"
 echo "  Now Select any 0ther Desired D00M R0M and Launch with [lzdoom-dazi]"
+echo "           Or Repeat the Process to Pre-Load more D00M-M0Ds"
+echo ""
 )
 
 daziSH=$(
-echo '#!/bin/bash'
-echo '# https://github.com/RapidEdwin08/dazi  #v2022.05'
+#echo '#!/bin/bash'
+echo "# https://github.com/RapidEdwin08/dazi  #v$versionDAZI"
 echo ''
 echo '# Define [D00M.WAD] -  /full/path/to/doom.wad'
 echo 'doomWAD=~/RetroPie/roms/ports/doom/doom1.wad'
@@ -187,10 +227,13 @@ echo "lzdoom-addon-320x200 = \"DOOMWADDIR=/home/$USER/RetroPie/roms/ports/doom /
 
 daziEMUcfg=$(
 echo ""
-echo "           [DAZI] is intended for use with [lzdoom]... "
-echo "         Recommended INSTALLING [lzdoom] FIRST... "
+echo "              [DAZI] is intended for use with [lzdoom]"
+echo "             Recommended INSTALLING [lzdoom] FIRST... "
 echo ""
-echo 'If N0T a GENERIC lzdoom based [emulators.cfg] will be Genterated...'
+echo " If LZDoom is Already Installed make sure you run it at Least Once"
+echo "            This will generate the [emulators.cfg] File"
+echo ""
+echo 'If N0T a GENERIC lzdoom based [emulators.cfg] can be Genterated...'
 echo "But you may experience Mixed Results with the GENERIC [emulators.cfg]"
 )
 
@@ -201,17 +244,17 @@ echo 'Use To Differentiate Which ZDoom AddOn Directory to Select via Emulator'
 echo ""
 echo 'The [lzdoom-dazi] Entry in [emulators.cfg] refers to [/dev/shm/addon/*]'
 echo 'The [lzdoom-addon] Entry in [emulators.cfg] refers to [roms/../addon/]'
-echo 'We may want to Differentiate the x2 Emulators when using AddOns'
+echo '  We may want to Differentiate the x2 Emulators when using AddOns'
 echo ""
 echo "Normally we would just [Select Emulator for ROM] from the [runcommand]"
 echo "But D00M M0Ds use the same [doom.wad] as the [ROM] repeatedly, meaning"
 echo "[Select Emulator for ROM] will APPLY TO ALL M0Ds using that [doom.wad]"
 echo ""
 echo "We can Create Symbolic Links to [doom.wads] using Unique names, then..."
-echo "Add [Unique.wads] into [LargeM0D.sh] scripts that need [lzdoom-addon]"
+echo "Add [Unique.wads] into [UniqueM0D.sh] scripts that need [lzdoom-addon]"
 echo ""
 echo ' eg. WADFile: [doom2.wad]  <->  SymbolicLink: [doom2-addon.wad]'
-echo ' eg. LargeM0D.sh: [doomWAD=~/RetroPie/roms/ports/doom/doom2-addon.wad]'
+echo ' eg. UniqueM0D.sh: [doomWAD=~/RetroPie/roms/ports/doom/doom2-addon.wad]'
 echo ""
 )
 
@@ -249,11 +292,12 @@ confCONFIG=$(dialog --stdout --no-collapse --title " D00M AddOn ZIP Integration 
 	1 "><  [dazi-mod-loader]  ><" \
 	2 "><  ENABLE  [dazi-mod-loader] at [runcommand]  ><" \
 	3 "><  DISABLE [dazi-mod-loader] at [runcommand]  ><" \
-	4 "><  REFERENCES  ><" \
-	5 "><  INSTALL [lzdoom-dazi] + [dazi-mod-loader]  ><" \
-	6 "><  GET [DAZI-Templates.sh] for [/roms/ports]   ><" \
-	7 "><  MANAGE [SymbolicLinks] for [doom.wads]   ><" \
-	8 "><  REMOVE  [lzdoom-dazi] + [dazi-mod-loader]  ><")
+	4 "><  GET [DAZI-Templates.sh] for [/roms/ports]   ><" \
+	5 "><  MANAGE  [SymbolicLinks] for [doom.wads]   ><" \
+	6 "><  MANAGE  [srb2-addons]  ><" \
+	7 "><  INSTALL [lzdoom-dazi] + [dazi-mod-loader]  ><" \
+	8 "><  REMOVE  [lzdoom-dazi] + [dazi-mod-loader]  ><" \
+	9 "><  REFERENCES  ><")
 
 if [ "$confCONFIG" == '1' ]; then DMLmainMENU; fi 
 
@@ -281,26 +325,8 @@ if [ "$confCONFIG" == '3' ]; then
 mainMENU
 fi
 
-# REFERENCES
-if [ "$confCONFIG" == '4' ]; then
-	dialog --no-collapse --title "[DAZI] for [RetroPie] REFERENCES" --ok-label Back --msgbox "$daziLOGO $zipREFmod $daziHUD $symLINKSref $symLINKSwads $daziFILES $zdoomCFGinis"  25 75
-	mainMENU
-fi
-
-# INSTALL [lzdoom-dazi]
-if [ "$confCONFIG" == '5' ]; then
-	confINSTALLdazi=$(dialog --stdout --no-collapse --title "               INSTALL  [lzdoom-dazi] + [dazi-mod-loader]              " \
-		--ok-label OK --cancel-label BACK \
-		--menu "                          ? ARE YOU SURE ?             " 25 75 20 \
-		1 "><  INSTALL  [lzdoom-dazi] + [dazi-mod-loader]  ><" \
-		2 "><  BACK  ><")
-	# Install Confirmed - Otherwise Back to Main Menu
-	if [ "$confINSTALLdazi" == '1' ]; then installDAZI; fi
-mainMENU
-fi
-
 # Get Templates
-if [ "$confCONFIG" == '6' ]; then
+if [ "$confCONFIG" == '4' ]; then
 	confGETdazi=$(dialog --stdout --no-collapse --title "               GET [DAZI-Templates.sh] for [/roms/ports]              " \
 		--ok-label OK --cancel-label BACK \
 		--menu "                          ? ARE YOU SURE ?             " 25 75 20 \
@@ -312,7 +338,22 @@ mainMENU
 fi
 
 # Create SymbolicLinks
-if [ "$confCONFIG" == '7' ]; then symLINKSmenu; fi
+if [ "$confCONFIG" == '5' ]; then symLINKSmenu; fi
+
+# SRB2 AddOns
+if [ "$confCONFIG" == '6' ]; then srb2ADDONSmenu; fi
+
+# INSTALL [lzdoom-dazi]
+if [ "$confCONFIG" == '7' ]; then
+	confINSTALLdazi=$(dialog --stdout --no-collapse --title "               INSTALL  [lzdoom-dazi] + [dazi-mod-loader]              " \
+		--ok-label OK --cancel-label BACK \
+		--menu "                          ? ARE YOU SURE ?             " 25 75 20 \
+		1 "><  INSTALL  [lzdoom-dazi] + [dazi-mod-loader]  ><" \
+		2 "><  BACK  ><")
+	# Install Confirmed - Otherwise Back to Main Menu
+	if [ "$confINSTALLdazi" == '1' ]; then installDAZI; fi
+mainMENU
+fi
 
 # REMOVE [lzdoom-dazi]
 if [ "$confCONFIG" == '8' ]; then
@@ -324,6 +365,12 @@ if [ "$confCONFIG" == '8' ]; then
 	# Uninstall Confirmed - Otherwise Back to Main Menu
 	if [ "$confREMOVEdazi" == '1' ]; then removeDAZI; fi
 mainMENU
+fi
+
+# REFERENCES
+if [ "$confCONFIG" == '9' ]; then
+	dialog --no-collapse --title "[DAZI] for [RetroPie] REFERENCES" --ok-label Back --msgbox "$daziLOGO $zipREFmod $daziHUD $symLINKSref $symLINKSwads $daziFILES $zdoomCFGinis $daziHUDsrb2 $srb2FILES"  25 75
+	mainMENU
 fi
 
 # QUIT if N0T Confirmed
@@ -548,7 +595,7 @@ if [ "$(cat /opt/retropie/configs/all/runcommand-onstart.sh | tail -n 1 | grep -
 fi
 
 # This script will behave differently depending on the location - copy itself to install location
-cp "$0" /dev/shm/
+cp "$0" /dev/shm/lzdoom-dazi.sh
 mv /dev/shm/lzdoom-dazi.sh /opt/retropie/configs/ports/doom/lzdoom-dazi.sh
 sudo chmod 755 /opt/retropie/configs/ports/doom/lzdoom-dazi.sh
 
@@ -1043,6 +1090,104 @@ echo ""
 dialog --no-collapse --title "REMOVE [SymbolicLinks]  for STANDARD [doom.wads] *COMPLETE!* " --ok-label Back --msgbox "$symLINKSwads $daziHUD"  25 75
 
 symLINKSmenu
+}
+
+srb2ADDONSmenu()
+{
+# Confirm Configurations
+srb2CONFIG=$(dialog --stdout --no-collapse --title "    MANAGE  [srb2] + [srb2kart] AddOns" \
+	--ok-label SELECT --cancel-label "BACK" \
+	--menu "   [Sonic Robo Blast 2] Already Has AddOn Management Built-In \n   [dazi] can SET the CUSTOM AddOns Directory to [..ports/doom/mods/]\n   [srb2] AddOns Are Technically D00M M0Ds After All... \n$daziHUDsrb2 \nCURRENT $(cat /opt/retropie/configs/ports/srb2/config.cfg | grep 'addons_folder' ) \nCURRENT $(cat /opt/retropie/configs/ports/srb2kart/kartconfig.cfg | grep 'addons_folder' )" 25 75 20 \
+	1 ">< SET [SRB2] AddOns Directory to [..doom/mods/srb2] ><" \
+	2 ">< SET [SRB2KART] AddOns Directory to [..doom/mods/srb2kart] ><" \
+	3 ">< SET [DEFAULT] AddOns Directory for [SRB2] ><" \
+	4 ">< SET [DEFAULT] AddOns Directory for [SRB2KART] ><" \
+	5 ">< DELETE [SRB2KART] DOWNLOAD Directory ><" \
+	6 ">< REFERENCES [Sonic Robo Blast 2] ><")
+
+if [ "$srb2CONFIG" == '1' ]; then
+	# SKIP IF [cfg] N0T Found 
+	if [ ! -f /opt/retropie/configs/ports/srb2/config.cfg ]; then
+		dialog --no-collapse --title "***N0TICE*** [~/.srb2/config.cfg] NOT FOUND!" --ok-label MENU --msgbox "MAKE SURE [SRB2] IS INSTALLED! \nIF ALREADY INSTALLED MAKE SURE YOU RUN IT AT LEAST ONCE TO GENERATE THE [.CFG] FILE"  25 75
+		srb2ADDONSmenu
+	fi
+	# Apply CUSTOM AddOns Directory [srb2] CFG
+	if [ ! -d ~/RetroPie/roms/ports/doom/mods/srb2 ]; then mkdir ~/RetroPie/roms/ports/doom/mods/srb2; fi
+	sed -i "s/addons_folder.*/addons_folder\ \"\/home\/$USER\/RetroPie\/roms\/ports\/doom\/mods\/srb2\"/g" /opt/retropie/configs/ports/srb2/config.cfg
+	sed -i 's/addons_option.*/addons_option\ \"CUSTOM\"/g' /opt/retropie/configs/ports/srb2/config.cfg
+	dialog --no-collapse --title "SET [SRB2] AddOns Directory to [..doom/mods/srb2] *COMPLETE!*" --ok-label Back --msgbox "$srb2FILES"  25 75
+	srb2ADDONSmenu
+fi
+	
+
+if [ "$srb2CONFIG" == '2' ]; then
+	# SKIP IF [cfg] N0T Found 
+	if [ ! -f /opt/retropie/configs/ports/srb2kart/kartconfig.cfg ]; then
+		dialog --no-collapse --title "***N0TICE*** [~/.srb2kart/kartconfig.cfg] NOT FOUND!" --ok-label MENU --msgbox "MAKE SURE [SRB2KART] IS INSTALLED! \nIF ALREADY INSTALLED MAKE SURE YOU RUN IT AT LEAST ONCE TO GENERATE THE [.CFG] FILE"  25 75
+		srb2ADDONSmenu
+	fi
+	# Apply CUSTOM AddOns Directory [srb2kart] CFG - Create Symbolic Link to DOWNLOAD in CUSTOM Directory
+	if [ ! -d ~/RetroPie/roms/ports/doom/mods/srb2kart ]; then mkdir ~/RetroPie/roms/ports/doom/mods/srb2kart; fi
+	if [ ! -d ~/RetroPie/roms/ports/doom/mods/srb2kart/DOWNLOAD ]; then ln -s /opt/retropie/configs/ports/srb2kart/DOWNLOAD ~/RetroPie/roms/ports/doom/mods/srb2kart/DOWNLOAD; fi
+	sed -i "s/addons_folder.*/addons_folder\ \"\/home\/$USER\/RetroPie\/roms\/ports\/doom\/mods\/srb2kart\"/g" /opt/retropie/configs/ports/srb2kart/kartconfig.cfg
+	sed -i 's/addons_option.*/addons_option\ \"CUSTOM\"/g' /opt/retropie/configs/ports/srb2kart/kartconfig.cfg
+	dialog --no-collapse --title "SET [SRB2KART] AddOns Directory to [..doom/mods/srb2kart] *COMPLETE!*" --ok-label Back --msgbox "$srb2FILES"  25 75
+	srb2ADDONSmenu
+fi
+
+if [ "$srb2CONFIG" == '3' ]; then
+	# SKIP IF [cfg] N0T Found 
+	if [ ! -f /opt/retropie/configs/ports/srb2/config.cfg ]; then
+		dialog --no-collapse --title "***N0TICE*** [~/.srb2/config.cfg] NOT FOUND!" --ok-label MENU --msgbox "MAKE SURE [SRB2] IS INSTALLED! \nIF ALREADY INSTALLED MAKE SURE YOU RUN IT AT LEAST ONCE TO GENERATE THE [.CFG] FILE"  25 75
+		srb2ADDONSmenu
+	fi
+	# Apply DEFAULT AddOns Directory [srb2] CFG
+	if [ ! -d ~/RetroPie/roms/ports/doom/mods/srb2 ]; then mkdir ~/RetroPie/roms/ports/doom/mods/srb2; fi
+	sed -i "s/addons_folder.*/addons_folder\ \"\/opt\/retropie\/configs\/ports\/srb2\/addon\"/g" /opt/retropie/configs/ports/srb2/config.cfg
+	sed -i 's/addons_option.*/addons_option\ \"CUSTOM\"/g' /opt/retropie/configs/ports/srb2/config.cfg
+	dialog --no-collapse --title "SET [SRB2] AddOns Directory to [DEFAULT] *COMPLETE!*" --ok-label Back --msgbox "$srb2FILES"  25 75
+	srb2ADDONSmenu
+fi
+	
+
+if [ "$srb2CONFIG" == '4' ]; then
+	# SKIP IF [cfg] N0T Found 
+	if [ ! -f /opt/retropie/configs/ports/srb2kart/kartconfig.cfg ]; then
+		dialog --no-collapse --title "***N0TICE*** [~/.srb2kart/kartconfig.cfg] NOT FOUND!" --ok-label MENU --msgbox "MAKE SURE [SRB2KART] IS INSTALLED! \nIF ALREADY INSTALLED MAKE SURE YOU RUN IT AT LEAST ONCE TO GENERATE THE [.CFG] FILE"  25 75
+		srb2ADDONSmenu
+	fi
+	# Apply DEFAULT AddOns Directory [srb2kart] CFG - Remove Symbolic Link to DOWNLOAD in CUSTOM Directory
+	if [ ! -d ~/RetroPie/roms/ports/doom/mods/srb2kart ]; then mkdir ~/RetroPie/roms/ports/doom/mods/srb2kart; fi
+	sed -i "s/addons_folder.*/addons_folder\ \"\/opt\/retropie\/configs\/ports\/srb2kart\/addon\"/g" /opt/retropie/configs/ports/srb2kart/kartconfig.cfg
+	sed -i 's/addons_option.*/addons_option\ \"CUSTOM\"/g' /opt/retropie/configs/ports/srb2kart/kartconfig.cfg
+	if [ ! -d ~/RetroPie/roms/ports/doom/mods/srb2kart/DOWNLOAD ]; then rm ~/RetroPie/roms/ports/doom/mods/srb2kart/DOWNLOAD; fi
+	dialog --no-collapse --title "SET [SRB2KART] AddOns Directory to [DEFAULT] *COMPLETE!*" --ok-label Back --msgbox "$srb2FILES"  25 75
+	srb2ADDONSmenu
+fi
+
+if [ "$srb2CONFIG" == '5' ]; then
+	SRB2confDELETEdl=$(dialog --stdout --no-collapse --title " DELETE [/opt/retropie/configs/ports/srb2kart/DOWNLOAD] Directory " \
+		--ok-label OK --cancel-label BACK \
+		--menu "                          ? ARE YOU SURE ?             " 25 75 20 \
+		1 "><  >< DELETE [SRB2KART] DOWNLOAD Directory ><" \
+		2 "><  BACK  ><")
+	# Uninstall Confirmed - Otherwise Back to Main Menu
+	if [ "$SRB2confDELETEdl" == '1' ]; then
+		rm /opt/retropie/configs/ports/srb2kart/DOWNLOAD -R -f > /dev/null 2>&1
+		mkdir /opt/retropie/configs/ports/srb2kart/DOWNLOAD > /dev/null 2>&1
+		dialog --no-collapse --title " DELETE [SRB2KART] DOWNLOAD Directory *COMPLETE!*" --ok-label Back --msgbox "$daziHUDsrb2 $srb2FILES"  25 75
+		srb2ADDONSmenu
+	fi
+srb2ADDONSmenu
+fi
+
+if [ "$srb2CONFIG" == '6' ]; then
+	dialog --no-collapse --title "   [Sonic Robo Blast 2] REFERENCES" --ok-label Back --msgbox "$daziHUDsrb2 $srb2FILES"  25 75
+	srb2ADDONSmenu
+fi
+
+tput reset
+mainMENU
 }
 
 # Location of Script determines Menu Launched
