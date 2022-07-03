@@ -29,6 +29,14 @@ alternateM0Ddir=
 # For Manual Install to [runcommand-onend.sh] use this one-liner [echo] command:  
 #echo 'if [ "$(head -1 /dev/shm/runcommand.info)" == "doom" ]; then bash /opt/retropie/configs/ports/doom/lzdoom-dazi.sh clean; fi & #For Use With [lzdoom-dazi] #Line can be LAST' >> /opt/retropie/configs/all/runcommand-onend.sh  
 
+versionDAZI=2022.07
+M0DdirMAIN=~/RetroPie/roms/ports/doom/mods
+modDIRroms=~/RetroPie/roms/ports/doom/addon
+modDIRtmpfs=/dev/shm/addon
+doomDIRwads=~/RetroPie/roms/ports/doom
+zdoomCFGrp=/opt/retropie/configs/ports/doom/lzdoom.ini
+zdoomCFGroms=~/RetroPie/roms/ports/doom/lzdoom.ini
+
 daziLOGO=$(
 echo ""
 echo '                            /\      |\   '
@@ -252,14 +260,6 @@ echo ' eg. WADFile: [doom2.wad]  <->  SymbolicLink: [doom2-addon.wad]'
 echo 'eg. doom-addon.sh: [doomWAD=~/RetroPie/roms/ports/doom/doom2-addon.wad]'
 echo ""
 )
-
-versionDAZI=2022.07
-M0DdirMAIN=~/RetroPie/roms/ports/doom/mods
-modDIRroms=~/RetroPie/roms/ports/doom/addon
-modDIRtmpfs=/dev/shm/addon
-doomDIRwads=~/RetroPie/roms/ports/doom
-zdoomCFGrp=/opt/retropie/configs/ports/doom/lzdoom.ini
-zdoomCFGroms=~/RetroPie/roms/ports/doom/lzdoom.ini
 
 # Location of Script determines Menu Launched
 MENUlaunchDOOM=BACK
