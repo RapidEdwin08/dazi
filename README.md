@@ -13,8 +13,10 @@ The **Runcommand Launch Menu** should be **ENABLED**
 Place your **[M0D].ZIP/PK3/PK7** Files in: **~/RetroPie/roms/ports/doom/mods/***  
 
 **HOW DOES IT WORK?**  
-[DAZI-Templates.sh] will Extract [D00M-M0D.ZIPs] into [/dev/shm/addon]  
-[lzdoom-dazi] Entry in [emulators.cfg] will point to [/dev/shm/addon/*]  
+Use [DAZI] to Extract [ZIPs] and Load [M0Ds] into Doom [AddOnDIRs]  
+[lzdoom-addon] Loads M0Ds from ADDON [..roms/ports/doom/addon/*]  
+[lzdoom-dazi]  Loads M0Ds from TMPFS [/dev/shm/addon/*]  
+[lzdoom-dazi+] Loads M0Ds from BOTH  [TMPFS+ADDON] in that 0rder  
 
 **HOW TO LOAD M0Ds:**  
 Place [D00M-M0D] FILEs [WAD/PK3/PK7/ZIPs] in [..roms/ports/doom/mods/*]  
@@ -72,12 +74,7 @@ MODIFY [DAZI-Template.sh] TO INCLUDE YOUR [doomWAD] + [doomMOD#s]
 	doomMOD1=~/RetroPie/roms/ports/doom/mods/brutalv21.pk3  
 	doomMOD2=~/RetroPie/roms/ports/doom/mods/hellonearthstarterpack.wad  
 
-HOW TO PRE-LOAD D00M M0Ds WITH [DAZI] 0PTION 1:  
-[dazi-mod-loader] is Included for use with [lzdoom-addon]/[lzdoom-dazi]  
-Use [dazi-mod-loader] from this Script directly, 0r Install it and...  
-Configure it to Always Load when [lzdoom-addon]/[lzdoom-dazi] Launches  
-
-HOW TO PRE-LOAD D00M M0Ds WITH [DAZI] 0PTION 2:  
+HOW TO PRE-LOAD D00M M0Ds using the [Runcommand Launch Menu]:  
 Select and Load a D00M-MOD using the [DAZI-Template.sh]  
 PRESS [A] BUTTON TO CONFIGURE *(Before the ROM Loads)*  
 *[EXIT WITHOUT LAUNCHING]*  
@@ -85,7 +82,12 @@ The Last D00M-M0D Selected will Still be Loaded in [/dev/shm/addon]
 Now Select any 0ther Desired D00M R0M and Launch with [lzdoom-dazi]  
 Or Repeat the Process to Pre-Load more D00M-M0Ds  
 
-*DAZI can also set the [srb2] and [srb2kart] AddOns CUSTOM Directory to D00M M0Ds*  
+HOW TO PRE-LOAD D00M M0Ds using the [dazi-mod-loader] MENU:  
+[dazi-mod-loader] is Included for use with [lzdoom-addon]/[lzdoom-dazi]  
+Use [dazi-mod-loader] from this Script directly, 0r Install it and...  
+Configure it to Always Load when the [doom] P0RT Launches  
+
+*DAZI can also configure the [srb2] and [srb2kart] AddOns CUSTOM Directory to D00M M0Ds*  
 [srb2] AddOns DEFAULT  
 /opt/retropie/configs/ports/srb2/addons  
 /opt/retropie/configs/ports/srb2kart/addons  
