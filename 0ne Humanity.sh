@@ -5,9 +5,6 @@ doomWAD=~/RetroPie/roms/ports/doom/doom2.wad
 
 # 0ptional Define As Many [doomMOD#s] As Needed Starting with #1 - Ascending Numeric 0rder
 doomMOD1=~/RetroPie/roms/ports/doom/one-humanity.wad
-if [ -f ~/RetroPie/roms/ports/doom/one-humanity.zip ]; then doomMOD1=~/RetroPie/roms/ports/doom/one-humanity.zip; fi
-if [ -f ~/RetroPie/roms/ports/doom/mods/one-humanity.wad ]; then doomMOD1=~/RetroPie/roms/ports/doom/mods/one-humanity.wad; fi
-if [ -f ~/RetroPie/roms/ports/doom/mods/one-humanity.zip ]; then doomMOD1=~/RetroPie/roms/ports/doom/mods/one-humanity.zip; fi
 
 # 0ptional WARP and DIFFICULTY Settings For [lzdoom-dazi+warp] - eg. Ultimate Doom SIGIL E5M1 on Ultra-Violence - episodeNUM=5 mapNUM=1 skillLEVEL=4
 episodeNUM=
@@ -20,6 +17,9 @@ addonDIR=~/RetroPie/roms/ports/doom/addon
 
 # ==========================================
 # one-humanity.wad CHECK
+if [ -f ~/RetroPie/roms/ports/doom/one-humanity.zip ]; then doomMOD1=~/RetroPie/roms/ports/doom/one-humanity.zip; fi
+if [ -f ~/RetroPie/roms/ports/doom/mods/one-humanity.wad ]; then doomMOD1=~/RetroPie/roms/ports/doom/mods/one-humanity.wad; fi
+if [ -f ~/RetroPie/roms/ports/doom/mods/one-humanity.zip ]; then doomMOD1=~/RetroPie/roms/ports/doom/mods/one-humanity.zip; fi
 if [ ! -f "$doomMOD1" ]; then
 	# get-one-humanity Dialog
 	echo "doomMOD1=$doomMOD1" > /dev/shm/get-one-humanity.sh
