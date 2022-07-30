@@ -12,8 +12,8 @@ mapNUM=
 skillLEVEL=
 
 # Define addonDIR - dazi TMPFS - Default RetroPie ADDON
-addonDIR=/dev/shm/addon
-#addonDIR=~/RetroPie/roms/ports/doom/addon
+#addonDIR=/dev/shm/addon
+addonDIR=~/RetroPie/roms/ports/doom/addon
 
 # ==========================================
 # one-humanity.wad CHECK
