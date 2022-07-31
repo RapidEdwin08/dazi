@@ -6,7 +6,7 @@ doomWAD=~/RetroPie/roms/ports/doom/doom2.wad
 # 0ptional Define As Many [doomMOD#s] As Needed Starting with #1 - Ascending Numeric 0rder
 doomMOD1=~/RetroPie/roms/ports/doom/one-humanity.wad
 
-# 0ptional WARP and DIFFICULTY Settings For [lzdoom-dazi+warp] - eg. Ultimate Doom SIGIL E5M1 on Ultra-Violence - episodeNUM=5 mapNUM=1 skillLEVEL=4
+# 0ptional WARP and DIFFICULTY Settings - Leave episodeNUM= *BLANK* For Doom II MAPs - eg. Doom II MAP31 Nightmare! -> episodeNUM= mapNUM=31 skillLEVEL=5
 episodeNUM=
 mapNUM=
 skillLEVEL=
