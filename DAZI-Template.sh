@@ -28,11 +28,8 @@ rollingM0D="doomMOD${count}" # Apply Increased count to [doomMOD#]
 if [[ ! "${!rollingM0D}" == "" ]]; then addonDIRcount=$(( $addonDIRcount + 1 )) && loadM0Ds; fi # Prepare more [doomMOD#s] IF DEFINED
 }
 
-# Prepare WARP and DIFFICULTY Settings For [lzdoom-dazi+warp]
-if [ ! "$episodeNUM" == "" ] || [ ! "$mapNUM" == "" ]; then # 0nly Update [-warp*] in [emulators.cfg] IF the Parameters are DEFINED
-	if [ "$skillLEVEL" == "" ]; then skillLEVEL=3; fi # Set DEFAULT DIFFICULTY [Hurt me plenty] if NOT DEFINED
-	sed -i "s/-warp.*/-warp\ $episodeNUM\ $mapNUM\ -skill\ $skillLEVEL\"/g" /opt/retropie/configs/ports/doom/emulators.cfg #Update [-warp*] in [emulators.cfg]
-fi
+# Prepare WARP and DIFFICULTY Settings For [lzdoom-dazi+warp] - 0nly Update [-warp*] IF the Parameters are DEFINED - Set DEFAULT DIFFICULTY [Hurt me plenty] if NOT DEFINED - Update [-warp*] in [emulators.cfg]
+if [ ! "$episodeNUM" == "" ] || [ ! "$mapNUM" == "" ]; then if [ "$skillLEVEL" == "" ]; then skillLEVEL=3; fi; sed -i "s/-warp.*/-warp\ $episodeNUM\ $mapNUM\ -skill\ $skillLEVEL\"/g" /opt/retropie/configs/ports/doom/emulators.cfg; fi
 
 mkdir "$addonDIR" > /dev/null 2>&1 # Prepare addonDIR
 count=1 # Set Initial Count
