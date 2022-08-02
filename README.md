@@ -13,10 +13,11 @@ The **Runcommand Launch Menu** should be **ENABLED**
 Place your **[M0D].ZIP/PK3/PK7** Files in: **~/RetroPie/roms/ports/doom/mods/***  
 
 **HOW DOES IT WORK?**  
-Use [DAZI] to Extract [ZIPs] and Load [M0Ds] into Doom [AddOnDIRs]  
+DAZI will Extract [ZIPs] and Load [M0Ds] into Doom [AddOnDIRs]  
 [lzdoom-addon] Loads M0Ds from ADDON [..roms/ports/doom/addon/*]  
 [lzdoom-dazi]  Loads M0Ds from TMPFS [/dev/shm/addon/*]  
 [lzdoom-dazi+] Loads M0Ds from BOTH  [TMPFS+ADDON] in that 0rder  
+[lzdoom-dazi+warp] Loads from [TMPFS+ADDON] and Includes [-WARP -SKILL]  
 
 **HOW TO LOAD M0Ds:**  
 Place [D00M-M0D] FILEs [WAD/PK3/PK7/ZIPs] in [..roms/ports/doom/mods/*]  
@@ -27,6 +28,18 @@ Alternatively use runcommand [Exit-Without-Launching] to Pre-Load M0Ds
 Create a [D00M-M0D.sh] based on a [DAZI-Template.sh] in [/roms/ports]  
 ADD [doomMOD#s] to [D00M-M0D.sh] and MODIFY [addonDIR] if needed  
 RUN [lzdoom-dazi] or [lzdoom-addon] based on the [D00M-M0D.sh] addonDIR  
+
+**HOW LEVEL WARP WITH DAZI:**  
+*Use the M0D Loader Menu to *SELECT* [Episode] [Map] [Difficulty] Settings:*  
+DAZI will Stream-Edit [emulators.cfg] to *APPLY* [-warp -skill ] Settings  
+**REQUIRES** [lzdoom-dazi+warp] or an **ENTRY ENDING** in **-warp # # -skill #"**  
+
+Warp+Difficulty Examples [-warp E# M# -skill S#]:  
+[-warp 5 9 -skill 4] Ultimate Doom SIGIL E5M9 on Ultra-Violence  
+[-warp 6 1 -skill 1] Heretic FatesPath E6M1 on Thou Needeth a Wet-Nurse  
+[-warp 2 1 -skill 3] Ultimate Doom AliensTC E2M1 on Hurt me plenty  
+[-warp  31 -skill 5] Doom II SecretWolfensteinLevel MAP31 on Nightmare!  
+NOTE: Leave [Episode] set to [NONE] for D00M II Maps  
 
 ## INSTALLATION  
 
@@ -102,11 +115,27 @@ Configure it to Always Load when the [doom] P0RT Launches
 /opt/retropie/configs/ports/srb2kart/kartconfig.cfg  
 
 **TIPs**  
+AVOID using [S P A C E S] and [$PEC!AL CH@RACT€R$] in your M0D NAMEs  
+
+Some M0Ds already come as [ZIP] since ZDoom supports Loading [ZIP] but  
+You can RENAME [ZIP] -> [pk3] if you want to Ignore Extraction by DAZI  
+eg.  [strayDoom.v01.zip]  ->  [strayDoom_v01.pk3]  
+
+[ipk3] files typically do not Require you to Load a Main [iwad] but  
+You can RENAME [ipk3] -> [pk3] and load a [fakeiwad.wad] or [doom2.wad]  
+
 [pk3/pk7] are Compressed Files Already, NO NEED to ZIP Individually  
 [WADs] can be Compressed, but can take time to Extract if LARGE  
 LARGE [WADs] might EXCEED the Size of [/dev/shm/] (tmpfs) on some HW  
- [ipk3] files typically do not Require you to Load a Main [iwad] but...  
-You can RENAME [ipk3] -> [pk3] and load a [fakeiwad.wad] or [doom2.wad]  
+
+[ZIPs] are good to use with Individual MAPs/MEGAWADs to Save Space  
+ADD Numeric 0rder to the NAME(s) before Compressing MAPs/MEGAWADs  
+eg. [aaliens.wad] 135MB -> (01_aaliens.wad) -> [aaliens.zip] 37MB  
 
 [ZIPs] are good to use with Smaller M0Ds that have lots of files  
 eg. The 0riginal [AliensTC] is Small and has numerous files to Load  
+
+***SOURCES:***  
+[https://github.com/drfrag666/gzdoom](https://github.com/drfrag666/gzdoom/releases/tag/3.87c)  
+[https://romero.com/shop/p/onehumanity](https://romero.com/shop/p/onehumanity)  
+[https://romero.com/sigil](https://romero.com/sigil)  
