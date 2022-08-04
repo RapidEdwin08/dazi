@@ -5,7 +5,7 @@ doomWAD=~/RetroPie/roms/ports/doom/doomu.wad
 
 # 0ptional Define As Many [doomMOD#s] As Needed Starting with #1 - Ascending Numeric 0rder
 doomMOD1=~/RetroPie/roms/ports/doom/mods/SIGIL.zip
-doomMOD2=~/RetroPie/roms/ports/doom/mods/Modifiers/WeaponsOfSaturn/weapons_of_saturn.pk3
+doomMOD2=~/RetroPie/roms/ports/doom/mods/PWADs/WeaponsOfSaturn/weapons_of_saturn.pk3
 doomMOD3=~/RetroPie/roms/ports/doom/mods/HUDs/WOSHUD.pk3
 doomMOD4=~/RetroPie/roms/ports/doom/mods/0ther/DooM_-_Double_Jump.pk3
 
