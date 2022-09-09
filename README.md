@@ -1,55 +1,42 @@
 # D00M Addon ZIP Integration (DAZI)  
 ![lzdoom-dazi.png](https://raw.githubusercontent.com/RapidEdwin08/dazi/main/lzdoom-dazi.png)  
 
-Integration of D00M-M0D.ZIP files into RetroPie.  
+Integration of D00M-M0D ZIP/7z files into RetroPie.  
 Includes D00M M0D Loader Menu that can be Launched from anywhere or Installed.  
 Additionally make use of the *Runcommand Launch Menu* to Pre-Load D00M M0Ds.  
 **Press [A] to Configure** -> **EXIT WITHOUT LAUNCHING** to Pre-Load One *or MORE* D00M M0Ds.  
 Additionally Manage [srb2] and [srb2kart] AddOns along with D00M M0Ds.  
 
 **Before you get started:**  
-**lzdoom** should be **INSTALLED**  
-The **Runcommand Launch Menu** should be **ENABLED**  
+A D00M P0RT such as **lzdoom** **lr-prboom** **prboom-plus** should be **INSTALLED**  
+~~The **Runcommand Launch Menu** should be **ENABLED**~~ **0ptional**  
 Place your **[M0D].ZIP/PK3/PK7** Files in: **~/RetroPie/roms/ports/doom/mods/***  
 
 **HOW DOES IT WORK?**  
-DAZI will Extract [ZIPs] and Load [M0Ds] into Doom [AddOnDIRs]  
+DAZI will Extract [ZIPs] [7z] Files and Load [M0Ds] into Doom [AddOnDIRs]  
+- LZDOOM:  
 [lzdoom-addon] Loads M0Ds from ADDON [..roms/ports/doom/addon/*]  
 [lzdoom-dazi]  Loads M0Ds from TMPFS [/dev/shm/addon/*]  
 [lzdoom-dazi+] Loads M0Ds from BOTH  [TMPFS+ADDON] in that 0rder  
 [lzdoom-dazi+warp] Loads from [TMPFS+ADDON] and Includes [-WARP -SKILL]  
 
-**HOW TO LOAD M0Ds:**  
-Place [D00M-M0D] FILEs [WAD/PK3/PK7/ZIPs] in [..roms/ports/doom/mods/*]  
-Use [dazi-mod-loader] to Load M0Ds for [lzdoom-addon] or [lzdoom-dazi]  
-Alternatively use runcommand [Exit-Without-Launching] to Pre-Load M0Ds  
+- PRBOOM-PLUS:  
+[prboom-plus] Loads M0Ds from [..configs/prboom-plus/autoload/doom-all]  
+[prboom-plus+warp] Loads from [../doom-all] and Includes [-WARP -SKILL]  
 
-**HOW CREATE ROM ENTRIES FOR D00M M0Ds:**  
-Create a [D00M-M0D.sh] based on a [DAZI-Template.sh] in [/roms/ports]  
-ADD [doomMOD#s] to [D00M-M0D.sh] and MODIFY [addonDIR] if needed  
-RUN [lzdoom-dazi] or [lzdoom-addon] based on the [D00M-M0D.sh] addonDIR  
-
-**HOW LEVEL WARP WITH DAZI:**  
-*Use the M0D Loader Menu to *SELECT* [Episode] [Map] [Difficulty] Settings:*  
-DAZI will Stream-Edit [emulators.cfg] to *APPLY* [-warp -skill ] Settings  
-**REQUIRES** [lzdoom-dazi+warp] or an **ENTRY ENDING** in **-warp # # -skill #"**  
-
-Warp+Difficulty Examples [-warp E# M# -skill S#]:  
-[-warp 5 9 -skill 4] Ultimate Doom SIGIL E5M9 on Ultra-Violence  
-[-warp 6 1 -skill 1] Heretic FatesPath E6M1 on Thou Needeth a Wet-Nurse  
-[-warp 2 1 -skill 3] Ultimate Doom AliensTC E2M1 on Hurt me plenty  
-[-warp  31 -skill 5] Doom II SecretWolfensteinLevel MAP31 on Nightmare!  
-NOTE: Leave [Episode] set to [NONE] for D00M II Maps  
+- LR-PRBOOM:  
+[lr-prboom] Loads M0Ds based on the Config File [DOOMWADDIR/prboom.cfg]  
+DAZI can AutoGenerate a [prboom.cfg] based on [addonDIR] when Installed  
 
 ## INSTALLATION  
 
-Can be ran from retropiemenu:  
+Dowload and Run from the retropiemenu:  
 
 ```bash
 wget https://raw.githubusercontent.com/RapidEdwin08/dazi/main/lzdoom-dazi.sh -P ~/RetroPie/retropiemenu
 ```
 
-0R Can be ran manually from any directory:  
+0R Run Manually from any directory:  
 ```bash
 cd ~
 git clone https://github.com/RapidEdwin08/dazi.git
@@ -58,10 +45,7 @@ cd ~/dazi && ./lzdoom-dazi.sh
 ```
 
 0ptionally you can Add an Entry and Icon to your retropiemenu [gamelist.xml]:  
-```bash
-wget https://raw.githubusercontent.com/RapidEdwin08/dazi/main/lzdoom-dazi.png -P ~/RetroPie/retropiemenu/icons
-```
-Example Entry:  
+*Example Entry:*  
 ```
 	<game>
 		<path>./lzdoom-dazi.sh</path>
@@ -70,7 +54,44 @@ Example Entry:
 		<image>/home/pi/RetroPie/retropiemenu/icons/lzdoom-dazi.png</image>
 	</game>
 ```
+*Dowload DAZI Icon.png:*  
+```bash
+wget https://raw.githubusercontent.com/RapidEdwin08/dazi/main/lzdoom-dazi.png -P ~/RetroPie/retropiemenu/icons
+```
+
 ## REFERENCES   
+
+**TIPs:**  
+AVOID using [S P A C E S] and [$PEC!AL CH@RACT€R$] in your M0D NAMEs  
+
+Some M0Ds already come as [ZIP] since ZDoom supports Loading [ZIP] but  
+You can RENAME [ZIP] -> [pk3] if you want to Ignore Extraction by DAZI  
+eg.  [strayDoom.v01.zip]  ->  [strayDoom_v01.pk3]  
+
+[ipk3] files typically do not Require you to Load a Main [iwad] but  
+You can RENAME [ipk3] -> [pk3] and load a [fakeiwad.wad] or [doom2.wad]  
+
+[pk3/pk7] are Compressed Files Already, NO NEED to ZIP Individually  
+[WADs] can be Compressed, but can take time to Extract if LARGE  
+LARGE [WADs] might EXCEED the Size of [/dev/shm/] (tmpfs) on some HW  
+
+[deh] and [bex] DEHACKED Files are Conditionally Supported with DAZI  
+[bex] Files are Dehacked Files Supported by B00M Compatible P0RTs Only  
+[deh] Files in lzdoom must be Specified in the Loading 0rder using -deh  
+
+A [deh] File Added to a WAD can be Loaded in lzdoom Normally with -file  
+A [deh] File Added to a WAD is also supported by BOTH lzdoom/lr-prboom  
+
+eg. Create a NEW WAD with SLADE -> Import the [Custom.deh] File ALONE  
+RENAME the Imported [deh] "DEHACKED" -> Save file [Custom_deh.wad]  
+The DAZI Generate prboom.cfg Feature Follows [deh.wad] Naming Scheme  
+
+[ZIPs] are good to use with Individual MAPs/MEGAWADs to Save Space  
+ADD Numeric 0rder to the NAME(s) before Compressing MAPs/MEGAWADs  
+eg. [aaliens.wad] 135MB -> (01_aaliens.wad) -> [aaliens.zip] 37MB  
+
+[ZIPs] are good to use with Smaller M0Ds that have lots of files  
+eg. The 0riginal [AliensTC] is Small and has numerous files to Load  
 
 PLACE YOUR [D00M-M0D] FILES INTO A [D00M-M0D.ZIP]  
 NAME THEM ACCORDINGLY IF A PARTICULAR L0ADING 0RDER IS NEEDED  
@@ -87,7 +108,7 @@ MODIFY [DAZI-Template.sh] TO INCLUDE YOUR [doomWAD] + [doomMOD#s]
 	doomMOD1=~/RetroPie/roms/ports/doom/mods/brutalv21.pk3  
 	doomMOD2=~/RetroPie/roms/ports/doom/mods/hellonearthstarterpack.wad  
 
-HOW TO PRE-LOAD D00M M0Ds using the [Runcommand Launch Menu]:  
+**HOW TO PRE-LOAD D00M M0Ds** using the *[Runcommand Launch Menu]*:  
 Select and Load a D00M-MOD using the [DAZI-Template.sh]  
 PRESS [A] BUTTON TO CONFIGURE *(Before the ROM Loads)*  
 *[EXIT WITHOUT LAUNCHING]*  
@@ -95,12 +116,39 @@ The Last D00M-M0D Selected will Still be Loaded in [/dev/shm/addon]
 Now Select any 0ther Desired D00M R0M and Launch with [lzdoom-dazi]  
 Or Repeat the Process to Pre-Load more D00M-M0Ds  
 
-HOW TO PRE-LOAD D00M M0Ds using the [dazi-mod-loader] MENU:  
+**HOW TO PRE-LOAD D00M M0Ds** using the *[dazi-mod-loader]* MENU:  
 [dazi-mod-loader] is Included for use with [lzdoom-addon]/[lzdoom-dazi]  
 Use [dazi-mod-loader] from this Script directly, 0r Install it and...  
 Configure it to Always Load when the [doom] P0RT Launches  
 
-*DAZI can also configure the [srb2] and [srb2kart] AddOns CUSTOM Directory to D00M M0Ds*  
+**HOW LEVEL WARP WITH DAZI:**  
+*Use the M0D Loader Menu to *SELECT* [Episode] [Map] [Difficulty] Settings:*  
+DAZI will Stream-Edit [emulators.cfg] to *APPLY* [-warp -skill ] Settings  
+Select appropriate WARP Emulator [lzdoom-dazi+warp] or [prboom-plus+warp]  
+
+Warp+Difficulty Examples [-warp E# M# -skill S#]:  
+[-warp 5 9 -skill 4] Ultimate Doom SIGIL E5M9 on Ultra-Violence  
+[-warp 6 1 -skill 1] Heretic FatesPath E6M1 on Thou Needeth a Wet-Nurse  
+[-warp 2 1 -skill 3] Ultimate Doom AliensTC E2M1 on Hurt me plenty  
+[-warp  31 -skill 5] Doom II SecretWolfensteinLevel MAP31 on Nightmare!  
+NOTE: Leave [Episode] set to [NONE] for D00M II Maps  
+
+**prboom.cfg Files**  
+[prboom.cfg] Files are Required for Loading M0Ds with [lr-prboom]  
+DAZI can Generate [prboom.cfg] Files based on [addonDIR] Contents  
+[prboom.cfg] Files Loaded by DAZI get Cached in [addonDIR/.0ther]  
+
+*@runcommand-onlaunch:*  
+DAZI will MOVE [addonDIR/.0ther/prboom.cfg] to [doomWADdir/doomWADname]  
+DAZI will COPY [prbmsav?.dsg] Gamesaves to [doomWADdir/doomWADname]  
+DAZI will MAKE [prboom.cfg] File if Not Found [doomWADdir/doomWADname]  
+
+*@runcommand-onend:*  
+DAZI will MOVE the Last Running [prboom.cfg] -> [prboom.cfg.last]  
+DAZI will MOVE back any [prbmsav?.dsg] Gamesaves to DEFAULT Location  
+
+**[srb2] and [srb2kart] AddOns:**  
+*DAZI can configure the [srb2] and [srb2kart] AddOns CUSTOM Directory to D00M M0Ds*  
 [srb2] AddOns DEFAULT  
 /opt/retropie/configs/ports/srb2/addons  
 /opt/retropie/configs/ports/srb2kart/addons  
@@ -113,27 +161,6 @@ Configure it to Always Load when the [doom] P0RT Launches
 [srb2] Configs  
 /opt/retropie/configs/ports/srb2/config.cfg  
 /opt/retropie/configs/ports/srb2kart/kartconfig.cfg  
-
-**TIPs**  
-AVOID using [S P A C E S] and [$PEC!AL CH@RACT€R$] in your M0D NAMEs  
-
-Some M0Ds already come as [ZIP] since ZDoom supports Loading [ZIP] but  
-You can RENAME [ZIP] -> [pk3] if you want to Ignore Extraction by DAZI  
-eg.  [strayDoom.v01.zip]  ->  [strayDoom_v01.pk3]  
-
-[ipk3] files typically do not Require you to Load a Main [iwad] but  
-You can RENAME [ipk3] -> [pk3] and load a [fakeiwad.wad] or [doom2.wad]  
-
-[pk3/pk7] are Compressed Files Already, NO NEED to ZIP Individually  
-[WADs] can be Compressed, but can take time to Extract if LARGE  
-LARGE [WADs] might EXCEED the Size of [/dev/shm/] (tmpfs) on some HW  
-
-[ZIPs] are good to use with Individual MAPs/MEGAWADs to Save Space  
-ADD Numeric 0rder to the NAME(s) before Compressing MAPs/MEGAWADs  
-eg. [aaliens.wad] 135MB -> (01_aaliens.wad) -> [aaliens.zip] 37MB  
-
-[ZIPs] are good to use with Smaller M0Ds that have lots of files  
-eg. The 0riginal [AliensTC] is Small and has numerous files to Load  
 
 ***SOURCES:***  
 [https://github.com/drfrag666/gzdoom](https://github.com/drfrag666/gzdoom/releases/tag/3.87c)  
