@@ -177,7 +177,7 @@ echo ' [WADs] can be Compressed, but can take time to Extract if LARGE'
 echo 'LARGE [WADs] might EXCEED the Size of [/dev/shm/] (tmpfs) on some HW'
 echo ""
 echo '[deh] and [bex] DEHACKED Files are Conditionally Supported with DAZI'
-echo '[bex] Files are Dehacked Files Supported by B00M Compatible P0RTs Only'
+echo '[bex] Files are Dehacked Files Supported by/for B00M Compatible P0RTs'
 echo '[deh] Files in lzdoom must be Specified in the Loading 0rder using -deh'
 echo ""
 echo 'A [deh] File Added to a WAD can be Loaded in lzdoom Normally with -file'
@@ -1926,6 +1926,8 @@ if [ "$MNGprboomMENU" == '1' ]; then
 	( for f in $modDIRtmpfs/*.*; do
 		if [[ "$f" == *".bex" ]] || [[ "$f" == *".BEX" ]]; then
 			echo "dehfile_${DEHcount}                 \"./addon/$(basename $f)\"" >> /dev/shm/prboom.tmp; DEHcount=$(( $DEHcount + 1 ))
+		elif [[ "$f" == *".bex.wad" ]] || [[ "$f" == *".BEX.WAD" ]]; then
+			echo "dehfile_${DEHcount}                 \"./addon/$(basename $f)\"" >> /dev/shm/prboom.tmp; DEHcount=$(( $DEHcount + 1 ))
 		elif [[ "$f" == *".deh" ]] || [[ "$f" == *".DEH" ]]; then
 			echo "dehfile_${DEHcount}                 \"./addon/$(basename $f)\"" >> /dev/shm/prboom.tmp; DEHcount=$(( $DEHcount + 1 ))
 		elif [[ "$f" == *"deh.wad" ]] || [[ "$f" == *"DEH.WAD" ]]; then
@@ -1964,6 +1966,8 @@ if [ "$MNGprboomMENU" == '2' ]; then
 	DEHcount=1
 	( for f in $modDIRroms/*.*; do
 		if [[ "$f" == *".bex" ]] || [[ "$f" == *".BEX" ]]; then
+			echo "dehfile_${DEHcount}                 \"./addon/$(basename $f)\"" >> /dev/shm/prboom.tmp; DEHcount=$(( $DEHcount + 1 ))
+		elif [[ "$f" == *".bex.wad" ]] || [[ "$f" == *".BEX.WAD" ]]; then
 			echo "dehfile_${DEHcount}                 \"./addon/$(basename $f)\"" >> /dev/shm/prboom.tmp; DEHcount=$(( $DEHcount + 1 ))
 		elif [[ "$f" == *".deh" ]] || [[ "$f" == *".DEH" ]]; then
 			echo "dehfile_${DEHcount}                 \"./addon/$(basename $f)\"" >> /dev/shm/prboom.tmp; DEHcount=$(( $DEHcount + 1 ))
@@ -2558,6 +2562,8 @@ if [ "$1" == "onlaunch" ]; then
 		DEHcount=1
 		( for f in $doomWADdir/addon/*.*; do
 			if [[ "$f" == *".bex" ]] || [[ "$f" == *".BEX" ]]; then
+				echo "dehfile_${DEHcount}                 \"./addon/$(basename $f)\"" >> /dev/shm/prboom.tmp; DEHcount=$(( $DEHcount + 1 ))
+			elif [[ "$f" == *".bex.wad" ]] || [[ "$f" == *".BEX.WAD" ]]; then
 				echo "dehfile_${DEHcount}                 \"./addon/$(basename $f)\"" >> /dev/shm/prboom.tmp; DEHcount=$(( $DEHcount + 1 ))
 			elif [[ "$f" == *".deh" ]] || [[ "$f" == *".DEH" ]]; then
 				echo "dehfile_${DEHcount}                 \"./addon/$(basename $f)\"" >> /dev/shm/prboom.tmp; DEHcount=$(( $DEHcount + 1 ))
