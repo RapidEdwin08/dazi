@@ -2487,9 +2487,9 @@ if [ ! "$FILE" == '' ]; then
 				echo addonDIR="$currentADDONdir" > $tmpDAZIsh
 				# 0nly Prepare doomWAD-warp.wad IF mapNUM DEFINED
 				if [ "$(cat "$currentMODdir/$selectFILE" | grep -w "^mapNUM=")" == '' ]; then
-					cat "$currentMODdir/$selectFILE" | grep -v "runcommand.sh" | grep -v "^addonDIR=" | grep -v "^if" | grep -v "^bash" | grep -v "^loadM0Ds" | grep -v "^mkdir" | grep -v "^#" | grep -v "^rollingM0D=" | grep -v "^count=" | grep -v "^{" >> $tmpDAZIsh
+					cat "$currentMODdir/$selectFILE" | grep -v "runcommand.sh" | grep -v "^addonDIR=" | grep -v "^if" | grep -v "^bash" | grep -v "^loadM0Ds" | grep -v "^mkdir" | grep -v "^#" | grep -v "^rollingM0D=" | grep -v "^count=" | grep -v "^{" | grep -v "^}" | grep -v "^fi" | grep -v "^	exit 0" | grep -v "^	sudo" | grep -v "	echo" >> $tmpDAZIsh
 				else
-					cat "$currentMODdir/$selectFILE" | grep -v "runcommand.sh" | grep -v "^addonDIR=" | grep -v "^doomWAD=" | grep -v "^if" | grep -v "^bash" | grep -v "^loadM0Ds" | grep -v "^mkdir" | grep -v "^#" | grep -v "^rollingM0D=" | grep -v "^count=" | grep -v "^{" >> $tmpDAZIsh
+					cat "$currentMODdir/$selectFILE" | grep -v "runcommand.sh" | grep -v "^addonDIR=" | grep -v "^doomWAD=" | grep -v "^if" | grep -v "^bash" | grep -v "^loadM0Ds" | grep -v "^mkdir" | grep -v "^#" | grep -v "^rollingM0D=" | grep -v "^count=" | grep -v "^{" | grep -v "^}" | grep -v "^fi" | grep -v "^	exit 0" | grep -v "^	sudo" | grep -v "	echo" >> $tmpDAZIsh
 				fi
 				echo "$loadM0Dsh" >> $tmpDAZIsh
 				chmod 755 $tmpDAZIsh > /dev/null 2>&1
@@ -2663,7 +2663,7 @@ mainMENU
 if [ "$1" == "loadmod" ]; then
 	tmpDAZIsh=/dev/shm/daziTMP.sh
 	# Create TMP script based on ROM.sh Content to Load M0Ds
-	cat "$2" | grep -v "runcommand.sh" | grep -v "^if" | grep -v "^bash" | grep -v "^loadM0Ds" | grep -v "^mkdir" | grep -v "^#" | grep -v "^rollingM0D=" | grep -v "^count=" | grep -v "^{" > $tmpDAZIsh
+	cat "$2" | grep -v "runcommand.sh" | grep -v "^if" | grep -v "^bash" | grep -v "^loadM0Ds" | grep -v "^mkdir" | grep -v "^#" | grep -v "^rollingM0D=" | grep -v "^count=" | grep -v "^{" | grep -v "^}" | grep -v "^fi" | grep -v "^	exit 0" | grep -v "^	sudo" | grep -v "	echo" > $tmpDAZIsh
 	echo "$loadM0Dsh" >> $tmpDAZIsh
 	chmod 755 $tmpDAZIsh > /dev/null 2>&1
 	bash $tmpDAZIsh > /dev/null 2>&1
