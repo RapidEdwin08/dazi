@@ -39,7 +39,7 @@ wget https://raw.githubusercontent.com/RapidEdwin08/dazi/main/lzdoom-dazi.png -P
 0R Run Manually from any directory:  
 ```bash
 cd ~
-git clone https://github.com/RapidEdwin08/dazi.git
+git clone --depth 1 https://github.com/RapidEdwin08/dazi.git
 sudo chmod 755 ~/dazi/lzdoom-dazi.sh
 cd ~/dazi && ./lzdoom-dazi.sh
 ```
