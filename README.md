@@ -9,7 +9,6 @@ Additionally Manage [srb2] and [srb2kart] AddOns along with D00M M0Ds.
 
 **Before you get started:**  
 A D00M P0RT such as **lzdoom** **lr-prboom** **prboom-plus** should be **INSTALLED**  
-~~The **Runcommand Launch Menu** should be **ENABLED**~~ **0ptional**  
 Place your **[M0D].ZIP/PK3/PK7** Files in: **~/RetroPie/roms/ports/doom/mods/***  
 
 **HOW DOES IT WORK?**  
@@ -30,10 +29,11 @@ DAZI can AutoGenerate a [prboom.cfg] based on [addonDIR] when Installed
 
 ## INSTALLATION  
 
-Dowload and Run from the retropiemenu:  
+Can be ran from retropiemenu:  
 
 ```bash
 wget https://raw.githubusercontent.com/RapidEdwin08/dazi/main/lzdoom-dazi.sh -P ~/RetroPie/retropiemenu
+wget https://raw.githubusercontent.com/RapidEdwin08/dazi/main/lzdoom-dazi.png -P ~/RetroPie/retropiemenu/icons
 ```
 
 0R Run Manually from any directory:  
@@ -53,10 +53,6 @@ cd ~/dazi && ./lzdoom-dazi.sh
 		<desc>INSTALL/REMOVE [lzdoom-dazi] for [RetroPie].</desc>
 		<image>/home/pi/RetroPie/retropiemenu/icons/lzdoom-dazi.png</image>
 	</game>
-```
-*Dowload DAZI Icon.png:*  
-```bash
-wget https://raw.githubusercontent.com/RapidEdwin08/dazi/main/lzdoom-dazi.png -P ~/RetroPie/retropiemenu/icons
 ```
 
 ## REFERENCES   
