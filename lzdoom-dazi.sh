@@ -3,13 +3,10 @@
 # IF DEFINED [alternateM0Ddir] will 0verride DEFAULT M0D Directory - DO NOT INCLUDE '/' at END of PATHs - DO NOT USE *R00T* '/' 0NLY
 alternateM0Ddir=
 
-# This script will behave differently depending on the location it is ran from  
 # Running this Script from [/opt/retropie/configs/ports/doom] will access 0NLY the Mod Loader Menu  
 # Running this Script from [/opt/retropie/configs/all/runcommand-menu] will access 0NLY the Mod Loader Menu  
-# Running this Script from any 0THER Location will access the BOTH the Installer + Mod Loader Menus  
-# Automatic Install/Removal Provided in Main Installer Menu  
 
-versionDAZI=2022.09
+versionDAZI=2022.12
 M0DdirMAIN=~/RetroPie/roms/ports/doom/mods
 modDIRroms=~/RetroPie/roms/ports/doom/addon
 modDIRtmpfs=/dev/shm/addon
@@ -46,7 +43,7 @@ echo ""
 echo '+--------------------------------------------------------------------+   '
 echo '|      | /|  |  |            |   (\\   |     /|    |_| ..  ports.... |   '
 echo '|      | /|  |  |  2  3  4   |    \||  |     /|    |_| ..  ..doom... |   '
-echo '|      | ~|~ | %|            |  __(_"; |     ~|~ % |_| ..  ....addon |   '
+echo '| {##} | ~|~ | %|            |  __(_"; |     ~|~ % |_| ..  ....addon |   '
 echo '|      | /|  |  |            | /    \  |     /|    |_| ..  ..shm.... |   '
 echo '| AMMO | HEALTH |  5  6  7   |{}___)\)_|    ARMOR  |#| ..  dev...... |   '
 echo '+--------------------------------------------------------------------+   '
@@ -238,7 +235,7 @@ echo ""
 )
 
 daziSH=$(
-#echo '#!/bin/bash'
+echo '#!/bin/bash'
 echo "# https://github.com/RapidEdwin08/dazi  #v$versionDAZI"
 echo ''
 echo '# Define [D00M.WAD] - /full/path/to/doom.wad
@@ -254,9 +251,19 @@ skillLEVEL=1993
 
 # Define addonDIR  -  /dev/shm/addon  -  ~/RetroPie/roms/ports/doom/addon  -  /opt/retropie/configs/ports/prboom-plus/autoload/doom-all
 addonDIR=/dev/shm/addon
-#addonDIR=~/RetroPie/roms/ports/doom/addon
 
-# ========================DO=NOT=MODIFY========================
+# DAZI=M0D=LOADER - Update doomWAD[-warp] IF WARP Settings are DEFINED
+if [ ! "$mapNUM" == "" ]; then doomWAD="${addonDIR%/*}/$(basename "${doomWAD}" | cut -d. -f1 )-warp.$(basename "${doomWAD}" | sed "s/^.*\.//")"; fi
+bash /opt/retropie/configs/ports/doom/lzdoom-dazi.sh loadmod "$0" > /dev/null 2>&1 # Load M0Ds with DAZI=M0D=LOADER
+
+# RUN D00M P0RT
+"/opt/retropie/supplementary/runcommand/runcommand.sh" 0 _PORT_ "doom" "${doomWAD}"
+'
+)
+
+loadM0Dsh=$(
+echo '
+# ========================DAZI=M0D=LOADER========================
 loadM0Ds() # Scripted L00P Supports Loading Any Number of [doomMOD#s] when Defined
 { # Prepare [doomMOD#s] IF DEFINED - ZIPs are Extracted to [addonDIR] - Symbolic LInks created for ALL 0THER File Types - Numeric 0rder Dynamically updated
 if [[ ! "${!rollingM0D}" == "" ]]; then if [[ "${!rollingM0D}" == *".zip" ]] || [[ "${!rollingM0D}" == *".ZIP" ]]; then unzip -qq -o "${!rollingM0D}" -d "$addonDIR"; elif [[ "${!rollingM0D}" == *".7z" ]] || [[ "${!rollingM0D}" == *".7Z" ]]; then 7z x "${!rollingM0D}" -aoa -o"$addonDIR" > /dev/null 2>&1; elif [[ "${!rollingM0D}" == *"prboom.cfg" ]]; then mkdir "$addonDIR"/".0ther"; rm ""$addonDIR"/".0ther"/prboom.cfg" 2>/dev/null; ln -s "${!rollingM0D}" ""$addonDIR"/".0ther"/prboom.cfg" 2>/dev/null; else ln -s "${!rollingM0D}" "$addonDIR/0${addonDIRcount}_$(basename "${!rollingM0D}" )"; fi; fi > /dev/null 2>&1
@@ -265,15 +272,12 @@ count=$(( $count + 1 )) # Increase count by+1
 rollingM0D="doomMOD${count}" # Apply Increased count to [doomMOD#]
 if [[ ! "${!rollingM0D}" == "" ]]; then addonDIRcount=$(( $addonDIRcount + 1 )); loadM0Ds; fi } # Prepare more [doomMOD#s] IF DEFINED
 # Prepare WARP and DIFFICULTY Settings For [lzdoom-dazi+warp] - 0nly Update doom[-warp].wad IF the Parameters are DEFINED - Set DEFAULT DIFFICULTY [Hurt me plenty] if NOT DEFINED - Update [-warp*] in [emulators.cfg] - If addonDIR is NOT DEFAULT [~/RetroPie/roms/ports/doom/] Create Symbolic Link to [doomWAD] - set doomWAD=[addonDIRroot/doomWAD]
-if [ ! "$episodeNUM" == "" ] || [ ! "$mapNUM" == "" ]; then ln -s "${doomWAD}" "${addonDIR%/*}/$(basename "${doomWAD}" | cut -d. -f1 )-warp.$(basename "${doomWAD}" | sed "s/^.*\.//")" > /dev/null 2>&1; doomWAD="${addonDIR%/*}/$(basename "${doomWAD}" | cut -d. -f1 )-warp.$(basename "${doomWAD}" | sed "s/^.*\.//")"; if [ "$skillLEVEL" == "" ]; then skillLEVEL=3; fi; sed -i "s/-warp.*/-warp\ $episodeNUM\ $mapNUM\ -skill\ $skillLEVEL;\ popd\"/g" /opt/retropie/configs/ports/doom/emulators.cfg; else if [[ ! "$(dirname ${doomWAD} )" == "/home/$USER/RetroPie/roms/ports/doom/addon" ]]; then ln -s "${doomWAD}" "${addonDIR%/*}/$(basename "${doomWAD}" | cut -d. -f1 ).$(basename "${doomWAD}" | sed "s/^.*\.//")" > /dev/null 2>&1; doomWAD="${addonDIR%/*}/$(basename "${doomWAD}" | cut -d. -f1 ).$(basename "${doomWAD}" | sed "s/^.*\.//")"; fi; fi
+if [ ! "$mapNUM" == "" ]; then ln -s "${doomWAD}" "${addonDIR%/*}/$(basename "${doomWAD}" | cut -d. -f1 )-warp.$(basename "${doomWAD}" | sed "s/^.*\.//")" > /dev/null 2>&1; doomWAD="${addonDIR%/*}/$(basename "${doomWAD}" | cut -d. -f1 )-warp.$(basename "${doomWAD}" | sed "s/^.*\.//")"; if [ "$skillLEVEL" == "" ]; then skillLEVEL=3; fi; sed -i "s/-warp.*/-warp\ $episodeNUM\ $mapNUM\ -skill\ $skillLEVEL;\ popd\"/g" /opt/retropie/configs/ports/doom/emulators.cfg; else if [[ ! "$(dirname ${doomWAD} )" == "/home/$USER/RetroPie/roms/ports/doom/addon" ]]; then ln -s "${doomWAD}" "${addonDIR%/*}/$(basename "${doomWAD}" | cut -d. -f1 ).$(basename "${doomWAD}" | sed "s/^.*\.//")" > /dev/null 2>&1; doomWAD="${addonDIR%/*}/$(basename "${doomWAD}" | cut -d. -f1 ).$(basename "${doomWAD}" | sed "s/^.*\.//")"; fi; fi
 mkdir "${addonDIR%/*}" > /dev/null 2>&1; mkdir "$addonDIR" > /dev/null 2>&1; mv "${addonDIR%/*}/$(basename $doomWAD | cut -d. -f1)/prboom.cfg" "${addonDIR%/*}/$(basename $doomWAD | cut -d. -f1)/prboom.cfg.last" > /dev/null 2>&1 # Prepare addonDIR - Move previous prboom.cfg
 count=1; rollingM0D="doomMOD${count}" # Set Initial Count
 if [ ! "$(find $addonDIR -maxdepth 1 -type f | wc -l )" == 0 ] || [ ! "$(find $addonDIR -maxdepth 1 -type l | wc -l )" == 0 ]; then addonDIRcount=$(( $count + $(find $addonDIR -maxdepth 1 -type f | wc -l ) + $(find $addonDIR -maxdepth 1 -type l | wc -l ) )); else addonDIRcount=$count; fi # Count Current Files/Links in ADDONS - Update addonDIRcount
 loadM0Ds # Load D00M M0Ds in Numeric 0rder
-# ========================DO=NOT=MODIFY========================
-
-# RUN D00M P0RT
-"/opt/retropie/supplementary/runcommand/runcommand.sh" 0 _PORT_ "doom" "${doomWAD}"
+# ========================DAZI=M0D=LOADER========================
 '
 )
 
@@ -317,7 +321,7 @@ echo ""
 # Location of Script determines Menu Launched
 MENUlaunchDOOM=BACK
 if [ "$0" == "/opt/retropie/configs/ports/doom/lzdoom-dazi.sh" ]; then MENUlaunchDOOM=" LAUNCH $(head -3 /dev/shm/runcommand.info | tail -1 | sed 's/.*\///')"; fi
-if [ "$0" == "/opt/retropie/configs/all/runcommand-menu/lzdoom-dazi.sh" ]; then MENUlaunchDOOM="BACK to Runcommand Menu"; fi
+if [ "$0" == "/opt/retropie/configs/all/runcommand-menu/lzdoom-dazi.sh" ]; then MENUlaunchDOOM="Runcommand $(head -3 /dev/shm/runcommand.info | tail -1 | sed 's/.*\///')"; fi
 
 mainMENU()
 {
@@ -1196,12 +1200,14 @@ if [ ! -f /opt/retropie/configs/ports/doom/lzdoom-dazi.clean ]; then echo 'T' > 
 # This script will behave differently depending on the location - copy itself to install location
 cp "$0" /dev/shm/lzdoom-dazi.sh
 mv /dev/shm/lzdoom-dazi.sh /opt/retropie/configs/ports/doom/lzdoom-dazi.sh
+echo 'sudo chmod 755 /opt/retropie/configs/ports/doom/lzdoom-dazi.sh'
 sudo chmod 755 /opt/retropie/configs/ports/doom/lzdoom-dazi.sh
 
 # This script will behave differently depending on the location - copy itself to [/opt/retropie/configs/all/runcommand-menu]
 cp "$0" /dev/shm/lzdoom-dazi.sh
 mkdir /opt/retropie/configs/all/runcommand-menu > /dev/null 2>&1
 mv /dev/shm/lzdoom-dazi.sh /opt/retropie/configs/all/runcommand-menu/lzdoom-dazi.sh
+echo 'sudo chmod 755 /opt/retropie/configs/all/runcommand-menu/lzdoom-dazi.sh'
 sudo chmod 755 /opt/retropie/configs/all/runcommand-menu/lzdoom-dazi.sh
 
 # Toggle [runcommand] Flag ON [dazi-mod-loader]
@@ -1267,9 +1273,6 @@ if [ -f ~/RetroPie/roms/ports/doom/chex.wad ]; then
 	sed -i 's/episodeNUM=1993/episodeNUM=/g' ~/RetroPie/roms/ports/Chex\ Quest\ \(DAZI\).sh
 	sed -i 's/mapNUM=1993/mapNUM=/g' ~/RetroPie/roms/ports/Chex\ Quest\ \(DAZI\).sh
 	sed -i 's/skillLEVEL=1993/skillLEVEL=/g' ~/RetroPie/roms/ports/Chex\ Quest\ \(DAZI\).sh
-	#rm ~/RetroPie/roms/ports/doom/chex-warp.wad 2>/dev/null
-	#ln -s ~/RetroPie/roms/ports/doom/chex.wad ~/RetroPie/roms/ports/doom/chex-warp.wad 2>/dev/null
-	#sed -i 's/chex.wad/chex-warp.wad/g' ~/RetroPie/roms/ports/Chex\ Quest\ \(WARP\).sh
 	sed -i 's/episodeNUM=1993/episodeNUM=4/g' ~/RetroPie/roms/ports/Chex\ Quest\ \(WARP\).sh
 	sed -i 's/mapNUM=1993/mapNUM=9/g' ~/RetroPie/roms/ports/Chex\ Quest\ \(WARP\).sh
 	sed -i 's/skillLEVEL=1993/skillLEVEL=3/g' ~/RetroPie/roms/ports/Chex\ Quest\ \(WARP\).sh
@@ -1288,9 +1291,6 @@ if [ -f ~/RetroPie/roms/ports/doom/chex2.wad ]; then
 	sed -i 's/episodeNUM=1993/episodeNUM=/g' ~/RetroPie/roms/ports/Chex\ Quest\ 2\ \(DAZI\).sh
 	sed -i 's/mapNUM=1993/mapNUM=/g' ~/RetroPie/roms/ports/Chex\ Quest\ 2\ \(DAZI\).sh
 	sed -i 's/skillLEVEL=1993/skillLEVEL=/g' ~/RetroPie/roms/ports/Chex\ Quest\ 2\ \(DAZI\).sh
-	#rm ~/RetroPie/roms/ports/doom/chex2-warp.wad 2>/dev/null
-	#ln -s ~/RetroPie/roms/ports/doom/chex2.wad ~/RetroPie/roms/ports/doom/chex2-warp.wad 2>/dev/null
-	#sed -i 's/chex2.wad/chex2-warp.wad/g' ~/RetroPie/roms/ports/Chex\ Quest\ 2\ \(WARP\).sh
 	sed -i 's/episodeNUM=1993/episodeNUM=1/g' ~/RetroPie/roms/ports/Chex\ Quest\ 2\ \(WARP\).sh
 	sed -i 's/mapNUM=1993/mapNUM=3/g' ~/RetroPie/roms/ports/Chex\ Quest\ 2\ \(WARP\).sh
 	sed -i 's/skillLEVEL=1993/skillLEVEL=3/g' ~/RetroPie/roms/ports/Chex\ Quest\ 2\ \(WARP\).sh
@@ -1309,9 +1309,6 @@ if [ -f ~/RetroPie/roms/ports/doom/chex3.wad ]; then
 	sed -i 's/episodeNUM=1993/episodeNUM=/g' ~/RetroPie/roms/ports/Chex\ Quest\ 3\ \(DAZI\).sh
 	sed -i 's/mapNUM=1993/mapNUM=/g' ~/RetroPie/roms/ports/Chex\ Quest\ 3\ \(DAZI\).sh
 	sed -i 's/skillLEVEL=1993/skillLEVEL=/g' ~/RetroPie/roms/ports/Chex\ Quest\ 3\ \(DAZI\).sh
-	#rm ~/RetroPie/roms/ports/doom/chex3-warp.wad 2>/dev/null
-	#ln -s ~/RetroPie/roms/ports/doom/chex3.wad ~/RetroPie/roms/ports/doom/chex3-warp.wad 2>/dev/null
-	#sed -i 's/chex3.wad/chex3-warp.wad/g' ~/RetroPie/roms/ports/Chex\ Quest\ 3\ \(WARP\).sh
 	sed -i 's/episodeNUM=1993/episodeNUM=3/g' ~/RetroPie/roms/ports/Chex\ Quest\ 3\ \(WARP\).sh
 	sed -i 's/mapNUM=1993/mapNUM=5/g' ~/RetroPie/roms/ports/Chex\ Quest\ 3\ \(WARP\).sh
 	sed -i 's/skillLEVEL=1993/skillLEVEL=3/g' ~/RetroPie/roms/ports/Chex\ Quest\ 3\ \(WARP\).sh
@@ -1330,9 +1327,6 @@ if [ -f ~/RetroPie/roms/ports/doom/doom.wad ]; then
 	sed -i 's/episodeNUM=1993/episodeNUM=/g' ~/RetroPie/roms/ports/Doom\ I\ \(DAZI\).sh
 	sed -i 's/mapNUM=1993/mapNUM=/g' ~/RetroPie/roms/ports/Doom\ I\ \(DAZI\).sh
 	sed -i 's/skillLEVEL=1993/skillLEVEL=/g' ~/RetroPie/roms/ports/Doom\ I\ \(DAZI\).sh
-	#rm ~/RetroPie/roms/ports/doom/doom-warp.wad 2>/dev/null
-	#ln -s ~/RetroPie/roms/ports/doom/doom.wad ~/RetroPie/roms/ports/doom/doom-warp.wad 2>/dev/null
-	#sed -i 's/doom.wad/doom-warp.wad/g' ~/RetroPie/roms/ports/Doom\ I\ \(WARP\).sh
 	sed -i 's/episodeNUM=1993/episodeNUM=1/g' ~/RetroPie/roms/ports/Doom\ I\ \(WARP\).sh
 	sed -i 's/mapNUM=1993/mapNUM=9/g' ~/RetroPie/roms/ports/Doom\ I\ \(WARP\).sh
 	sed -i 's/skillLEVEL=1993/skillLEVEL=3/g' ~/RetroPie/roms/ports/Doom\ I\ \(WARP\).sh
@@ -1351,9 +1345,6 @@ if [ -f ~/RetroPie/roms/ports/doom/doom2.wad ]; then
 	sed -i 's/episodeNUM=1993/episodeNUM=/g' ~/RetroPie/roms/ports/Doom\ II\ \(DAZI\).sh
 	sed -i 's/mapNUM=1993/mapNUM=/g' ~/RetroPie/roms/ports/Doom\ II\ \(DAZI\).sh
 	sed -i 's/skillLEVEL=1993/skillLEVEL=/g' ~/RetroPie/roms/ports/Doom\ II\ \(DAZI\).sh
-	#rm ~/RetroPie/roms/ports/doom/doom2-warp.wad 2>/dev/null
-	#ln -s ~/RetroPie/roms/ports/doom/doom2.wad ~/RetroPie/roms/ports/doom/doom2-warp.wad 2>/dev/null
-	#sed -i 's/doom2.wad/doom2-warp.wad/g' ~/RetroPie/roms/ports/Doom\ II\ \(WARP\).sh
 	sed -i 's/episodeNUM=1993/episodeNUM=/g' ~/RetroPie/roms/ports/Doom\ II\ \(WARP\).sh
 	sed -i 's/mapNUM=1993/mapNUM=31/g' ~/RetroPie/roms/ports/Doom\ II\ \(WARP\).sh
 	sed -i 's/skillLEVEL=1993/skillLEVEL=3/g' ~/RetroPie/roms/ports/Doom\ II\ \(WARP\).sh
@@ -1372,9 +1363,6 @@ if [ -f ~/RetroPie/roms/ports/doom/doomu.wad ]; then
 	sed -i 's/episodeNUM=1993/episodeNUM=/g' ~/RetroPie/roms/ports/Doom\ Ultimate\ \(DAZI\).sh
 	sed -i 's/mapNUM=1993/mapNUM=/g' ~/RetroPie/roms/ports/Doom\ Ultimate\ \(DAZI\).sh
 	sed -i 's/skillLEVEL=1993/skillLEVEL=/g' ~/RetroPie/roms/ports/Doom\ Ultimate\ \(DAZI\).sh
-	#rm ~/RetroPie/roms/ports/doom/doomu-warp.wad 2>/dev/null
-	#ln -s ~/RetroPie/roms/ports/doom/doomu.wad ~/RetroPie/roms/ports/doom/doomu-warp.wad 2>/dev/null
-	#sed -i 's/doomu.wad/doomu-warp.wad/g' ~/RetroPie/roms/ports/Doom\ Ultimate\ \(WARP\).sh
 	sed -i 's/episodeNUM=1993/episodeNUM=4/g' ~/RetroPie/roms/ports/Doom\ Ultimate\ \(WARP\).sh
 	sed -i 's/mapNUM=1993/mapNUM=1/g' ~/RetroPie/roms/ports/Doom\ Ultimate\ \(WARP\).sh
 	sed -i 's/skillLEVEL=1993/skillLEVEL=3/g' ~/RetroPie/roms/ports/Doom\ Ultimate\ \(WARP\).sh
@@ -1393,9 +1381,6 @@ if [ -f ~/RetroPie/roms/ports/doom/freedoom1.wad ]; then
 	sed -i 's/episodeNUM=1993/episodeNUM=/g' ~/RetroPie/roms/ports/Freedoom\ Phase\ I\ \(DAZI\).sh
 	sed -i 's/mapNUM=1993/mapNUM=/g' ~/RetroPie/roms/ports/Freedoom\ Phase\ I\ \(DAZI\).sh
 	sed -i 's/skillLEVEL=1993/skillLEVEL=/g' ~/RetroPie/roms/ports/Freedoom\ Phase\ I\ \(DAZI\).sh
-	#rm ~/RetroPie/roms/ports/doom/freedoom1-warp.wad 2>/dev/null
-	#ln -s ~/RetroPie/roms/ports/doom/freedoom1.wad ~/RetroPie/roms/ports/doom/freedoom1-warp.wad 2>/dev/null
-	#sed -i 's/freedoom1.wad/freedoom1-warp.wad/g' ~/RetroPie/roms/ports/Freedoom\ Phase\ I\ \(WARP\).sh
 	sed -i 's/episodeNUM=1993/episodeNUM=1/g' ~/RetroPie/roms/ports/Freedoom\ Phase\ I\ \(WARP\).sh
 	sed -i 's/mapNUM=1993/mapNUM=9/g' ~/RetroPie/roms/ports/Freedoom\ Phase\ I\ \(WARP\).sh
 	sed -i 's/skillLEVEL=1993/skillLEVEL=3/g' ~/RetroPie/roms/ports/Freedoom\ Phase\ I\ \(WARP\).sh
@@ -1414,9 +1399,6 @@ if [ -f ~/RetroPie/roms/ports/doom/freedoom2.wad ]; then
 	sed -i 's/episodeNUM=1993/episodeNUM=/g' ~/RetroPie/roms/ports/Freedoom\ Phase\ II\ \(DAZI\).sh
 	sed -i 's/mapNUM=1993/mapNUM=/g' ~/RetroPie/roms/ports/Freedoom\ Phase\ II\ \(DAZI\).sh
 	sed -i 's/skillLEVEL=1993/skillLEVEL=/g' ~/RetroPie/roms/ports/Freedoom\ Phase\ II\ \(DAZI\).sh
-	#rm ~/RetroPie/roms/ports/doom/freedoom2-warp.wad 2>/dev/null
-	#ln -s ~/RetroPie/roms/ports/doom/freedoom2.wad ~/RetroPie/roms/ports/doom/freedoom2-warp.wad 2>/dev/null
-	#sed -i 's/freedoom2.wad/freedoom2-warp.wad/g' ~/RetroPie/roms/ports/Freedoom\ Phase\ II\ \(WARP\).sh
 	sed -i 's/episodeNUM=1993/episodeNUM=/g' ~/RetroPie/roms/ports/Freedoom\ Phase\ II\ \(WARP\).sh
 	sed -i 's/mapNUM=1993/mapNUM=32/g' ~/RetroPie/roms/ports/Freedoom\ Phase\ II\ \(WARP\).sh
 	sed -i 's/skillLEVEL=1993/skillLEVEL=3/g' ~/RetroPie/roms/ports/Freedoom\ Phase\ II\ \(WARP\).sh
@@ -1435,9 +1417,6 @@ if [ -f ~/RetroPie/roms/ports/doom/hacx.wad ]; then
 	sed -i 's/episodeNUM=1993/episodeNUM=/g' ~/RetroPie/roms/ports/HacX\ \(DAZI\).sh
 	sed -i 's/mapNUM=1993/mapNUM=/g' ~/RetroPie/roms/ports/HacX\ \(DAZI\).sh
 	sed -i 's/skillLEVEL=1993/skillLEVEL=/g' ~/RetroPie/roms/ports/HacX\ \(DAZI\).sh
-	#rm ~/RetroPie/roms/ports/doom/hacx-warp.wad 2>/dev/null
-	#ln -s ~/RetroPie/roms/ports/doom/hacx.wad ~/RetroPie/roms/ports/doom/hacx-warp.wad 2>/dev/null
-	#sed -i 's/hacx.wad/hacx-warp.wad/g' ~/RetroPie/roms/ports/HacX\ \(WARP\).sh
 	sed -i 's/episodeNUM=1993/episodeNUM=/g' ~/RetroPie/roms/ports/HacX\ \(WARP\).sh
 	sed -i 's/mapNUM=1993/mapNUM=35/g' ~/RetroPie/roms/ports/HacX\ \(WARP\).sh
 	sed -i 's/skillLEVEL=1993/skillLEVEL=3/g' ~/RetroPie/roms/ports/HacX\ \(WARP\).sh
@@ -1456,9 +1435,6 @@ if [ -f ~/RetroPie/roms/ports/doom/heretic.wad ]; then
 	sed -i 's/episodeNUM=1993/episodeNUM=/g' ~/RetroPie/roms/ports/Heretic\ \(DAZI\).sh
 	sed -i 's/mapNUM=1993/mapNUM=/g' ~/RetroPie/roms/ports/Heretic\ \(DAZI\).sh
 	sed -i 's/skillLEVEL=1993/skillLEVEL=/g' ~/RetroPie/roms/ports/Heretic\ \(DAZI\).sh
-	#rm ~/RetroPie/roms/ports/doom/heretic-warp.wad 2>/dev/null
-	#ln -s ~/RetroPie/roms/ports/doom/heretic.wad ~/RetroPie/roms/ports/doom/heretic-warp.wad 2>/dev/null
-	#sed -i 's/heretic.wad/heretic-warp.wad/g' ~/RetroPie/roms/ports/Heretic\ \(WARP\).sh
 	sed -i 's/episodeNUM=1993/episodeNUM=6/g' ~/RetroPie/roms/ports/Heretic\ \(WARP\).sh
 	sed -i 's/mapNUM=1993/mapNUM=1/g' ~/RetroPie/roms/ports/Heretic\ \(WARP\).sh
 	sed -i 's/skillLEVEL=1993/skillLEVEL=3/g' ~/RetroPie/roms/ports/Heretic\ \(WARP\).sh
@@ -1477,9 +1453,6 @@ if [ -f ~/RetroPie/roms/ports/doom/hexen.wad ]; then
 	sed -i 's/episodeNUM=1993/episodeNUM=/g' ~/RetroPie/roms/ports/Hexen\ \(DAZI\).sh
 	sed -i 's/mapNUM=1993/mapNUM=/g' ~/RetroPie/roms/ports/Hexen\ \(DAZI\).sh
 	sed -i 's/skillLEVEL=1993/skillLEVEL=/g' ~/RetroPie/roms/ports/Hexen\ \(DAZI\).sh
-	#rm ~/RetroPie/roms/ports/doom/hexen-warp.wad 2>/dev/null
-	#ln -s ~/RetroPie/roms/ports/doom/hexen.wad ~/RetroPie/roms/ports/doom/hexen-warp.wad 2>/dev/null
-	#sed -i 's/hexen.wad/hexen-warp.wad/g' ~/RetroPie/roms/ports/Hexen\ \(WARP\).sh
 	sed -i 's/episodeNUM=1993/episodeNUM=/g' ~/RetroPie/roms/ports/Hexen\ \(WARP\).sh
 	sed -i 's/mapNUM=1993/mapNUM=40/g' ~/RetroPie/roms/ports/Hexen\ \(WARP\).sh
 	sed -i 's/skillLEVEL=1993/skillLEVEL=3/g' ~/RetroPie/roms/ports/Hexen\ \(WARP\).sh
@@ -1498,9 +1471,6 @@ if [ -f ~/RetroPie/roms/ports/doom/plutonia.wad ]; then
 	sed -i 's/episodeNUM=1993/episodeNUM=/g' ~/RetroPie/roms/ports/Plutonia\ \(DAZI\).sh
 	sed -i 's/mapNUM=1993/mapNUM=/g' ~/RetroPie/roms/ports/Plutonia\ \(DAZI\).sh
 	sed -i 's/skillLEVEL=1993/skillLEVEL=/g' ~/RetroPie/roms/ports/Plutonia\ \(DAZI\).sh
-	#rm ~/RetroPie/roms/ports/doom/plutonia-warp.wad 2>/dev/null
-	#ln -s ~/RetroPie/roms/ports/doom/plutonia.wad ~/RetroPie/roms/ports/doom/plutonia-warp.wad 2>/dev/null
-	#sed -i 's/plutonia.wad/plutonia-warp.wad/g' ~/RetroPie/roms/ports/Plutonia\ \(WARP\).sh
 	sed -i 's/episodeNUM=1993/episodeNUM=/g' ~/RetroPie/roms/ports/Plutonia\ \(WARP\).sh
 	sed -i 's/mapNUM=1993/mapNUM=32/g' ~/RetroPie/roms/ports/Plutonia\ \(WARP\).sh
 	sed -i 's/skillLEVEL=1993/skillLEVEL=3/g' ~/RetroPie/roms/ports/Plutonia\ \(WARP\).sh
@@ -1519,9 +1489,6 @@ if [ -f ~/RetroPie/roms/ports/doom/strife1.wad ]; then
 	sed -i 's/episodeNUM=1993/episodeNUM=/g' ~/RetroPie/roms/ports/Strife\ \(DAZI\).sh
 	sed -i 's/mapNUM=1993/mapNUM=/g' ~/RetroPie/roms/ports/Strife\ \(DAZI\).sh
 	sed -i 's/skillLEVEL=1993/skillLEVEL=/g' ~/RetroPie/roms/ports/Strife\ \(DAZI\).sh
-	#rm ~/RetroPie/roms/ports/doom/strife1-warp.wad 2>/dev/null
-	#ln -s ~/RetroPie/roms/ports/doom/strife1.wad ~/RetroPie/roms/ports/doom/strife1-warp.wad 2>/dev/null
-	#sed -i 's/strife1.wad/strife1-warp.wad/g' ~/RetroPie/roms/ports/Strife\ \(WARP\).sh
 	sed -i 's/episodeNUM=1993/episodeNUM=/g' ~/RetroPie/roms/ports/Strife\ \(WARP\).sh
 	sed -i 's/mapNUM=1993/mapNUM=34/g' ~/RetroPie/roms/ports/Strife\ \(WARP\).sh
 	sed -i 's/skillLEVEL=1993/skillLEVEL=3/g' ~/RetroPie/roms/ports/Strife\ \(WARP\).sh
@@ -1540,9 +1507,6 @@ if [ -f ~/RetroPie/roms/ports/doom/sve.wad ]; then
 	sed -i 's/episodeNUM=1993/episodeNUM=/g' ~/RetroPie/roms/ports/Strife\ Veteren\ Edition\ \(DAZI\).sh
 	sed -i 's/mapNUM=1993/mapNUM=/g' ~/RetroPie/roms/ports/Strife\ Veteren\ Edition\ \(DAZI\).sh
 	sed -i 's/skillLEVEL=1993/skillLEVEL=/g' ~/RetroPie/roms/ports/Strife\ Veteren\ Edition\ \(DAZI\).sh
-	#rm ~/RetroPie/roms/ports/doom/sve-warp.wad 2>/dev/null
-	#ln -s ~/RetroPie/roms/ports/doom/sve.wad ~/RetroPie/roms/ports/doom/sve-warp.wad 2>/dev/null
-	#sed -i 's/sve.wad/sve-warp.wad/g' ~/RetroPie/roms/ports/Strife\ Veteren\ Edition\ \(WARP\).sh
 	sed -i 's/episodeNUM=1993/episodeNUM=/g' ~/RetroPie/roms/ports/Strife\ Veteren\ Edition\ \(WARP\).sh
 	sed -i 's/mapNUM=1993/mapNUM=33/g' ~/RetroPie/roms/ports/Strife\ Veteren\ Edition\ \(WARP\).sh
 	sed -i 's/skillLEVEL=1993/skillLEVEL=3/g' ~/RetroPie/roms/ports/Strife\ Veteren\ Edition\ \(WARP\).sh
@@ -1561,9 +1525,6 @@ if [ -f ~/RetroPie/roms/ports/doom/tnt.wad ]; then
 	sed -i 's/episodeNUM=1993/episodeNUM=/g' ~/RetroPie/roms/ports/TNT\ \(DAZI\).sh
 	sed -i 's/mapNUM=1993/mapNUM=/g' ~/RetroPie/roms/ports/TNT\ \(DAZI\).sh
 	sed -i 's/skillLEVEL=1993/skillLEVEL=/g' ~/RetroPie/roms/ports/TNT\ \(DAZI\).sh
-	#rm ~/RetroPie/roms/ports/doom/tnt-warp.wad 2>/dev/null
-	#ln -s ~/RetroPie/roms/ports/doom/tnt.wad ~/RetroPie/roms/ports/doom/tnt-warp.wad 2>/dev/null
-	#sed -i 's/tnt.wad/tnt-warp.wad/g' ~/RetroPie/roms/ports/TNT\ \(WARP\).sh
 	sed -i 's/episodeNUM=1993/episodeNUM=/g' ~/RetroPie/roms/ports/TNT\ \(WARP\).sh
 	sed -i 's/mapNUM=1993/mapNUM=32/g' ~/RetroPie/roms/ports/TNT\ \(WARP\).sh
 	sed -i 's/skillLEVEL=1993/skillLEVEL=3/g' ~/RetroPie/roms/ports/TNT\ \(WARP\).sh
@@ -1579,7 +1540,7 @@ fi
 wget -q --spider http://google.com
 if [ $? -eq 0 ]; then	
 	if [[ "$(dpkg -l | grep -F '  p7zip-full ')" == '' ]] || [[ "$(dpkg -l | grep -F '  unzip ')" == '' ]]; then
-		#sudo apt-get install zip -y
+		sudo apt-get install zip -y
 		sudo apt-get install unzip -y
 		sudo apt-get install p7zip-full -y
 	fi
@@ -1587,9 +1548,8 @@ if [ $? -eq 0 ]; then
 	unzip -qq -o /dev/shm/SIGIL_v1_21.zip -d /dev/shm
 	mv /dev/shm/SIGIL_v1_21/SIGIL_COMPAT_v1_21.wad /dev/shm/SIGIL_v1_21/01_SIGIL_COMPAT_v1_21.wad
 	mv /dev/shm/SIGIL_v1_21/SIGIL_v1_21.wad /dev/shm/SIGIL_v1_21/01_SIGIL_v1_21.wad	
-	zip -mj /dev/shm/SIGIL_v1_21/SIGIL.zip /dev/shm/SIGIL_v1_21/01_SIGIL_v1_21.wad
-	#zip -mj /dev/shm/SIGIL_v1_21/SIGIL_COMPAT.zip /dev/shm/SIGIL_v1_21/01_SIGIL_COMPAT_v1_21.wad
-	#7z a /dev/shm/SIGIL_v1_21/SIGIL.zip /dev/shm/SIGIL_v1_21/01_SIGIL_v1_21.wad
+	#zip -mj /dev/shm/SIGIL_v1_21/SIGIL.zip /dev/shm/SIGIL_v1_21/01_SIGIL_v1_21.wad
+	7z a /dev/shm/SIGIL_v1_21/SIGIL.zip /dev/shm/SIGIL_v1_21/01_SIGIL_v1_21.wad
 	7z a /dev/shm/SIGIL_v1_21/SIGIL_COMPAT.7z /dev/shm/SIGIL_v1_21/01_SIGIL_COMPAT_v1_21.wad
 	mkdir ~/RetroPie/roms/ports 2>/dev/null; mkdir ~/RetroPie/roms/ports/doom 2>/dev/null; mkdir ~/RetroPie/roms/ports/doom/mods 2>/dev/null
 	mv /dev/shm/SIGIL_v1_21/SIGIL.zip ~/RetroPie/roms/ports/doom/mods 2>/dev/null
@@ -1610,8 +1570,7 @@ if [ $? -eq 0 ]; then
 	# 0ne Humanity Template
 	wget https://github.com/RapidEdwin08/dazi/raw/main/'0ne Humanity.sh' -P /dev/shm/
 	mv /dev/shm/'0ne Humanity.sh' ~/RetroPie/roms/ports/0ne\ Humanity\ \(DAZI\).sh
-	sed -i 's+addonDIR=~/RetroPie/roms/ports/doom/addon+#addonDIR=~/RetroPie/roms/ports/doom/addon+g' ~/RetroPie/roms/ports/0ne\ Humanity\ \(DAZI\).sh
-	sed -i 's+#addonDIR=/dev/shm/addon+addonDIR=/dev/shm/addon+g' ~/RetroPie/roms/ports/0ne\ Humanity\ \(DAZI\).sh
+	sed -i 's+addonDIR=.*+addonDIR=/dev/shm/addon+g' ~/RetroPie/roms/ports/0ne\ Humanity\ \(DAZI\).sh
 fi
 
 # FINISHED
@@ -1679,29 +1638,44 @@ modCOUNTroms=$(( $(find $modDIRroms -maxdepth 1 -type f | wc -l) + $(find $modDI
 # Only show [prboom-plus] M0D Count if found
 if [ ! -d /opt/retropie/configs/ports/prboom-plus/autoload/doom-all ]; then mkdir $modDIRprboomplus > /dev/null 2>&1; fi
 modCOUNTprboomplus=$(( $(find $modDIRprboomplus -maxdepth 1 -type f 2>/dev/null | wc -l) + $(find $modDIRprboomplus -maxdepth 1 -type l 2>/dev/null | wc -l) ))
-prboomPLUScount="[$modDIRprboomplus] \nFreeSpace:[$(df -h $modDIRprboomplus 2>/dev/null |awk '{print $4}' | grep -v Avail )] # M0Ds:[$modCOUNTprboomplus]"
+prboomPLUScount="$modDIRprboomplus [$(df -h $modDIRprboomplus 2>/dev/null |awk '{print $4}')]"
 if [ ! -d /opt/retropie/configs/ports/prboom-plus/autoload/doom-all ]; then prboomPLUScount=; fi
 
 # WARN IF [..ports/doom/emlators.cfg] N0T Found 
 if [ ! -f /opt/retropie/configs/ports/doom/emulators.cfg ]; then
 	dialog --no-collapse --title "***N0TICE*** [..ports/doom/emlators.cfg] NOT FOUND!" --ok-label MENU --msgbox "MAKE SURE LZDOOM IS INSTALLED!"  25 75
 fi
+
+#num3=`expr $num1 + $num2`
+modCOUNTtotal=`expr $modCOUNTtmpfs + $modCOUNTroms + $modCOUNTprboomplus`
+totalM0Dchars=${#modCOUNTtotal}
+tMC="$modCOUNTtotal "
+if [ "$totalM0Dchars" == '1' ]; then tMC="{0$modCOUNTtotal}"; fi
+if [ "$totalM0Dchars" == '2' ]; then tMC="{$modCOUNTtotal}"; fi
+
+daziHUDmain=$(
+echo ""
+echo '+--------------------------------------------------------------------+   '
+echo '|      | /|  |  |            |   (\\   |     /|    |_| ..  ports.... |   '
+echo '|      | /|  |  |  2  3  4   |    \||  |     /|    |_| ..  ..doom... |   '
+echo "| $tMC | ~|~ | %|            |  __(_\"; |     ~|~ % |_| ..  ....addon |   "
+echo '|      | /|  |  |            | /    \  |     /|    |_| ..  ..shm.... |   '
+echo '| AMMO | HEALTH |  5  6  7   |{}___)\)_|    ARMOR  |#| ..  dev...... |   '
+echo '+--------------------------------------------------------------------+   '
+)
+
 # Confirm Configurations
 DMLconfCONFIG=$(dialog --stdout --no-collapse --title " [DAZI] M0D LOADER for [lzdoom] by: RapidEdwin08 [$versionDAZI]" \
 	--ok-label SELECT --cancel-label "$MENUlaunchDOOM" \
-	--menu "$prboomPLUScount \n$daziHUD \n[$modDIRroms] FreeSpace:[$(df -h $modDIRroms |awk '{print $4}' | grep -v Avail )] # M0Ds:[$modCOUNTroms]\n \n[$modDIRtmpfs] (tmpfs) FreeSpace:[$(df -h $modDIRtmpfs |awk '{print $4}' | grep -v Avail )] # M0Ds:[$modCOUNTtmpfs]" 25 75 20 \
+	--menu "$daziHUDmain\n$prboomPLUScount \n$modDIRroms [$(df -h $modDIRroms |awk '{print $4}')] \n$modDIRtmpfs (tmpfs) [$(df -h $modDIRtmpfs |awk '{print $4}')] " 25 75 20 \
 	1 ">< $MENUlaunchDOOM ><" \
-	2 ">< LOAD   [M0D] in [$modDIRtmpfs] (TMPFS) ><" \
-	3 ">< REMOVE [M0D] in [$modDIRtmpfs] (TMPFS) ><" \
-	4 ">< LOAD   [M0D] in [/roms/ports/doom/addon] ><" \
-	5 ">< REMOVE [M0D] in [/roms/ports/doom/addon] ><" \
-	6 ">< LOAD   [M0D] in [/prboom-plus/autoload/doom-all] ><" \
-	7 ">< REMOVE [M0D] in [/prboom-plus/autoload/doom-all] ><" \
-	8 ">< SELECT Alternate [M0D] Directory for this Session ><" \
-	9 ">< SELECT [WARP] and [DIFFICULTY] for [lzdoom-dazi+warp] ><" \
-	P ">< MANAGE [prboom.cfg] Configuration File(s) ><" \
+	2 ">< {$modCOUNTtmpfs} M0Ds in [$modDIRtmpfs] (TMPFS) ><" \
+	3 ">< {$modCOUNTroms} M0Ds in [/roms/ports/doom/addon] ><" \
+	4 ">< {$modCOUNTprboomplus} M0Ds in [/prboom-plus/autoload/doom-all] ><" \
+	W ">< SELECT [WARP] and [DIFFICULTY] for [lzdoom-dazi+warp] ><" \
+	C ">< CREATE [prboom.cfg] Configuration File(s) ><" \
 	D ">< DELETE [lzdoom.ini] Configuration (RESET) ><" \
-	A ">< ABORT [runcommand] ><")
+	A ">< ABORT ><")
 
 if [ "$DMLconfCONFIG" == '1' ]; then
 	if [ "$0" == "/opt/retropie/configs/ports/doom/lzdoom-dazi.sh" ] || [ "$0" == "/opt/retropie/configs/all/runcommand-menu/lzdoom-dazi.sh" ]; then
@@ -1717,85 +1691,33 @@ if [ "$DMLconfCONFIG" == '2' ]; then
 	currentMODdir=$M0DdirMAIN
 	currentADDONdir=$modDIRtmpfs
 	count=0
-	M0DaddMENU
+	DMLsubMENU
 fi
+
 if [ "$DMLconfCONFIG" == '3' ]; then
-	currentADDONdir=$modDIRtmpfs
-	M0DremoveMENU
+	currentMODdir=$M0DdirMAIN
+	currentADDONdir=$modDIRroms
+	count=0
+	DMLsubMENU
 fi
 
 if [ "$DMLconfCONFIG" == '4' ]; then
 	currentMODdir=$M0DdirMAIN
-	currentADDONdir=$modDIRroms
-	count=0
-	M0DaddMENU
-fi
-if [ "$DMLconfCONFIG" == '5' ]; then
-	currentADDONdir=$modDIRroms
-	M0DremoveMENU
-fi
-
-if [ "$DMLconfCONFIG" == '6' ]; then
-	currentMODdir=$M0DdirMAIN
 	currentADDONdir=$modDIRprboomplus
 	count=0
-	M0DaddMENU
-fi
-if [ "$DMLconfCONFIG" == '7' ]; then
-	currentADDONdir=$modDIRprboomplus
-	M0DremoveMENU
+	DMLsubMENU
 fi
 
-if [ "$DMLconfCONFIG" == '8' ]; then
-	# DEFAULT User M0D Directory IF [alternateM0Ddir] NOT DEFINED
-	if [ "$alternateM0Ddir" == "" ]; then alternateM0Ddir=$M0DdirMAIN; fi
-	userM0DdirCFG=$(dialog --stdout --no-collapse --title "               SELECT an Alternate [M0D] Directory for this Session              " \
-		--ok-label OK --cancel-label BACK \
-		--menu "SELECT an Alternate [M0D] Directory to Load M0Ds from for this Session \n   \nYou can Also MANUALLY EDIT [alternateM0Ddir=] @ [LINE#4] of this Script \n eg. [alternateM0Ddir=/my/mods/dir] 0r [alternateM0Ddir=] Leave BLANK \n   \n CURRENT M0D Directory: [$alternateM0Ddir]" 25 75 20 \
-		1 "><  HOME  [~/]  ><" \
-		2 "><  MEDIA [/media]  ><" \
-		3 "><  P0RTS [~/RetroPie/roms/ports]  ><" \
-		4 "><  D00M  [~/RetroPie/roms/ports/doom]  ><" \
-		5 "><  DAZI  [~/RetroPie/roms/ports/doom/mods]  ><")
-	# M0D DIR Confirmed - Otherwise Back to Main Menu
-	if [ "$userM0DdirCFG" == '1' ]; then
-		alternateM0Ddir=~
-		dialog --no-collapse --title "Select an Alternate [M0D] Directory for the Current Session *COMPLETE!*" --ok-label Back --msgbox "CURRENT M0D Directory: [$alternateM0Ddir]"  25 75
-		DMLmainMENU
-	fi
-	if [ "$userM0DdirCFG" == '2' ]; then
-		alternateM0Ddir=/media
-		dialog --no-collapse --title "Select an Alternate [M0D] Directory for the Current Session *COMPLETE!*" --ok-label Back --msgbox "CURRENT M0D Directory: [$alternateM0Ddir]"  25 75
-		DMLmainMENU
-	fi
-	if [ "$userM0DdirCFG" == '3' ]; then
-		alternateM0Ddir=~/RetroPie/roms
-		dialog --no-collapse --title "Select an Alternate [M0D] Directory for the Current Session *COMPLETE!*" --ok-label Back --msgbox "CURRENT M0D Directory: [$alternateM0Ddir]"  25 75
-		DMLmainMENU
-	fi
-	if [ "$userM0DdirCFG" == '4' ]; then
-		alternateM0Ddir=~/RetroPie/roms/ports/doom
-		dialog --no-collapse --title "Select an Alternate [M0D] Directory for the Current Session *COMPLETE!*" --ok-label Back --msgbox "CURRENT M0D Directory: [$alternateM0Ddir]"  25 75
-		DMLmainMENU
-	fi
-	if [ "$userM0DdirCFG" == '5' ]; then
-		alternateM0Ddir=~/RetroPie/roms/ports/doom/mods
-		dialog --no-collapse --title "Select an Alternate [M0D] Directory for the Current Session *COMPLETE!*" --ok-label Back --msgbox "CURRENT M0D Directory: [$alternateM0Ddir]"  25 75
-		DMLmainMENU
-	fi
-DMLmainMENU
-fi
-
-if [ "$DMLconfCONFIG" == '9' ]; then WARPmainMENU; fi
+if [ "$DMLconfCONFIG" == 'W' ]; then WARPmainMENU; fi
 
 if [ "$DMLconfCONFIG" == 'A' ]; then
-	abortRUNcommand=$(dialog --stdout --no-collapse --title "               ABORT  [runcommand] and EXIT              " \
+	abortRUNcommand=$(dialog --stdout --no-collapse --title "                 ABORT              " \
 		--ok-label OK --cancel-label BACK \
 		--menu "                           SELECT AN 0PTION             " 25 75 20 \
-		1 "><  ABORT  [runcommand] and EXIT  ><" \
-		2 "><  ABORT  [runcommand] and CLEAN [TMPFS]  ><" \
-		3 "><  ABORT  [runcommand] and CLEAN [ADDONS]  ><" \
-		4 "><  ABORT  [runcommand] and CLEAN [PrBoomPlus]  ><")
+		1 "><  ABORT  ><" \
+		2 "><  ABORT  and CLEAN [TMPFS]  ><" \
+		3 "><  ABORT  and CLEAN [ADDONS]  ><" \
+		4 "><  ABORT  and CLEAN [PrBoomPlus]  ><")
 		
 	# M0D DIR Confirmed - Otherwise Back to Main Menu
 	if [ "$abortRUNcommand" == '1' ]; then
@@ -1856,8 +1778,8 @@ if [ "$DMLconfCONFIG" == 'D' ]; then
 DMLmainMENU
 fi
 
-# MANAGE prboom.cfg Confirmed - Otherwise Back to Main Menu
-if [ "$DMLconfCONFIG" == 'P' ]; then lrPRBOOMmenu; fi
+# CREATE prboom.cfg Confirmed - Otherwise Back to Main Menu
+if [ "$DMLconfCONFIG" == 'C' ]; then lrPRBOOMmenu; fi
 
 # Back if N0T Confirmed
 if [ "$0" == "/opt/retropie/configs/ports/doom/lzdoom-dazi.sh" ] || [ "$0" == "/opt/retropie/configs/all/runcommand-menu/lzdoom-dazi.sh" ]; then
@@ -1867,6 +1789,94 @@ fi
 
 tput reset
 mainMENU
+}
+
+# M0Ds Sub-Menu
+DMLsubMENU()
+{
+# Apply Custom User M0D Directory IF DEFINED
+if [ ! "$alternateM0Ddir" == "" ]; then M0DdirMAIN="$alternateM0Ddir"; fi
+currentMODdir=$M0DdirMAIN
+
+modCOUNTcurrent=$(( $(find $currentADDONdir -maxdepth 1 -type f | wc -l) + $(find $currentADDONdir -maxdepth 1 -type l | wc -l) ))
+
+#modSLOTnum="  2  3  4   "
+if [ "$currentADDONdir" == "$modDIRtmpfs" ]; then modSLOTnum=" [2] 3  4   "; menuNAME='[/dev/shm/addon] (TMPFS)'; fi
+if [ "$currentADDONdir" == "$modDIRroms" ]; then modSLOTnum="  2 [3] 4   "; menuNAME='[/roms/ports/doom/addon]'; fi
+if [ "$currentADDONdir" == "$modDIRprboomplus" ]; then modSLOTnum="  2  3 [4]  "; menuNAME='[/prboom-plus/autoload/doom-all]'; fi
+
+countM0Dchars=${#modCOUNTcurrent}
+nMC="$modCOUNTcurrent "
+if [ "$countM0Dchars" == '1' ]; then nMC="{0$modCOUNTcurrent}"; fi
+if [ "$countM0Dchars" == '2' ]; then nMC="{$modCOUNTcurrent}"; fi
+
+daziHUDsub=$(
+echo ""
+echo '+--------------------------------------------------------------------+   '
+echo '|      | /|  |  |            |   (\\   |     /|    |_| ..  ports.... |   '
+echo "|      | /|  |  |$modSLOTnum|    \||  |     /|    |_| ..  ..doom... |   "
+echo "| $nMC | ~|~ | %|            |  __(_\"; |     ~|~ % |_| ..  ....addon |   "
+echo '|      | /|  |  |            | /    \  |     /|    |_| ..  ..shm.... |   '
+echo '| AMMO | HEALTH |  5  6  7   |{}___)\)_|    ARMOR  |#| ..  dev...... |   '
+echo '+--------------------------------------------------------------------+   '
+)
+
+# Confirm Actions
+DMLsubCONFIG=$(dialog --stdout --no-collapse --title "LOADING M0Ds from: [$currentMODdir]" \
+	--ok-label SELECT --cancel-label "BACK" \
+	--menu "$daziHUDsub \n$currentADDONdir [$(df -h $currentADDONdir |awk '{print $4}')]" 25 75 20 \
+	L ">< LOAD   [M0Ds]  in  $menuNAME ><" \
+	V ">< VIEW   [M0Ds]  ><" \
+	R ">< REMOVE [M0Ds]  ><" \
+	C ">< CLEAR  [M0Ds]  ><" \
+	A ">< SELECT [Alternate] M0D Directory to LOAD From  ><")
+
+if [ "$DMLsubCONFIG" == 'V' ]; then
+	# Back to Menu IF PrBoomPlus addonDIR NOT FOUND
+	if [ ! -d /opt/retropie/configs/ports/prboom-plus/autoload/doom-all ] && [ "$currentADDONdir" == "$modDIRprboomplus" ]; then
+		dialog --no-collapse --title "  [/opt/retropie/configs/ports/prboom-plus/autoload/doom-all] NOT FOUND   " --ok-label CONTINUE --msgbox "    IS PrBoomPlus INSTALLED?... \n"  25 75
+		DMLsubMENU
+	fi
+	
+	# VIEW Contents Confirmed
+	if [ ! -d $currentADDONdir ] || [ "$(ls -1 $currentADDONdir)" == '' ]; then
+		dialog --no-collapse --title "  NO FILES FOUND   LOAD SOME M0Ds!" --ok-label CONTINUE --msgbox "$currentADDONdir [Avail $(df -h $currentADDONdir |awk '{print $4}' | grep -v Avail )] \n"  25 75
+		DMLsubMENU
+	else
+		dialog --no-collapse --title " CONTENTS [$currentADDONdir]:" --ok-label Back --msgbox "$(ls $currentADDONdir | sort -n) "  25 75
+	fi
+	DMLsubMENU
+fi
+
+if [ "$DMLsubCONFIG" == 'C' ]; then
+	DMLconfDELETEdir=$(dialog --stdout --no-collapse --title " CLEAR ALL [M0Ds] from $menuNAME " \
+		--ok-label OK --cancel-label BACK \
+		--menu "          $nMC M0Ds Currently in $menuNAME\n \n                          ? ARE YOU SURE ?             " 25 75 20 \
+		1 "><  CLEAR  [M0Ds] from $menuNAME  ><" \
+		2 "><  BACK  ><")
+		
+		if [ "$DMLconfDELETEdir" == '1' ]; then
+			# Back to Menu IF PrBoomPlus addonDIR NOT FOUND
+			if [ ! -d /opt/retropie/configs/ports/prboom-plus/autoload/doom-all ] && [ "$currentADDONdir" == "$modDIRprboomplus" ]; then
+				dialog --no-collapse --title "  [/opt/retropie/configs/ports/prboom-plus/autoload/doom-all] NOT FOUND   " --ok-label CONTINUE --msgbox "    IS PrBoomPlus INSTALLED?... \n"  25 75
+				DMLsubMENU
+			fi
+			
+			# CLEAR currentADDONdir
+			rm "$currentADDONdir" -R -f; mkdir "$currentADDONdir" > /dev/null 2>&1
+			dialog --no-collapse --title " *CLEAR ALL [M0Ds] from $menuNAME COMPLETE*" --ok-label Back --msgbox "$daziHUD \n$currentADDONdir [$(df -h $currentADDONdir |awk '{print $4}')] $(ls $currentADDONdir | sort -n) "  25 75
+			DMLsubMENU
+		fi
+DMLsubMENU
+fi
+
+if [ "$DMLsubCONFIG" == 'L' ]; then M0DaddMENU; fi
+if [ "$DMLsubCONFIG" == 'R' ]; then M0DremoveMENU; fi
+if [ "$DMLsubCONFIG" == 'A' ]; then altMODdirCFG; fi
+
+if [ "$DMLsubCONFIG" == '' ]; then DMLmainMENU; fi
+
+DMLmainMENU
 }
 
 lrPRBOOMmenu()
@@ -1904,15 +1914,15 @@ echo "$RUNCMDprboomCFG"
 MNGprboomMENU=$(dialog --stdout --no-collapse --title "               MANAGE [prboom.cfg] Configuration File(s)              " \
 	--ok-label OK --cancel-label BACK \
 	--menu "$prboomREF" 25 75 20 \
-	1 "><  GENERATE [prboom.cfg] in [/dev/shm/addon/.0ther] (TMPFS) ><" \
-	2 "><  GENERATE [prboom.cfg] in [/roms/ports/doom/addon/.0ther] ><" \
+	1 "><  CREATE [prboom.cfg] in [/dev/shm/addon/.0ther] (TMPFS) ><" \
+	2 "><  CREATE [prboom.cfg] in [/roms/ports/doom/addon/.0ther] ><" \
 	3 "><  DELETE   [prboom.cfg] Configuration File(s) ><")
 
 # Generate Confirmed
 if [ "$MNGprboomMENU" == '1' ]; then
 	# Create prboom.cfg based on Contents of addonDIR
 	if [ ! -d $modDIRtmpfs ] || [ "$(ls -1 $modDIRtmpfs)" == '' ]; then
-		dialog --no-collapse --title "  NO FILES FOUND   LOAD SOME M0Ds!" --ok-label CONTINUE --msgbox "[$modDIRtmpfs] FreeSpace: [$(df -h $modDIRtmpfs |awk '{print $4}' | grep -v Avail )] \n"  25 75
+		dialog --no-collapse --title "  NO FILES FOUND   LOAD SOME M0Ds!" --ok-label CONTINUE --msgbox "$modDIRtmpfs [Avail $(df -h $modDIRtmpfs |awk '{print $4}' | grep -v Avail )]"  25 75
 		lrPRBOOMmenu
 	fi
 	mkdir $modDIRtmpfs/.0ther > /dev/null 2>&1
@@ -1953,7 +1963,7 @@ fi
 if [ "$MNGprboomMENU" == '2' ]; then
 	# Create prboom.cfg based on Contents of addonDIR
 	if [ ! -d $modDIRroms ] || [ "$(ls -1 $modDIRroms)" == '' ]; then
-		dialog --no-collapse --title "  NO FILES FOUND   LOAD SOME M0Ds!" --ok-label CONTINUE --msgbox "[$modDIRroms] FreeSpace: [$(df -h $modDIRroms |awk '{print $4}' | grep -v Avail )] \n"  25 75
+		dialog --no-collapse --title "  NO FILES FOUND   LOAD SOME M0Ds!" --ok-label CONTINUE --msgbox "$modDIRroms [Avail $(df -h $modDIRroms |awk '{print $4}' | grep -v Avail )]"  25 75
 		lrPRBOOMmenu
 	fi
 	mkdir $modDIRroms/.0ther > /dev/null 2>&1
@@ -2007,6 +2017,92 @@ if [ "$MNGprboomMENU" == '3' ]; then
 	lrPRBOOMmenu
 fi
 DMLmainMENU
+}
+
+altMODdirCFG()
+{
+	# DEFAULT User M0D Directory IF [alternateM0Ddir] NOT DEFINED
+	if [ "$alternateM0Ddir" == "" ]; then alternateM0Ddir=$M0DdirMAIN; fi
+	userM0DdirCFG=$(dialog --stdout --no-collapse --title "               SELECT an Alternate [M0D] Directory for this Session              " \
+		--ok-label OK --cancel-label BACK \
+		--menu "SELECT an Alternate [M0D] Directory to Load M0Ds from for this Session \n   \nYou can Also MANUALLY EDIT [alternateM0Ddir=] @ [LINE#4] of this Script \n eg. [alternateM0Ddir=/my/mods/dir] 0r [alternateM0Ddir=] Leave BLANK \n   \n CURRENT M0D Directory: [$alternateM0Ddir]" 25 75 20 \
+		1 "><  HOME  [~/]  ><" \
+		2 "><  MEDIA [/media]  ><" \
+		3 "><  P0RTS [~/RetroPie/roms/ports]  ><" \
+		4 "><  D00M  [~/RetroPie/roms/ports/doom]  ><" \
+		5 "><  DAZI  [~/RetroPie/roms/ports/doom/mods]  ><" \
+		6 "><  *CLEAR* Alternate [M0D] Directory  ><"\
+		7 "><  *SAVE*  Alternate [M0D] Directory  ><")
+	# M0D DIR Confirmed - Otherwise Back to Main Menu
+	if [ "$userM0DdirCFG" == '1' ]; then
+		alternateM0Ddir=~
+		dialog --no-collapse --title "Select an Alternate [M0D] Directory for the Current Session *COMPLETE!*" --ok-label Back --msgbox "CURRENT M0D Directory: [$alternateM0Ddir]"  25 75
+		DMLsubMENU
+	fi
+	if [ "$userM0DdirCFG" == '2' ]; then
+		alternateM0Ddir=/media
+		dialog --no-collapse --title "Select an Alternate [M0D] Directory for the Current Session *COMPLETE!*" --ok-label Back --msgbox "CURRENT M0D Directory: [$alternateM0Ddir]"  25 75
+		DMLsubMENU
+	fi
+	if [ "$userM0DdirCFG" == '3' ]; then
+		alternateM0Ddir=~/RetroPie/roms/ports
+		dialog --no-collapse --title "Select an Alternate [M0D] Directory for the Current Session *COMPLETE!*" --ok-label Back --msgbox "CURRENT M0D Directory: [$alternateM0Ddir]"  25 75
+		DMLsubMENU
+	fi
+	if [ "$userM0DdirCFG" == '4' ]; then
+		alternateM0Ddir=~/RetroPie/roms/ports/doom
+		dialog --no-collapse --title "Select an Alternate [M0D] Directory for the Current Session *COMPLETE!*" --ok-label Back --msgbox "CURRENT M0D Directory: [$alternateM0Ddir]"  25 75
+		DMLsubMENU
+	fi
+	if [ "$userM0DdirCFG" == '5' ]; then
+		alternateM0Ddir=~/RetroPie/roms/ports/doom/mods
+		dialog --no-collapse --title "Select an Alternate [M0D] Directory for the Current Session *COMPLETE!*" --ok-label Back --msgbox "CURRENT M0D Directory: [$alternateM0Ddir]"  25 75
+		DMLsubMENU
+	fi
+	
+	if [ "$userM0DdirCFG" == '6' ]; then
+		clearALTdir=$(dialog --stdout --no-collapse --title " *CLEAR* Alternate [M0D] Directory " \
+		--ok-label OK --cancel-label BACK \
+		--menu "CURRENT M0D Directory: [$alternateM0Ddir] \n$(cat $0 | grep ^alternateM0Ddir=)\n \n                          ? ARE YOU SURE ?             " 25 75 20 \
+		1 "><  *CLEAR* [alternateM0Ddir]  ><" \
+		2 "><  BACK  ><")
+		
+		if [ "$clearALTdir" == '1' ]; then
+			# CLEAR currentADDONdir
+			alternateM0Ddir=~/RetroPie/roms/ports/doom/mods
+			M0DdirMAIN=~/RetroPie/roms/ports/doom/mods
+			sed -i "s+^alternateM0Ddir=.*+alternateM0Ddir=+g" "$0"
+			sed -i "s+^alternateM0Ddir=.*+alternateM0Ddir=+g" /opt/retropie/configs/ports/doom/lzdoom-dazi.sh
+			sed -i "s+^alternateM0Ddir=.*+alternateM0Ddir=+g" /opt/retropie/configs/all/runcommand-menu/lzdoom-dazi.sh
+			dialog --no-collapse --title "CLEAR Alternate [M0D] Directory *COMPLETE!*" --ok-label Back --msgbox "CURRENT M0D Directory: [$alternateM0Ddir] $(cat $0 | grep ^alternateM0Ddir=)"  25 75
+			altMODdirCFG
+		else
+			altMODdirCFG
+		fi
+	altMODdirCFG
+	fi
+	
+	if [ "$userM0DdirCFG" == '7' ]; then
+		saveALTdir=$(dialog --stdout --no-collapse --title " *SAVE*  Alternate [M0D] Directory " \
+		--ok-label OK --cancel-label BACK \
+		--menu "CURRENT M0D Directory: [$alternateM0Ddir] \n$(cat $0 | grep ^alternateM0Ddir=) \n \n                          ? ARE YOU SURE ?             " 25 75 20 \
+		1 "><  *SAVE*  Current [M0D] Directory as [alternateM0Ddir]  ><" \
+		2 "><  BACK  ><")
+		
+		if [ "$saveALTdir" == '1' ]; then
+			# SAVE currentADDONdir
+			sed -i "s+^alternateM0Ddir=.*+alternateM0Ddir=$alternateM0Ddir+g" "$0"
+			sed -i "s+^alternateM0Ddir=.*+alternateM0Ddir=$alternateM0Ddir+g" /opt/retropie/configs/ports/doom/lzdoom-dazi.sh
+			sed -i "s+^alternateM0Ddir=.*+alternateM0Ddir=$alternateM0Ddir+g" /opt/retropie/configs/all/runcommand-menu/lzdoom-dazi.sh
+			dialog --no-collapse --title "SAVE Alternate [M0D] Directory *COMPLETE!*" --ok-label Back --msgbox "$(cat $0 | grep ^alternateM0Ddir=)"  25 75
+			altMODdirCFG
+		else
+			altMODdirCFG
+		fi
+	altMODdirCFG
+	fi
+	
+DMLsubMENU
 }
 
 WARPmainMENU()
@@ -2217,18 +2313,18 @@ tput reset
 currentADDONdirCOUNT=$(( $(find $currentADDONdir -maxdepth 1 -type f | wc -l) + $(find $currentADDONdir -maxdepth 1 -type l | wc -l) ))
 # =====================================
 # Back to Menu IF PrBoomPlus addonDIR NOT FOUND
-if [ ! -d /opt/retropie/configs/ports/prboom-plus/autoload/doom-all ] && [ $currentADDONdir == '/opt/retropie/configs/ports/prboom-plus/autoload/doom-all' ]; then
+if [ ! -d /opt/retropie/configs/ports/prboom-plus/autoload/doom-all ] && [ "$currentADDONdir" == "$modDIRprboomplus" ]; then
 	dialog --no-collapse --title "  [/opt/retropie/configs/ports/prboom-plus/autoload/doom-all] NOT FOUND   " --ok-label CONTINUE --msgbox "    IS PrBoomPlus INSTALLED?... \n"  25 75
-	DMLmainMENU
+	DMLsubMENU
 fi
 
 # Check if NO Files/Folders
 if [ "$(ls -a -1 $currentADDONdir | awk 'NR>2' )" == '' ]; then
-	dialog --no-collapse --title "  NO FILES FOUND   " --ok-label CONTINUE --msgbox "    [$currentADDONdir] FreeSpace: [$(df -h $currentADDONdir |awk '{print $4}' | grep -v Avail )] \n"  25 75
+	dialog --no-collapse --title "  NO FILES FOUND   " --ok-label CONTINUE --msgbox "$currentADDONdir [Avail $(df -h $currentADDONdir |awk '{print $4}' | grep -v Avail )]"  25 75
 	if [ $currentADDONdir == $modDIRtmpfs ] || [ $currentADDONdir == $modDIRroms ]; then
-		DMLmainMENU
+		DMLsubMENU
 	else
-		if [ $currentADDONdir == $modDIRprboomplus ]; then DMLmainMENU; fi
+		if [ $currentADDONdir == $modDIRprboomplus ]; then DMLsubMENU; fi
 		# Go up a Directory
 		currentADDONdir=$(dirname $currentADDONdir)
 		M0DremoveMENU
@@ -2241,7 +2337,7 @@ while read -r line; do # process file by file
     let i=$i+1
     W+=($i "$line")
 done < <( ls -a -1 $currentADDONdir | awk 'NR>2' )
-FILE=$(dialog --title "Remove M0D from [$currentADDONdir]" --ok-label SELECT --cancel-label BACK --menu "[$currentADDONdir] FreeSpace:[$(df -h $currentADDONdir |awk '{print $4}' | grep -v Avail )] # M0Ds:[$currentADDONdirCOUNT]" 25 75 20 "${W[@]}" 3>&2 2>&1 1>&3  </dev/tty > /dev/tty) # show dialog and store output
+FILE=$(dialog --title "Remove M0D from [$currentADDONdir]" --ok-label " {$currentADDONdirCOUNT} - SELECT " --cancel-label BACK --menu "$currentADDONdir [Avail $(df -h $currentADDONdir |awk '{print $4}' | grep -v Avail )]" 25 75 20 "${W[@]}" 3>&2 2>&1 1>&3  </dev/tty > /dev/tty) # show dialog and store output
 #clear
 tput reset
 #if [ $? -eq 0 ]; then # Exit with OK
@@ -2290,15 +2386,15 @@ if [ ! "$FILE" == '' ]; then
 		# Perform desired Action for selectFILE
 		rm "$currentADDONdir/$selectFILE"
 	fi
-	dialog --no-collapse --title "  M0D REMOVED: [$selectFILE]   " --ok-label CONTINUE --msgbox "    [$currentADDONdir] FreeSpace: [$(df -h $currentADDONdir |awk '{print $4}' | grep -v Avail )]                                                                 $(ls -a -1 $currentADDONdir | awk 'NR>2' )"  25 75
+	dialog --no-collapse --title "  M0D REMOVED: [$selectFILE]   " --ok-label CONTINUE --msgbox "$currentADDONdir [Avail $(df -h $currentADDONdir |awk '{print $4}' | grep -v Avail )]                                                                 $(ls -a -1 $currentADDONdir | awk 'NR>2' | sort -n )"  25 75
 	# Check if NO Files/Folders
 	if [ "$(ls -a -1 $currentADDONdir | awk 'NR>2' )" == '' ]; then
-		dialog --no-collapse --title "  NO FILES FOUND   " --ok-label CONTINUE --msgbox "    [$currentADDONdir] FreeSpace: [$(df -h $currentADDONdir |awk '{print $4}' | grep -v Avail )] \n"  25 75
+		dialog --no-collapse --title "  NO FILES FOUND   " --ok-label CONTINUE --msgbox "$currentADDONdir [Avail $(df -h $currentADDONdir |awk '{print $4}' | grep -v Avail )]"  25 75
 		# Back to Menu IF in MAIN DIR
 		if [ $currentADDONdir == $modDIRtmpfs ] || [ $currentADDONdir == $modDIRroms ]; then
-			DMLmainMENU
+			DMLsubMENU
 		else
-			if [ $currentADDONdir == $modDIRprboomplus ]; then DMLmainMENU; fi
+			if [ $currentADDONdir == $modDIRprboomplus ]; then DMLsubMENU; fi
 			# Go up a Directory
 			currentADDONdir=$(dirname $currentADDONdir)
 			M0DremoveMENU
@@ -2316,7 +2412,7 @@ if [ ! $currentADDONdir == $modDIRtmpfs ] && [ ! $currentADDONdir == $modDIRroms
 	fi
 fi
 
-DMLmainMENU
+DMLsubMENU
 }
 
 M0DaddMENU()
@@ -2328,25 +2424,25 @@ currentADDONdirCOUNT=$(( $(find $currentADDONdir -maxdepth 1 -type f | wc -l) + 
 
 # =====================================
 # Back to Menu IF PrBoomPlus addonDIR NOT FOUND
-if [ ! -d /opt/retropie/configs/ports/prboom-plus/autoload/doom-all ] && [ $currentADDONdir == '/opt/retropie/configs/ports/prboom-plus/autoload/doom-all' ]; then
+if [ ! -d /opt/retropie/configs/ports/prboom-plus/autoload/doom-all ] && [ "$currentADDONdir" == "$modDIRprboomplus" ]; then
 	dialog --no-collapse --title "  [/opt/retropie/configs/ports/prboom-plus/autoload/doom-all] NOT FOUND   " --ok-label CONTINUE --msgbox "    IS PrBoomPlus INSTALLED?... \n"  25 75
-	DMLmainMENU
+	DMLsubMENU
 fi
 
 # DO NOT DEFINE R00T [ / ] FOR THE M0D DIRECTORY!
 if [ "$alternateM0Ddir" == '/' ]; then
 	dialog --no-collapse --title "  CAN NOT DEFINE *R00T* [ / ] FOR THE [alternateM0Ddir] DIRECTORY!   " --ok-label CONTINUE --msgbox "        SELECT an Alternate [M0D] Directory for this Session \n \nYou can Also MANUALLY EDIT [alternateM0Ddir=] @ [LINE#4] of this Script \n eg. [alternateM0Ddir=/my/mods/dir] 0r [alternateM0Ddir=] Leave BLANK \n"  25 75
-	DMLmainMENU
+	DMLsubMENU
 fi
 
 # Back to Menu IF in R00T DIR - Failsafe to Prevent getting Stuck in Endless M0D Loader [Back] L00P in Menu when '/' is INCLUDED/ at END/ of [alternateM0Ddir/] PATH/
-if [ $currentMODdir == '/' ]; then DMLmainMENU; fi
+if [ $currentMODdir == '/' ]; then DMLsubMENU; fi
 
 # Check if NO Files/Folders
 if [ "$(ls -1 $currentMODdir)" == '' ]; then
-	dialog --no-collapse --title "  NO FILES FOUND   " --ok-label CONTINUE --msgbox "    [$currentADDONdir] FreeSpace: [$(df -h $currentADDONdir |awk '{print $4}' | grep -v Avail )] \n"  25 75
+	dialog --no-collapse --title "  NO FILES FOUND   " --ok-label CONTINUE --msgbox "$currentADDONdir [Avail $(df -h $currentADDONdir |awk '{print $4}' | grep -v Avail )] \n"  25 75
 	if [ $currentMODdir == $M0DdirMAIN ]; then
-		DMLmainMENU
+		DMLsubMENU
 	else
 		# Go up a Directory
 		currentMODdir=$(dirname $currentMODdir)
@@ -2360,7 +2456,7 @@ while read -r line; do # process file by file
     let i=$i+1
     W+=($i "$line")
 done < <( ls -1 $currentMODdir )
-FILE=$(dialog --title "Load M0D from [$currentMODdir]" --ok-label SELECT --cancel-label BACK --menu "[$currentADDONdir] FreeSpace:[$(df -h $currentADDONdir |awk '{print $4}' | grep -v Avail )] # M0Ds:[$currentADDONdirCOUNT]" 25 75 20 "${W[@]}" 3>&2 2>&1 1>&3  </dev/tty > /dev/tty) # show dialog and store output
+FILE=$(dialog --title "Load M0D from [$currentMODdir]" --ok-label " {$currentADDONdirCOUNT} + SELECT " --cancel-label BACK --menu "$currentADDONdir [Avail $(df -h $currentADDONdir |awk '{print $4}' | grep -v Avail )]" 25 75 20 "${W[@]}" 3>&2 2>&1 1>&3  </dev/tty > /dev/tty) # show dialog and store output
 #clear
 tput reset
 #if [ $? -eq 0 ]; then # Exit with OK
@@ -2384,6 +2480,26 @@ if [ ! "$FILE" == '' ]; then
 			mkdir "$currentADDONdir"/".0ther" > /dev/null 2>&1
 			rm "$currentADDONdir"/".0ther"/"$selectFILE" > /dev/null 2>&1
 			ln -s "$currentMODdir/$selectFILE" "$currentADDONdir"/".0ther"/"$selectFILE" > /dev/null 2>&1
+		elif [[ "$selectFILE" == *".sh" ]] || [[ "$selectFILE" == *".SH" ]]; then
+			if [ ! "$(cat "$currentMODdir/$selectFILE" | grep "https://github.com/RapidEdwin08/dazi")" == '' ]; then
+				# Replace [addonDIR] with [currentADDONdir] and Subtract [runcommand] and [doomWAD] to have the DAZI-Template 0NLY Extract M0Ds when Ran
+				tmpDAZIsh=/dev/shm/daziTMP.sh
+				echo addonDIR="$currentADDONdir" > $tmpDAZIsh
+				# 0nly Prepare doomWAD-warp.wad IF mapNUM DEFINED
+				if [ "$(cat "$currentMODdir/$selectFILE" | grep -w "^mapNUM=")" == '' ]; then
+					cat "$currentMODdir/$selectFILE" | grep -v "runcommand.sh" | grep -v "^addonDIR=" | grep -v "^if" | grep -v "^bash" | grep -v "^loadM0Ds" | grep -v "^mkdir" | grep -v "^#" | grep -v "^rollingM0D=" | grep -v "^count=" | grep -v "^{" >> $tmpDAZIsh
+				else
+					cat "$currentMODdir/$selectFILE" | grep -v "runcommand.sh" | grep -v "^addonDIR=" | grep -v "^doomWAD=" | grep -v "^if" | grep -v "^bash" | grep -v "^loadM0Ds" | grep -v "^mkdir" | grep -v "^#" | grep -v "^rollingM0D=" | grep -v "^count=" | grep -v "^{" >> $tmpDAZIsh
+				fi
+				echo "$loadM0Dsh" >> $tmpDAZIsh
+				chmod 755 $tmpDAZIsh > /dev/null 2>&1
+				bash $tmpDAZIsh > /dev/null 2>&1
+				rm $tmpDAZIsh > /dev/null 2>&1
+			else
+				readTEXT=$(cat "$currentMODdir/$selectFILE")
+				dialog --no-collapse --title "  [$selectFILE]   " --ok-label CONTINUE --msgbox "$readTEXT"  25 75
+				M0DaddMENU
+			fi
 		else
 			# Count Current Files/Links in ADDONS - Update Count
 			if [ ! "$(find $currentADDONdir -maxdepth 1 -type f | wc -l )" == '0' ] || [ ! "$(find $currentADDONdir -maxdepth 1 -type l | wc -l )" == '0' ]; then count=$(( $count + $(find $currentADDONdir -maxdepth 1 -type f | wc -l ) + $(find $currentADDONdir -maxdepth 1 -type l | wc -l ) )); fi
@@ -2406,15 +2522,15 @@ if [ ! "$FILE" == '' ]; then
 		if [[ "$selectFILE" == *"prboom.cfg" ]]; then
 			dialog --no-collapse --title "  prboom.cfg Added: ["$currentADDONdir"/".0ther"/prboom.cfg]   " --ok-label CONTINUE --msgbox " $(cat "$currentADDONdir"/".0ther"/prboom.cfg) "  25 75
 		else
-			dialog --no-collapse --title "  M0D Added: [$selectFILE]   " --ok-label CONTINUE --msgbox "    [$currentADDONdir] FreeSpace: [$(df -h $currentADDONdir |awk '{print $4}' | grep -v Avail )]                                                                 $(ls -a -1 $currentADDONdir | awk 'NR>2' )"  25 75
+			dialog --no-collapse --title "  M0D Added: [$selectFILE]   " --ok-label CONTINUE --msgbox "$currentADDONdir [Avail $(df -h $currentADDONdir |awk '{print $4}' | grep -v Avail )]                                                                 $(ls -a -1 $currentADDONdir | awk 'NR>2' | sort -n )"  25 75
 		fi
 	fi
 	# Check if NO Files/Folders
 	if [ "$(ls -1 $currentMODdir)" == '' ]; then
-		dialog --no-collapse --title "  NO FILES FOUND   " --ok-label CONTINUE --msgbox "[$currentADDONdir] FreeSpace: [$(df -h $currentADDONdir |awk '{print $4}' | grep -v Avail )] \n"  25 75
+		dialog --no-collapse --title "  NO FILES FOUND   " --ok-label CONTINUE --msgbox "$currentADDONdir [Avail $(df -h $currentADDONdir |awk '{print $4}' | grep -v Avail )] \n"  25 75
 		# Back to Menu IF in MAIN DIR
 		if [ $currentMODdir == $M0DdirMAIN ]; then
-			DMLmainMENU
+			DMLsubMENU
 		else
 			# Go up a Directory
 			currentMODdir=$(dirname $currentMODdir)
@@ -2431,7 +2547,7 @@ if [ ! $currentMODdir == $M0DdirMAIN ]; then
 	M0DaddMENU
 fi
 
-DMLmainMENU
+DMLsubMENU
 }
 
 srb2ADDONSmenu()
@@ -2542,6 +2658,18 @@ fi
 tput reset
 mainMENU
 }
+
+# Parameter [loadmod] + [D00M-R0M.sh] determines Called by [DAZI-Template.sh]
+if [ "$1" == "loadmod" ]; then
+	tmpDAZIsh=/dev/shm/daziTMP.sh
+	# Create TMP script based on ROM.sh Content to Load M0Ds
+	cat "$2" | grep -v "runcommand.sh" | grep -v "^if" | grep -v "^bash" | grep -v "^loadM0Ds" | grep -v "^mkdir" | grep -v "^#" | grep -v "^rollingM0D=" | grep -v "^count=" | grep -v "^{" > $tmpDAZIsh
+	echo "$loadM0Dsh" >> $tmpDAZIsh
+	chmod 755 $tmpDAZIsh > /dev/null 2>&1
+	bash $tmpDAZIsh > /dev/null 2>&1
+	rm $tmpDAZIsh > /dev/null 2>&1
+	exit 0
+fi
 
 # Parameter [onlaunch] determines Called by [runcommand-onlaunch.sh]
 if [ "$1" == "onlaunch" ]; then
@@ -2681,6 +2809,7 @@ else
 	mainMENU
 fi
 
+# Blank runcommand.log
 if [ "$0" == "/opt/retropie/configs/ports/doom/lzdoom-dazi.sh" ] || [ "$0" == "/opt/retropie/configs/all/runcommand-menu/lzdoom-dazi.sh" ]; then cat /dev/null > /dev/shm/runcommand.log; fi
 tput reset
 exit 0
