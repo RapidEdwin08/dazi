@@ -1,5 +1,3 @@
-# https://github.com/RapidEdwin08/dazi  #v2022.09
-
 #!/bin/bash
 # https://github.com/RapidEdwin08/dazi  #v2022.12
 
