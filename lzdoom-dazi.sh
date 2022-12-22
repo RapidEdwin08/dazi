@@ -1654,7 +1654,7 @@ if [ "$totalM0Dchars" == '1' ]; then tMC="{0$modCOUNTtotal}"; fi
 if [ "$totalM0Dchars" == '2' ]; then tMC="{$modCOUNTtotal}"; fi
 
 daziHUDmain=$(
-echo ""
+#echo ""
 echo '+--------------------------------------------------------------------+   '
 echo '|      | /|  |  |            |   (\\   |     /|    |_| ..  ports.... |   '
 echo '|      | /|  |  |  2  3  4   |    \||  |     /|    |_| ..  ..doom... |   '
@@ -1811,7 +1811,7 @@ if [ "$countM0Dchars" == '1' ]; then nMC="{0$modCOUNTcurrent}"; fi
 if [ "$countM0Dchars" == '2' ]; then nMC="{$modCOUNTcurrent}"; fi
 
 daziHUDsub=$(
-echo ""
+#echo ""
 echo '+--------------------------------------------------------------------+   '
 echo '|      | /|  |  |            |   (\\   |     /|    |_| ..  ports.... |   '
 echo "|      | /|  |  |$modSLOTnum|    \||  |     /|    |_| ..  ..doom... |   "
