@@ -20,6 +20,7 @@ addonDIR=/dev/shm/addon
 
 # DAZI=M0D=LOADER - Update doomWAD[-warp] IF WARP Settings are DEFINED
 if [ ! "$mapNUM" == "" ]; then doomWAD="${addonDIR%/*}/$(basename "${doomWAD}" | cut -d. -f1 )-warp.$(basename "${doomWAD}" | sed "s/^.*\.//")"; fi
+if [ ! "$addonDIR" == ~/RetroPie/roms/ports/doom/addon ]; then doomWAD="${addonDIR%/*}/$(basename "${doomWAD}" | cut -d. -f1 ).$(basename "${doomWAD}" | sed "s/^.*\.//")"; fi # Update addonDIR/doomWAD
 bash /opt/retropie/configs/ports/doom/lzdoom-dazi.sh loadmod "$0" > /dev/null 2>&1 # Load M0Ds with DAZI=M0D=LOADER
 
 # RUN D00M P0RT
