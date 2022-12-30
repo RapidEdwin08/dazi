@@ -46,10 +46,9 @@ if [ ! -f "$doomMOD1" ]; then
 	sudo /home/pi/RetroPie-Setup/retropie_packages.sh retropiemenu launch "/dev/shm/get-one-humanity.sh" </dev/tty > /dev/tty
 	exit 0
 fi
-
 # Load M0Ds with DAZI=M0D=LOADER if Installed
-if [ -f /opt/retropie/configs/ports/doom/lzdoom-dazi.sh ]; then if [ ! "$mapNUM" == "" ]; then doomWAD="${addonDIR%/*}/$(basename "${doomWAD}" | cut -d. -f1 )-warp.$(basename "${doomWAD}" | sed "s/^.*\.//")"; fi #Update doomWAD[-warp] IF WARP Settings are DEFINED
-if [ ! "$addonDIR" == "/home/$USER/RetroPie/roms/ports/doom/addon" ]; then doomWAD="${addonDIR%/*}/$(basename "${doomWAD}" | cut -d. -f1 ).$(basename "${doomWAD}" | sed "s/^.*\.//")"; fi # Update addonDIR/doomWAD
+if [ -f /opt/retropie/configs/ports/doom/lzdoom-dazi.sh ]; then doomWAD="${addonDIR%/*}/$(basename "${doomWAD}" | cut -d. -f1 ).$(basename "${doomWAD}" | sed "s/^.*\.//")"; # Update SUBaddonDIR/doomWAD
+if [ ! "$mapNUM" == "" ]; then doomWAD="${addonDIR%/*}/$(basename "${doomWAD}" | cut -d. -f1 )-warp.$(basename "${doomWAD}" | sed "s/^.*\.//")"; fi #Update doomWAD[-warp] IF WARP Settings are DEFINED
 bash /opt/retropie/configs/ports/doom/lzdoom-dazi.sh loadmod "$0" > /dev/null 2>&1; fi
 
 # RUN D00M P0RT
