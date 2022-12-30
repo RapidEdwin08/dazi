@@ -252,10 +252,10 @@ skillLEVEL=1993
 # Define addonDIR  -  /dev/shm/addon  -  ~/RetroPie/roms/ports/doom/addon  -  /opt/retropie/configs/ports/prboom-plus/autoload/doom-all
 addonDIR=/dev/shm/addon
 
-# DAZI=M0D=LOADER - Update doomWAD[-warp] IF WARP Settings are DEFINED
-if [ ! "$mapNUM" == "" ]; then doomWAD="${addonDIR%/*}/$(basename "${doomWAD}" | cut -d. -f1 )-warp.$(basename "${doomWAD}" | sed "s/^.*\.//")"; fi
+# Load M0Ds with DAZI=M0D=LOADER if Installed
+if [ -f /opt/retropie/configs/ports/doom/lzdoom-dazi.sh ]; then if [ ! "$mapNUM" == "" ]; then doomWAD="${addonDIR%/*}/$(basename "${doomWAD}" | cut -d. -f1 )-warp.$(basename "${doomWAD}" | sed "s/^.*\.//")"; fi #Update doomWAD[-warp] IF WARP Settings are DEFINED
 if [ ! "$addonDIR" == "/home/$USER/RetroPie/roms/ports/doom/addon" ]; then doomWAD="${addonDIR%/*}/$(basename "${doomWAD}" | cut -d. -f1 ).$(basename "${doomWAD}" | sed "s/^.*\.//")"; fi # Update addonDIR/doomWAD
-bash /opt/retropie/configs/ports/doom/lzdoom-dazi.sh loadmod "$0" > /dev/null 2>&1 # Load M0Ds with DAZI=M0D=LOADER
+bash /opt/retropie/configs/ports/doom/lzdoom-dazi.sh loadmod "$0" > /dev/null 2>&1; fi
 
 # RUN D00M P0RT
 "/opt/retropie/supplementary/runcommand/runcommand.sh" 0 _PORT_ "doom" "${doomWAD}"
