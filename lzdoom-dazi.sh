@@ -332,7 +332,7 @@ if [ ! -f /opt/retropie/configs/ports/doom/emulators.cfg ]; then
 	dialog --no-collapse --title "***N0TICE*** [..ports/doom/emlators.cfg] NOT FOUND!" --ok-label MENU --msgbox "$daziEMUcfg"  25 75
 fi
 # Confirm Configurations
-confCONFIG=$(dialog --stdout --no-collapse --title " D00M AddOn ZIP Integration [DAZI] for [lzdoom] by: RapidEdwin08 [$versionDAZI]" \
+confCONFIG=$(dialog --no-collapse --title " D00M AddOn ZIP Integration [DAZI] for [lzdoom] by: RapidEdwin08 [$versionDAZI]" \
 	--ok-label OK --cancel-label EXIT \
 	--menu "$scriptREF" 25 75 20 \
 	1 "><  [dazi-mod-loader]  ><" \
@@ -343,7 +343,7 @@ confCONFIG=$(dialog --stdout --no-collapse --title " D00M AddOn ZIP Integration 
 	6 "><  GENERATE [DAZI-Templates.sh] in [../roms/ports]   ><" \
 	7 "><  INSTALL [lzdoom-dazi] + [dazi-mod-loader]  ><" \
 	8 "><  REMOVE  [lzdoom-dazi] + [dazi-mod-loader]  ><" \
-	9 "><  REFERENCES  ><")
+	9 "><  REFERENCES  ><" 2>&1>/dev/tty)
 
 if [ "$confCONFIG" == '1' ]; then DMLmainMENU; fi 
 
@@ -364,11 +364,11 @@ if [ "$confCONFIG" == '6' ]; then getDAZIshMENU; fi
 
 # INSTALL [lzdoom-dazi]
 if [ "$confCONFIG" == '7' ]; then
-	confINSTALLdazi=$(dialog --stdout --no-collapse --title "               INSTALL  [lzdoom-dazi] + [dazi-mod-loader]              " \
+	confINSTALLdazi=$(dialog --no-collapse --title "               INSTALL  [lzdoom-dazi] + [dazi-mod-loader]              " \
 		--ok-label OK --cancel-label BACK \
 		--menu "                          ? ARE YOU SURE ?             " 25 75 20 \
 		1 "><  INSTALL  [lzdoom-dazi] + [dazi-mod-loader]  ><" \
-		2 "><  BACK  ><")
+		2 "><  BACK  ><" 2>&1>/dev/tty)
 	# Install Confirmed - Otherwise Back to Main Menu
 	if [ "$confINSTALLdazi" == '1' ]; then installDAZI; fi
 mainMENU
@@ -376,11 +376,11 @@ fi
 
 # REMOVE [lzdoom-dazi]
 if [ "$confCONFIG" == '8' ]; then
-	confREMOVEdazi=$(dialog --stdout --no-collapse --title "               REMOVE  [lzdoom-dazi] + [dazi-mod-loader]              " \
+	confREMOVEdazi=$(dialog --no-collapse --title "               REMOVE  [lzdoom-dazi] + [dazi-mod-loader]              " \
 		--ok-label OK --cancel-label BACK \
 		--menu "                          ? ARE YOU SURE ?             " 25 75 20 \
 		1 "><  REMOVE  [lzdoom-dazi] + [dazi-mod-loader]  ><" \
-		2 "><  BACK  ><")
+		2 "><  BACK  ><" 2>&1>/dev/tty)
 	# Uninstall Confirmed - Otherwise Back to Main Menu
 	if [ "$confREMOVEdazi" == '1' ]; then removeDAZI; fi
 mainMENU
@@ -420,11 +420,11 @@ else
 fi
 
 # Confirm Configurations
-RUNONstartCONFIG=$(dialog --stdout --no-collapse --title "   CONFIG  [dazi-mod-loader] MENU at [runcommand-onstart]" \
+RUNONstartCONFIG=$(dialog --no-collapse --title "   CONFIG  [dazi-mod-loader] MENU at [runcommand-onstart]" \
 	--ok-label SELECT --cancel-label "BACK" \
 	--menu "[dazi-mod-loader] Gets Installed to Runcommand Launch Menu User Menu \n   This 0ption REQUIRES the Runcommand Launch Menu to be ENABLED \n$currentFLAGhud \n  ENABLE [dazi-mod-loader] MENU to Load at [runcommand_onstart.sh] \n The [dazi-mod-loader] MENU will 0nly Launch IF the SYSTEM is [doom]\n  It will be LAUNCHED Before any Runcommand Actions or Launch Menu \n This 0ption does NOT REQUIRE the Runcommand Launch Menu to be ENABLED\n	\n     CURRENT SETTING: [$currentFLAGcfg]" 25 75 20 \
 	1 ">< ENABLE  [dazi-mod-loader] MENU at [runcommand-onstart] ><" \
-	2 ">< DISABLE [dazi-mod-loader] MENU at [runcommand-onstart] ><")
+	2 ">< DISABLE [dazi-mod-loader] MENU at [runcommand-onstart] ><" 2>&1>/dev/tty)
 
 # Turn DAZI @runcommand-onstart ON
 if [ "$RUNONstartCONFIG" == '1' ]; then 
@@ -496,7 +496,7 @@ else
 fi
 
 # Confirm Configurations
-RUNONendCONFIG=$(dialog --stdout --no-collapse --title "    CONFIG  [dazi-mod-loader] CLEAN at [runcommand-onend]" \
+RUNONendCONFIG=$(dialog --no-collapse --title "    CONFIG  [dazi-mod-loader] CLEAN at [runcommand-onend]" \
 	--ok-label SELECT --cancel-label "BACK" \
 	--menu "$currentFLAGhud \nSET [dazi-mod-loader] to CLEAN Doom [AddOnDIRs] at [runcommand-onend] \n     CURRENT SETTING: [$currentCLEANcfg]" 25 75 20 \
 	T ">< CLEAN UP [TMPFS] at [runcommand-onend] ><" \
@@ -506,7 +506,7 @@ RUNONendCONFIG=$(dialog --stdout --no-collapse --title "    CONFIG  [dazi-mod-lo
 	PT ">< CLEAN UP [PrBoomPlus+TMPFS] at [runcommand-onend] ><" \
 	PA ">< CLEAN UP [PrBoomPlus+ADDON] at [runcommand-onend] ><" \
 	PTA ">< CLEAN UP [PrBoomPlus+TMPFS+ADDON] at [runcommand-onend] ><" \
-	D ">< DISABLE CLEAN [AddOnDIRs] at [runcommand-onend] ><")
+	D ">< DISABLE CLEAN [AddOnDIRs] at [runcommand-onend] ><" 2>&1>/dev/tty)
 
 # SET  [runcommand-onend] to CLEAN [TMPFS]
 if [ "$RUNONendCONFIG" == 'T' ]; then 
@@ -613,7 +613,7 @@ doomEMUSmenu()
 {
 
 # Add Emulator Settings for doom-warp.wad files
-confEMUSdazi=$(dialog --stdout --no-collapse --title " [EmulatorSettings] for [doom-warp.wads]: [$doomWARPemu]" \
+confEMUSdazi=$(dialog --no-collapse --title " [EmulatorSettings] for [doom-warp.wads]: [$doomWARPemu]" \
 	--ok-label OK --cancel-label BACK \
 	--menu "$doomEMUSref" 25 75 20 \
 	1 "><  AUTO-ADD     [EmulatorSettings] for [doom-warp.wads]  ><" \
@@ -621,7 +621,7 @@ confEMUSdazi=$(dialog --stdout --no-collapse --title " [EmulatorSettings] for [d
 	3 "><  USER ADD     [EmulatorSettings] for [doom-warp.wads]  ><" \
 	4 "><  USER REMOVE  [EmulatorSettings] for [doom-warp.wads]  ><" \
 	5 "><  Select an Alternate WARP [Emulator] for the Current Session  ><" \
-	6 "><  VIEW CURRENT [EmulatorSettings]  ><")
+	6 "><  VIEW CURRENT [EmulatorSettings]  ><" 2>&1>/dev/tty)
 # Confirmed - Otherwise Back to Main Menu
 if [ "$confEMUSdazi" == '1' ]; then autoADDemus; fi
 if [ "$confEMUSdazi" == '2' ]; then autoREMOVEemus; fi
@@ -631,11 +631,11 @@ if [ "$confEMUSdazi" == '4' ]; then userREMOVEemus; fi
 # Change WARP Emulatorfor EmulatorSettings
 if [ "$confEMUSdazi" == '5' ]; then
 	# Change WARP Emulator
-	WARPemuCONFIG=$(dialog --stdout --no-collapse --title "     Select an Alternate WARP [Emulator] for the Current Session" \
+	WARPemuCONFIG=$(dialog --no-collapse --title "     Select an Alternate WARP [Emulator] for the Current Session" \
 		--ok-label SELECT --cancel-label "BACK" \
 		--menu "$currentFLAGhud \n     Alternate WARP [Emulator] can be APPLIED to [EmulatorSettings] \n	\n      CURRENT WARP Emulator for this Session: [$doomWARPemu]" 25 75 20 \
 		1 "><  lzdoom-dazi+warp  ><" \
-		2 "><  prboom-plus+warp  ><")
+		2 "><  prboom-plus+warp  ><" 2>&1>/dev/tty)
 		
 		if [ "$WARPemuCONFIG" == '1' ]; then
 			doomWARPemu=lzdoom-dazi+warp
@@ -1243,11 +1243,11 @@ doomEMUsettings=$(
 	echo "one-humanity.wad $(ls -1 ~/RetroPie/roms/ports/ | grep 0ne\ Humanity\ \(DAZI\).sh | cut -d. -f1)  SIGIL_v1_21.wad $(ls -1 ~/RetroPie/roms/ports/ | grep Doom\ SIGIL\ \(DAZI\).sh | cut -d. -f1)"
 	)
 
-confGETdazi=$(dialog --stdout --no-collapse --title "             GENERATE [DAZI-Templates.sh] in [../roms/ports]              " \
+confGETdazi=$(dialog --no-collapse --title "             GENERATE [DAZI-Templates.sh] in [../roms/ports]              " \
 	--ok-label OK --cancel-label BACK \
 	--menu "$doomEMUsettings" 25 75 20 \
 	1 "><  GENERATE [DAZI-Templates.sh] in [../roms/ports]  ><" \
-	2 "><  REMOVE ALL [DAZI-Templates.sh] in [../roms/ports]  ><")
+	2 "><  REMOVE ALL [DAZI-Templates.sh] in [../roms/ports]  ><" 2>&1>/dev/tty)
 	
 # Confirmed - Otherwise Back to Main Menu
 if [ "$confGETdazi" == '1' ]; then getDAZIsh; fi
@@ -1666,7 +1666,7 @@ echo '+--------------------------------------------------------------------+   '
 )
 
 # Confirm Configurations
-DMLconfCONFIG=$(dialog --stdout --no-collapse --title " [DAZI] M0D LOADER for [lzdoom] by: RapidEdwin08 [$versionDAZI]" \
+DMLconfCONFIG=$(dialog --no-collapse --title " [DAZI] M0D LOADER for [lzdoom] by: RapidEdwin08 [$versionDAZI]" \
 	--ok-label SELECT --cancel-label "$MENUlaunchDOOM" \
 	--menu "$daziHUDmain\n$prboomPLUScount \n$modDIRroms [$(df -h $modDIRroms |awk '{print $4}')] \n$modDIRtmpfs (tmpfs) [$(df -h $modDIRtmpfs |awk '{print $4}')] " 25 75 20 \
 	1 ">< $MENUlaunchDOOM ><" \
@@ -1676,7 +1676,7 @@ DMLconfCONFIG=$(dialog --stdout --no-collapse --title " [DAZI] M0D LOADER for [l
 	W ">< SELECT [WARP] and [DIFFICULTY] for [lzdoom-dazi+warp] ><" \
 	C ">< CREATE [prboom.cfg] Configuration File(s) ><" \
 	D ">< DELETE [lzdoom.ini] Configuration (RESET) ><" \
-	A ">< ABORT ><")
+	A ">< ABORT ><" 2>&1>/dev/tty)
 
 if [ "$DMLconfCONFIG" == '1' ]; then
 	if [ "$0" == "/opt/retropie/configs/ports/doom/lzdoom-dazi.sh" ] || [ "$0" == "/opt/retropie/configs/all/runcommand-menu/lzdoom-dazi.sh" ]; then
@@ -1712,13 +1712,13 @@ fi
 if [ "$DMLconfCONFIG" == 'W' ]; then WARPmainMENU; fi
 
 if [ "$DMLconfCONFIG" == 'A' ]; then
-	abortRUNcommand=$(dialog --stdout --no-collapse --title "                 ABORT              " \
+	abortRUNcommand=$(dialog --no-collapse --title "                 ABORT              " \
 		--ok-label OK --cancel-label BACK \
 		--menu "                           SELECT AN 0PTION             " 25 75 20 \
 		1 "><  ABORT  ><" \
 		2 "><  ABORT  and CLEAN [TMPFS]  ><" \
 		3 "><  ABORT  and CLEAN [ADDONS]  ><" \
-		4 "><  ABORT  and CLEAN [PrBoomPlus]  ><")
+		4 "><  ABORT  and CLEAN [PrBoomPlus]  ><" 2>&1>/dev/tty)
 		
 	# M0D DIR Confirmed - Otherwise Back to Main Menu
 	if [ "$abortRUNcommand" == '1' ]; then
@@ -1764,11 +1764,11 @@ fi
 
 # DELETE lzdoom.ini Confirmed - Otherwise Back to Main Menu
 if [ "$DMLconfCONFIG" == 'D' ]; then
-	DMLconfDELETEcfg=$(dialog --stdout --no-collapse --title "               DELETE [lzdoom.ini] Configuration (RESET)              " \
+	DMLconfDELETEcfg=$(dialog --no-collapse --title "               DELETE [lzdoom.ini] Configuration (RESET)              " \
 		--ok-label OK --cancel-label BACK \
 		--menu "Default: [$zdoomCFGrp]  \nPorts:   [$zdoomCFGroms]\n \n                          ? ARE YOU SURE ?             " 25 75 20 \
 		1 "><  DELETE [lzdoom.ini] Configuration (RESET)  ><" \
-		2 "><  BACK  ><")
+		2 "><  BACK  ><" 2>&1>/dev/tty)
 	# Uninstall Confirmed - Otherwise Back to Main Menu
 	if [ "$DMLconfDELETEcfg" == '1' ]; then
 		rm "$zdoomCFGrp"
@@ -1823,14 +1823,14 @@ echo '+--------------------------------------------------------------------+   '
 )
 
 # Confirm Actions
-DMLsubCONFIG=$(dialog --stdout --no-collapse --title "LOADING M0Ds from: [$currentMODdir]" \
+DMLsubCONFIG=$(dialog --no-collapse --title "LOADING M0Ds from: [$currentMODdir]" \
 	--ok-label SELECT --cancel-label "BACK" \
 	--menu "$daziHUDsub \n$currentADDONdir [$(df -h $currentADDONdir |awk '{print $4}')]" 25 75 20 \
 	L ">< LOAD   [M0Ds]  in  $menuNAME ><" \
 	V ">< VIEW   [M0Ds]  ><" \
 	R ">< REMOVE [M0Ds]  ><" \
 	C ">< CLEAR  [M0Ds]  ><" \
-	A ">< SELECT [Alternate] M0D Directory to LOAD From  ><")
+	A ">< SELECT [Alternate] M0D Directory to LOAD From  ><" 2>&1>/dev/tty)
 
 if [ "$DMLsubCONFIG" == 'V' ]; then
 	# Back to Menu IF PrBoomPlus addonDIR NOT FOUND
@@ -1850,11 +1850,11 @@ if [ "$DMLsubCONFIG" == 'V' ]; then
 fi
 
 if [ "$DMLsubCONFIG" == 'C' ]; then
-	DMLconfDELETEdir=$(dialog --stdout --no-collapse --title " CLEAR ALL [M0Ds] from $menuNAME " \
+	DMLconfDELETEdir=$(dialog --no-collapse --title " CLEAR ALL [M0Ds] from $menuNAME " \
 		--ok-label OK --cancel-label BACK \
 		--menu "          $nMC M0Ds Currently in $menuNAME\n \n                          ? ARE YOU SURE ?             " 25 75 20 \
 		1 "><  CLEAR  [M0Ds] from $menuNAME  ><" \
-		2 "><  BACK  ><")
+		2 "><  BACK  ><" 2>&1>/dev/tty)
 		
 		if [ "$DMLconfDELETEdir" == '1' ]; then
 			# Back to Menu IF PrBoomPlus addonDIR NOT FOUND
@@ -1912,12 +1912,12 @@ echo "[$TMPFSprboomCFG]"
 echo "$RUNCMDprboomCFG"
 )
 
-MNGprboomMENU=$(dialog --stdout --no-collapse --title "               MANAGE [prboom.cfg] Configuration File(s)              " \
+MNGprboomMENU=$(dialog --no-collapse --title "               MANAGE [prboom.cfg] Configuration File(s)              " \
 	--ok-label OK --cancel-label BACK \
 	--menu "$prboomREF" 25 75 20 \
 	1 "><  CREATE [prboom.cfg] in [/dev/shm/addon/.0ther] (TMPFS) ><" \
 	2 "><  CREATE [prboom.cfg] in [/roms/ports/doom/addon/.0ther] ><" \
-	3 "><  DELETE   [prboom.cfg] Configuration File(s) ><")
+	3 "><  DELETE   [prboom.cfg] Configuration File(s) ><" 2>&1>/dev/tty)
 
 # Generate Confirmed
 if [ "$MNGprboomMENU" == '1' ]; then
@@ -2003,11 +2003,11 @@ fi
 
 # Remove Confirmed - Otherwise Back to Main Menu
 if [ "$MNGprboomMENU" == '3' ]; then
-	delPRBOOMconf=$(dialog --stdout --no-collapse --title " DELETE [prboom.cfg] Configuration File(s) " \
+	delPRBOOMconf=$(dialog --no-collapse --title " DELETE [prboom.cfg] Configuration File(s) " \
 		--ok-label OK --cancel-label BACK \
 		--menu "                          ? ARE YOU SURE ?             \n	\n[$ROMSprboomCFG] \n[$TMPFSprboomCFG] \n$RUNCMDprboomCFG \n	\n" 25 75 20 \
 		1 "><  DELETE [prboom.cfg] Configuration File(s) ><" \
-		3 "><  BACK  ><")
+		3 "><  BACK  ><" 2>&1>/dev/tty)
 	# DELETE Confirmed - Otherwise Back to Main Menu
 	if [ "$delPRBOOMconf" == '1' ]; then
 		rm $ROMSprboomCFG > /dev/null 2>&1
@@ -2024,7 +2024,7 @@ altMODdirCFG()
 {
 	# DEFAULT User M0D Directory IF [alternateM0Ddir] NOT DEFINED
 	if [ "$alternateM0Ddir" == "" ]; then alternateM0Ddir=$M0DdirMAIN; fi
-	userM0DdirCFG=$(dialog --stdout --no-collapse --title "               SELECT an Alternate [M0D] Directory for this Session              " \
+	userM0DdirCFG=$(dialog --no-collapse --title "               SELECT an Alternate [M0D] Directory for this Session              " \
 		--ok-label OK --cancel-label BACK \
 		--menu "SELECT an Alternate [M0D] Directory to Load M0Ds from for this Session \n   \nYou can Also MANUALLY EDIT [alternateM0Ddir=] @ [LINE#4] of this Script \n eg. [alternateM0Ddir=/my/mods/dir] 0r [alternateM0Ddir=] Leave BLANK \n   \n CURRENT M0D Directory: [$alternateM0Ddir]" 25 75 20 \
 		1 "><  HOME  [~/]  ><" \
@@ -2033,7 +2033,7 @@ altMODdirCFG()
 		4 "><  D00M  [~/RetroPie/roms/ports/doom]  ><" \
 		5 "><  DAZI  [~/RetroPie/roms/ports/doom/mods]  ><" \
 		6 "><  *CLEAR* Alternate [M0D] Directory  ><"\
-		7 "><  *SAVE*  Alternate [M0D] Directory  ><")
+		7 "><  *SAVE*  Alternate [M0D] Directory  ><" 2>&1>/dev/tty)
 	# M0D DIR Confirmed - Otherwise Back to Main Menu
 	if [ "$userM0DdirCFG" == '1' ]; then
 		alternateM0Ddir=~
@@ -2062,11 +2062,11 @@ altMODdirCFG()
 	fi
 	
 	if [ "$userM0DdirCFG" == '6' ]; then
-		clearALTdir=$(dialog --stdout --no-collapse --title " *CLEAR* Alternate [M0D] Directory " \
+		clearALTdir=$(dialog --no-collapse --title " *CLEAR* Alternate [M0D] Directory " \
 		--ok-label OK --cancel-label BACK \
 		--menu "CURRENT M0D Directory: [$alternateM0Ddir] \n$(cat $0 | grep ^alternateM0Ddir=)\n \n                          ? ARE YOU SURE ?             " 25 75 20 \
 		1 "><  *CLEAR* [alternateM0Ddir]  ><" \
-		2 "><  BACK  ><")
+		2 "><  BACK  ><" 2>&1>/dev/tty)
 		
 		if [ "$clearALTdir" == '1' ]; then
 			# CLEAR currentADDONdir
@@ -2084,11 +2084,11 @@ altMODdirCFG()
 	fi
 	
 	if [ "$userM0DdirCFG" == '7' ]; then
-		saveALTdir=$(dialog --stdout --no-collapse --title " *SAVE*  Alternate [M0D] Directory " \
+		saveALTdir=$(dialog --no-collapse --title " *SAVE*  Alternate [M0D] Directory " \
 		--ok-label OK --cancel-label BACK \
 		--menu "CURRENT M0D Directory: [$alternateM0Ddir] \n$(cat $0 | grep ^alternateM0Ddir=) \n \n                          ? ARE YOU SURE ?             " 25 75 20 \
 		1 "><  *SAVE*  Current [M0D] Directory as [alternateM0Ddir]  ><" \
-		2 "><  BACK  ><")
+		2 "><  BACK  ><" 2>&1>/dev/tty)
 		
 		if [ "$saveALTdir" == '1' ]; then
 			# SAVE currentADDONdir
@@ -2109,18 +2109,18 @@ DMLsubMENU
 WARPmainMENU()
 {
 # DEFINE WARP and DIFFICULTY
-userWARPcfg=$(dialog --stdout --no-collapse --title "         SELECT [WARP] and [DIFFICULTY] for [lzdoom-dazi+warp]              " \
+userWARPcfg=$(dialog --no-collapse --title "         SELECT [WARP] and [DIFFICULTY] for [lzdoom-dazi+warp]              " \
 	--ok-label OK --cancel-label BACK \
 	--menu "\n        When Selecting WARP Settings @ [runcommand-onstart]:\n      Refer to the *[runcommand.info]* as your Final Indicator\n  Utilize the [ABORT] 0ption to REFRESH the [runcommand] if Needed\n[DAZI-Templates] with Pre-Defined [-warp -skill] OVERRIDE SETTINGS here\n   \nSELECT and APPLY Settings to [emulators.cfg] @ [-warp E# M# -skill S#\"] \neg. Ultimate Doom SIGIL E5M9 on Ultra-Violence [-warp  5  9 -skill  4]\n   \nCURRENT [emulators.cfg]:    [$(cat /opt/retropie/configs/ports/doom/emulators.cfg | grep '\-warp' | sed -n 's/.*addon\/\*//p' | sed 's_\(...................\).*_\1_' )]\nCURRENT [runcommand.info]:  [$(cat /dev/shm/runcommand.info | grep '\-warp' | sed -n 's/.*addon\/\*//p' | sed 's_\(...................\).*_\1_' )]\n   \nCURRENT [USER] SELECT Settings: -warp [$episodeNUM] [$mapNUM] -skill [$skillLEVEL]" 25 75 20 \
 	1 "><  SELECT [Episode]  ><" \
 	2 "><  SELECT [Map]  ><" \
 	3 "><  SELECT [Difficulty]  ><" \
 	4 "><  APPLY  [Episode] [Map] [Difficulty] to [emulators.cfg] ><" \
-	R "><  REFERENCES  ><")
+	R "><  REFERENCES  ><" 2>&1>/dev/tty)
 
 # SELECT Setting Confirmed - Otherwise Back to Main Menu
 if [ "$userWARPcfg" == '1' ]; then
-	confEPISODE=$(dialog --stdout --no-collapse --title "SELECT EPISODE #" \
+	confEPISODE=$(dialog --no-collapse --title "SELECT EPISODE #" \
 		--ok-label OK --cancel-label Back \
 		--menu "             ? [EPISODE] ?  CURRENT USER SELECTION: [$episodeNUM]" 25 75 20 \
 		0 "EPISODE [NONE] eg. D00M II" \
@@ -2129,7 +2129,7 @@ if [ "$userWARPcfg" == '1' ]; then
 		3 "EPISODE [3]    eg. Inferno" \
 		4 "EPISODE [4]    eg. Thy Flesh Consumed" \
 		5 "EPISODE [5]    eg. SIGIL" \
-		6 "EPISODE [6]    eg. Heretic: Fates Path")
+		6 "EPISODE [6]    eg. Heretic: Fates Path" 2>&1>/dev/tty)
 	
 	# Confirmed - Otherwise Back to Main Menu
 	if [ "$confEPISODE" == '0' ]; then episodeNUM=; fi
@@ -2143,7 +2143,7 @@ WARPmainMENU
 fi
 
 if [ "$userWARPcfg" == '2' ]; then
-	confMAP=$(dialog --stdout --no-collapse --title "SELECT MAP #" \
+	confMAP=$(dialog --no-collapse --title "SELECT MAP #" \
 		--ok-label OK --cancel-label Back \
 		--menu "             ? [MAP] ?  CURRENT USER SELECTION: [$mapNUM]" 25 75 20 \
 		1 "MAP [1]" \
@@ -2205,7 +2205,7 @@ if [ "$userWARPcfg" == '2' ]; then
 		57 "MAP [57]" \
 		58 "MAP [58]" \
 		59 "MAP [59]" \
-		60 "MAP [60]    eg. Hexen: Deathkings")
+		60 "MAP [60]    eg. Hexen: Deathkings" 2>&1>/dev/tty)
 	
 	# Confirmed - Otherwise Back to Main Menu
 	if [ "$confMAP" == '1' ]; then mapNUM=1; fi
@@ -2272,14 +2272,14 @@ WARPmainMENU
 fi
 
 if [ "$userWARPcfg" == '3' ]; then
-	confSKILL=$(dialog --stdout --no-collapse --title "SELECT DIFFICULTY #" \
+	confSKILL=$(dialog --no-collapse --title "SELECT DIFFICULTY #" \
 		--ok-label OK --cancel-label Back \
 		--menu "             ? [DIFFICULTY] ?  CURRENT USER SELECTION: [$skillLEVEL]" 25 75 20 \
 		1 "DIFFICULTY [1] Im too young to die" \
 		2 "DIFFICULTY [2] Hey, not too rough." \
 		3 "DIFFICULTY [3] Hurt me plenty." \
 		4 "DIFFICULTY [4] Ultra-Violence." \
-		5 "DIFFICULTY [5] Nightmare!")
+		5 "DIFFICULTY [5] Nightmare!" 2>&1>/dev/tty)
 	
 	# Confirmed - Otherwise Back to Main Menu
 	if [ "$confSKILL" == '1' ]; then skillLEVEL=1; fi
@@ -2350,11 +2350,11 @@ if [ ! "$FILE" == '' ]; then
 		M0DremoveMENU
 	# Option to READ or REMOVE
 	elif [[ "$selectFILE" == *".txt" ]] || [[ "$selectFILE" == *".TXT" ]]; then
-		readTXTremove=$(dialog --stdout --no-collapse --title "              ? READ or REMOVE [$selectFILE] ?              " \
+		readTXTremove=$(dialog --no-collapse --title "              ? READ or REMOVE [$selectFILE] ?              " \
 		--ok-label OK --cancel-label BACK \
 		--menu " [$currentADDONdir/$selectFILE] " 25 75 20 \
 		1 "  READ    [$selectFILE]  " \
-		2 "  REMOVE  [$selectFILE]  ")
+		2 "  REMOVE  [$selectFILE]  " 2>&1>/dev/tty)
 		
 		if [ "$readTXTremove" == '1' ]; then
 			readTEXT=$(cat "$currentADDONdir/$selectFILE")
@@ -2368,11 +2368,11 @@ if [ ! "$FILE" == '' ]; then
 		M0DremoveMENU
 	# Option to READ or REMOVE
 	elif [[ "$selectFILE" == *"prboom.cfg" ]]; then
-		readPRBOOMcfg=$(dialog --stdout --no-collapse --title "              ? READ or REMOVE [$selectFILE] ?              " \
+		readPRBOOMcfg=$(dialog --no-collapse --title "              ? READ or REMOVE [$selectFILE] ?              " \
 		--ok-label OK --cancel-label BACK \
 		--menu " [$currentADDONdir/$selectFILE] " 25 75 20 \
 		1 "  READ    [$selectFILE]  " \
-		2 "  REMOVE  [$selectFILE]  ")
+		2 "  REMOVE  [$selectFILE]  " 2>&1>/dev/tty)
 		
 		if [ "$readPRBOOMcfg" == '1' ]; then
 			readTEXT=$(cat "$currentADDONdir/$selectFILE")
@@ -2554,7 +2554,7 @@ DMLsubMENU
 srb2ADDONSmenu()
 {
 # Confirm Configurations
-srb2CONFIG=$(dialog --stdout --no-collapse --title "    MANAGE  [srb2] + [srb2kart] AddOns" \
+srb2CONFIG=$(dialog --no-collapse --title "    MANAGE  [srb2] + [srb2kart] AddOns" \
 	--ok-label SELECT --cancel-label "BACK" \
 	--menu "   [Sonic Robo Blast 2] Already Has AddOn Management Built-In \n[dazi] can SET [SRB2] CUSTOM AddOns Directory to [..ports/doom/mods/]\n$daziHUDsrb2 \nCURRENT $(cat /opt/retropie/configs/ports/srb2/config.cfg 2>/dev/null | grep 'addons_folder' ) \nCURRENT $(cat /opt/retropie/configs/ports/srb2kart/kartconfig.cfg 2>/dev/null | grep 'addons_folder' )" 25 75 20 \
 	1 ">< SET [SRB2]     AddOns Directory to [..doom/mods/srb2] ><" \
@@ -2563,7 +2563,7 @@ srb2CONFIG=$(dialog --stdout --no-collapse --title "    MANAGE  [srb2] + [srb2ka
 	4 ">< SET [SRB2KART] AddOns Directory to [DEFAULT] ><" \
 	5 ">< VIEW   Contents of [SRB2KART] DOWNLOAD Directory ><" \
 	6 ">< DELETE Contents of [SRB2KART] DOWNLOAD Directory ><" \
-	7 ">< REFERENCES [Sonic Robo Blast 2] ><")
+	7 ">< REFERENCES [Sonic Robo Blast 2] ><" 2>&1>/dev/tty)
 
 if [ "$srb2CONFIG" == '1' ]; then
 	# SKIP IF [cfg] N0T Found 
@@ -2636,11 +2636,11 @@ if [ "$srb2CONFIG" == '5' ]; then
 fi
 
 if [ "$srb2CONFIG" == '6' ]; then
-	SRB2confDELETEdl=$(dialog --stdout --no-collapse --title " DELETE [/opt/retropie/configs/ports/srb2kart/DOWNLOAD] Directory " \
+	SRB2confDELETEdl=$(dialog --no-collapse --title " DELETE [/opt/retropie/configs/ports/srb2kart/DOWNLOAD] Directory " \
 		--ok-label OK --cancel-label BACK \
 		--menu "                          ? ARE YOU SURE ?             " 25 75 20 \
 		1 "><  DELETE [SRB2KART] DOWNLOAD Directory ><" \
-		3 "><  BACK  ><")
+		3 "><  BACK  ><" 2>&1>/dev/tty)
 	# DELETE Confirmed - Otherwise Back to Main Menu
 	if [ "$SRB2confDELETEdl" == '1' ]; then
 		rm /opt/retropie/configs/ports/srb2kart/DOWNLOAD -R -f > /dev/null 2>&1
