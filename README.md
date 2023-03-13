@@ -50,7 +50,7 @@ cd ~/dazi && ./lzdoom-dazi.sh
 	<game>
 		<path>./lzdoom-dazi.sh</path>
 		<name>[lzdoom] DAZI</name>
-		<desc>INSTALL/REMOVE [lzdoom-dazi] for [RetroPie].</desc>
+		<desc>Configure [lzdoom-dazi] for [RetroPie].</desc>
 		<image>/home/pi/RetroPie/retropiemenu/icons/lzdoom-dazi.png</image>
 	</game>
 ```
