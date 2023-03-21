@@ -297,8 +297,6 @@ echo "              [DAZI] is intended for use with [doom]! "
 echo "        You Need to INSTALL a [doom] P0RT FIRST... "
 echo "    Recommended P0RTs: [lzdoom] [lr-prboom] [prboom-plus]"
 echo ""
-echo 'If N0T a GENERIC lzdoom based [emulators.cfg] can be Generated...'
-echo "But you may experience Mixed Results with the GENERIC [emulators.cfg]"
 )
 
 doomEMUSref=$(
