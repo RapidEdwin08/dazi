@@ -294,9 +294,10 @@ echo "lzdoom-addon-320x200 = \"DOOMWADDIR=/home/$USER/RetroPie/roms/ports/doom /
 daziEMUcfg=$(
 echo ""
 echo "              [DAZI] is intended for use with [doom]! "
-echo "        You Need to INSTALL a [doom] P0RT FIRST... "
+echo "             You Need to INSTALL a [doom] P0RT FIRST... "
 echo "    Recommended P0RTs: [lzdoom] [lr-prboom] [prboom-plus]"
 echo ""
+echo "              NOTE: [DAZI] was built for LZDoom...
 )
 
 doomEMUSref=$(
