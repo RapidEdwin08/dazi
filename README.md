@@ -31,8 +31,6 @@ DAZI can AutoGenerate a [prboom.cfg] based on [addonDIR] when Installed
 If you want 1-Run-N-Done:  
 ```bash
 wget https://raw.githubusercontent.com/RapidEdwin08/dazi/main/lzdoom-dazi.sh -P /dev/shm/; sudo chmod 755 /dev/shm/lzdoom-dazi.sh; mv /dev/shm/lzdoom-dazi.sh /dev/shm/lzdoom-dazi-tmp.sh; /dev/shm/lzdoom-dazi-tmp.sh
-
-
 ```
 
 If you want to Put the Install Script in the retropiemenu [+Icon]:  
@@ -58,6 +56,7 @@ cd ~
 git clone --depth 1 https://github.com/RapidEdwin08/dazi.git
 sudo chmod 755 ~/dazi/lzdoom-dazi.sh
 cd ~/dazi && ./lzdoom-dazi.sh
+
 ```
 
 ## REFERENCES   
