@@ -29,22 +29,18 @@ DAZI can AutoGenerate a [prboom.cfg] based on [addonDIR] when Installed
 
 ## INSTALLATION  
 
-Can be ran from retropiemenu:  
+If you want 1-Run-N-Done:
+```bash
+curl -sSL https://raw.githubusercontent.com/RapidEdwin08/dazi/main/lzdoom-dazi.sh  | bash
+```
 
+If you want to Put the Install Script in the retropiemenu [+Icon]:  
 ```bash
 wget https://raw.githubusercontent.com/RapidEdwin08/dazi/main/lzdoom-dazi.sh -P ~/RetroPie/retropiemenu
 wget https://raw.githubusercontent.com/RapidEdwin08/dazi/main/lzdoom-dazi.png -P ~/RetroPie/retropiemenu/icons
 ```
 
-0R Run Manually from any directory:  
-```bash
-cd ~
-git clone --depth 1 https://github.com/RapidEdwin08/dazi.git
-sudo chmod 755 ~/dazi/lzdoom-dazi.sh
-cd ~/dazi && ./lzdoom-dazi.sh
-```
-
-0ptionally you can Add an Entry and Icon to your retropiemenu [gamelist.xml]:  
+0ptionally you can Add an Entry [+Icon] to your retropiemenu [gamelist.xml]:  
 *Example Entry:*  
 ```
 	<game>
@@ -53,6 +49,14 @@ cd ~/dazi && ./lzdoom-dazi.sh
 		<desc>Configure [lzdoom-dazi] for [RetroPie].</desc>
 		<image>/home/pi/RetroPie/retropiemenu/icons/lzdoom-dazi.png</image>
 	</game>
+```
+
+If you want to GIT it All:  
+```bash
+cd ~
+git clone --depth 1 https://github.com/RapidEdwin08/dazi.git
+sudo chmod 755 ~/dazi/lzdoom-dazi.sh
+cd ~/dazi && ./lzdoom-dazi.sh
 ```
 
 ## REFERENCES   
