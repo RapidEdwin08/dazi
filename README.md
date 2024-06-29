@@ -54,7 +54,7 @@ If you want to GIT it All:
 ```bash
 cd ~
 git clone --depth 1 https://github.com/RapidEdwin08/dazi.git
-sudo chmod 755 ~/dazi/lzdoom-dazi.sh
+chmod 755 ~/dazi/lzdoom-dazi.sh
 cd ~/dazi && ./lzdoom-dazi.sh
 
 ```
