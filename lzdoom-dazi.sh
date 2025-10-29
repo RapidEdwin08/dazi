@@ -6,7 +6,7 @@ alternateM0Ddir=
 # Running this Script from [/opt/retropie/configs/ports/doom] will access 0NLY the Mod Loader Menu  
 # Running this Script from [/opt/retropie/configs/all/runcommand-menu] will access 0NLY the Mod Loader Menu  
 
-versionDAZI=2024.06
+versionDAZI=2025.10
 M0DdirMAIN=~/RetroPie/roms/ports/doom/mods
 modDIRroms=~/RetroPie/roms/ports/doom/addon
 modDIRtmpfs=/dev/shm/addon
