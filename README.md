@@ -8,16 +8,16 @@ Additionally make use of the *Runcommand Launch Menu* to Pre-Load D00M M0Ds.
 Additionally Manage [srb2] and [srb2kart] AddOns along with D00M M0Ds.  
 
 **Before you get started:**  
-A D00M P0RT such as **lzdoom** **lr-prboom** **prboom-plus** should be **INSTALLED**  
+A D00M P0RT such as **uzdoom**/**gzdoom**/**lzdoom**/**lr-prboom**/**prboom-plus** should be **INSTALLED**  
 Place your **[M0D].ZIP/PK3/PK7** Files in: **~/RetroPie/roms/ports/doom/mods/***  
 
 **HOW DOES IT WORK?**  
 DAZI will Extract [ZIPs] [7z] Files and Load [M0Ds] into Doom [AddOnDIRs]  
-- LZDOOM:  
-[lzdoom-addon] Loads M0Ds from ADDON [..roms/ports/doom/addon/*]  
-[lzdoom-dazi]  Loads M0Ds from TMPFS [/dev/shm/addon/*]  
-[lzdoom-dazi+] Loads M0Ds from BOTH  [TMPFS+ADDON] in that 0rder  
-[lzdoom-dazi+warp] Loads from [TMPFS+ADDON] and Includes [-WARP -SKILL]  
+- UZDoom/GZDoom/LZDoom:  
+[$zdoom-addon] Loads M0Ds from ADDON [..roms/ports/doom/addon/]  
+[$zdoom-dazi]  Loads M0Ds from TMPFS [/dev/shm/addon/]  
+[$zdoom-dazi+] Loads M0Ds from BOTH  [TMPFS+ADDON] in that 0rder  
+[$zdoom-dazi+warp] Loads from [TMPFS+ADDON] and Includes [-WARP -SKILL]  
 
 - PRBOOM-PLUS:  
 [prboom-plus] Loads M0Ds from [..configs/prboom-plus/autoload/doom-all]  
