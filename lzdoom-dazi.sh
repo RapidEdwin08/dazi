@@ -16,6 +16,8 @@ zdoomCFGrp=/opt/retropie/configs/ports/doom/lzdoom.ini
 zdoomCFGroms=~/RetroPie/roms/ports/doom/lzdoom.ini
 GzdoomCFGrp=/opt/retropie/configs/ports/doom/gzdoom.ini
 GzdoomCFGroms=~/RetroPie/roms/ports/doom/gzdoom.ini
+UzdoomCFGrp=/opt/retropie/configs/ports/doom/uzdoom.ini
+UzdoomCFGroms=~/RetroPie/roms/ports/doom/uzdoom.ini
 doomWARPemu=lzdoom-dazi+warp
 
 daziLOGO=$(
@@ -961,12 +963,13 @@ tput reset
 if [ ! -f /opt/retropie/configs/ports/doom/emulators.cfg.bakdazi ]; then cp /opt/retropie/configs/ports/doom/emulators.cfg /opt/retropie/configs/ports/doom/emulators.cfg.bakdazi 2>/dev/null; fi
 
 # Rebuild emulators.cfg without DAZI
-cat /opt/retropie/configs/ports/doom/emulators.cfg | grep -v 'lzdoom-dazi-' | grep -v 'lzdoom-dazi =' | grep -v 'default =' | grep -v 'lzdoom-dazi+' | grep -v 'prboom-plus+warp' | grep -v 'gzdoom-dazi =' | grep -v 'gzdoom-dazi+' > /dev/shm/emulators.cfg
+cat /opt/retropie/configs/ports/doom/emulators.cfg | grep -v 'lzdoom-dazi-' | grep -v 'lzdoom-dazi =' | grep -v 'default =' | grep -v 'lzdoom-dazi+' | grep -v 'prboom-plus+warp' | grep -v 'gzdoom-dazi =' | grep -v 'gzdoom-dazi+' | grep -v 'uzdoom-dazi =' | grep -v 'uzdoom-dazi+' > /dev/shm/emulators.cfg
 if [[ "$(cat /dev/shm/emulators.cfg | grep -q 'lzdoom-addon' ; echo $?)" == '0' ]] && [[ "$(cat /opt/retropie/configs/ports/doom/emulators.cfg | grep -q 'default =' ; echo $?)" == '1' ]]; then echo 'default = "lzdoom-addon"' >> /dev/shm/emulators.cfg; fi
 if [[ "$(cat /dev/shm/emulators.cfg | grep -q 'prboom-plus' ; echo $?)" == '0' ]] && [[ "$(cat /dev/shm/emulators.cfg | grep -q 'default =' ; echo $?)" == '1' ]]; then echo 'default = "prboom-plus"' >> /dev/shm/emulators.cfg; fi
 if [[ "$(cat /dev/shm/emulators.cfg | grep -q 'lr-prboom' ; echo $?)" == '0' ]] && [[ "$(cat /dev/shm/emulators.cfg | grep -q 'default =' ; echo $?)" == '1' ]]; then echo 'default = "lr-prboom"' >> /dev/shm/emulators.cfg; fi
 if [[ "$(cat /dev/shm/emulators.cfg | grep -q 'lzdoom' ; echo $?)" == '0' ]] && [[ "$(cat /dev/shm/emulators.cfg | grep -q 'default =' ; echo $?)" == '1' ]]; then echo 'default = "lzdoom"' >> /dev/shm/emulators.cfg; fi
 if [[ "$(cat /dev/shm/emulators.cfg | grep -q 'gzdoom' ; echo $?)" == '0' ]] && [[ "$(cat /dev/shm/emulators.cfg | grep -q 'default =' ; echo $?)" == '1' ]]; then echo 'default = "gzdoom"' >> /dev/shm/emulators.cfg; fi
+if [[ "$(cat /dev/shm/emulators.cfg | grep -q 'uzdoom' ; echo $?)" == '0' ]] && [[ "$(cat /dev/shm/emulators.cfg | grep -q 'default =' ; echo $?)" == '1' ]]; then echo 'default = "uzdoom"' >> /dev/shm/emulators.cfg; fi
 mv /dev/shm/emulators.cfg /opt/retropie/configs/ports/doom/emulators.cfg 2>/dev/null
 
 # Remove [lzdoom-dazi] from  [runcommand-onstart.sh]
@@ -1098,10 +1101,11 @@ fi
 if [ ! -f /opt/retropie/configs/ports/doom/emulators.cfg.bakdazi ]; then cp /opt/retropie/configs/ports/doom/emulators.cfg /opt/retropie/configs/ports/doom/emulators.cfg.bakdazi 2>/dev/null; fi
 
 # Add [dazi] to [emulators.cfg]
-cat /opt/retropie/configs/ports/doom/emulators.cfg | grep -v 'lzdoom-dazi-' | grep -v 'lzdoom-dazi =' | grep -v 'lzdoom-dazi+' | grep -v 'prboom-plus+warp' | grep -v 'gzdoom-dazi =' | grep -v 'gzdoom-dazi+' > /dev/shm/emulators.cfg
+cat /opt/retropie/configs/ports/doom/emulators.cfg | grep -v 'lzdoom-dazi-' | grep -v 'lzdoom-dazi =' | grep -v 'lzdoom-dazi+' | grep -v 'prboom-plus+warp' | grep -v 'gzdoom-dazi =' | grep -v 'gzdoom-dazi+' | grep -v 'uzdoom-dazi =' | grep -v 'uzdoom-dazi+' > /dev/shm/emulators.cfg
 cat /opt/retropie/configs/ports/doom/emulators.cfg | grep 'lzdoom-addon' > /dev/shm/emulators.dazi
 cat /opt/retropie/configs/ports/doom/emulators.cfg | grep 'prboom-plus' > /dev/shm/emulators.prboomplus
 cat /opt/retropie/configs/ports/doom/emulators.cfg | grep 'gzdoom-addon' > /dev/shm/emulators.dazig
+cat /opt/retropie/configs/ports/doom/emulators.cfg | grep 'uzdoom-addon' > /dev/shm/emulators.daziu
 
 #if [ "$(cat /dev/shm/emulators.dazi | grep -q 'lzdoom-addon =' ; echo $?)" == '1' ]; then
 	#echo "lzdoom-addon = \"DOOMWADDIR=/home/$USER/RetroPie/roms/ports/doom /opt/retropie/ports/lzdoom/lzdoom -iwad %ROM% +fullscreen 1 -config /home/$USER/RetroPie/roms/ports/doom/lzdoom.ini +vid_renderer 0 +'snd_mididevice -2' -file /home/$USER/RetroPie/roms/ports/doom/addon/*\"" > /dev/shm/emulators.dazi
@@ -1139,38 +1143,66 @@ fi
 
 # Add gzdoom
 if [ ! "$( cat /dev/shm/emulators.dazig)" == "" ]; then		
-	# Create [dazi+] entry based on current [lzdoom-addon] entry in [emulators.cfg]
+	# Create [dazi+] entry based on current [gzdoom-addon] entry in [emulators.cfg]
 	cat /dev/shm/emulators.dazig | grep 'gzdoom-addon =' > /dev/shm/emulators.dazigplus
 	sed -i 's/gzdoom-addon/gzdoom-dazi+/g' /dev/shm/emulators.dazigplus
 	sed -i "s+-file\ .*+-file\ \/dev\/shm\/addon/\*\ -file\ \/home\/$USER\/RetroPie\/roms\/ports\/doom\/addon/\*\"+g" /dev/shm/emulators.dazigplus
 	cat /dev/shm/emulators.dazigplus >> /dev/shm/emulators.cfg
 	
-	# Create [dazi+warp] entry based on current [lzdoom-addon] entry in [emulators.cfg]
+	# Create [dazi+warp] entry based on current [gzdoom-addon] entry in [emulators.cfg]
 	cat /dev/shm/emulators.dazig | grep 'gzdoom-addon =' > /dev/shm/emulators.dazigpluswarp
 	sed -i 's/gzdoom-addon/gzdoom-dazi+warp/g' /dev/shm/emulators.dazigpluswarp
 	sed -i "s+-file\ .*+-file\ \/dev\/shm\/addon/\*\ -file\ \/home\/$USER\/RetroPie\/roms\/ports\/doom\/addon/\*\ -warp\ 1\ 1\ -skill\ 3;\ popd\"+g" /dev/shm/emulators.dazigpluswarp
 	cat /dev/shm/emulators.dazigpluswarp >> /dev/shm/emulators.cfg
 	
-	# Create [dazi] entry based on current [lzdoom-addon] entry in [emulators.cfg]
+	# Create [dazi] entry based on current [gzdoom-addon] entry in [emulators.cfg]
 	sed -i 's/gzdoom-addon/gzdoom-dazi/g' /dev/shm/emulators.dazig
 	sed -i 's/~\/RetroPie\/roms\/ports\/doom\/addon\//\/dev\/shm\/addon\//g' /dev/shm/emulators.dazig
 	sed -i "s/\/home\/$USER\/RetroPie\/roms\/ports\/doom\/addon\//\/dev\/shm\/addon\//g" /dev/shm/emulators.dazig
 	cat /dev/shm/emulators.dazig >> /dev/shm/emulators.cfg
 fi
 
+# Add uzdoom
+if [ ! "$( cat /dev/shm/emulators.daziu)" == "" ]; then		
+	# Create [dazi+] entry based on current [uzdoom-addon] entry in [emulators.cfg]
+	cat /dev/shm/emulators.daziu | grep 'uzdoom-addon =' > /dev/shm/emulators.daziuplus
+	sed -i 's/uzdoom-addon/uzdoom-dazi+/g' /dev/shm/emulators.daziuplus
+	sed -i "s+-file\ .*+-file\ \/dev\/shm\/addon/\*\ -file\ \/home\/$USER\/RetroPie\/roms\/ports\/doom\/addon/\*\"+g" /dev/shm/emulators.daziuplus
+	cat /dev/shm/emulators.daziuplus >> /dev/shm/emulators.cfg
+	
+	# Create [dazi+warp] entry based on current [uzdoom-addon] entry in [emulators.cfg]
+	cat /dev/shm/emulators.daziu | grep 'uzdoom-addon =' > /dev/shm/emulators.daziupluswarp
+	sed -i 's/uzdoom-addon/uzdoom-dazi+warp/g' /dev/shm/emulators.daziupluswarp
+	sed -i "s+-file\ .*+-file\ \/dev\/shm\/addon/\*\ -file\ \/home\/$USER\/RetroPie\/roms\/ports\/doom\/addon/\*\ -warp\ 1\ 1\ -skill\ 3;\ popd\"+g" /dev/shm/emulators.daziupluswarp
+	cat /dev/shm/emulators.daziupluswarp >> /dev/shm/emulators.cfg
+	
+	# Create [dazi] entry based on current [uzdoom-addon] entry in [emulators.cfg]
+	sed -i 's/uzdoom-addon/uzdoom-dazi/g' /dev/shm/emulators.daziu
+	sed -i 's/~\/RetroPie\/roms\/ports\/doom\/addon\//\/dev\/shm\/addon\//g' /dev/shm/emulators.daziu
+	sed -i "s/\/home\/$USER\/RetroPie\/roms\/ports\/doom\/addon\//\/dev\/shm\/addon\//g" /dev/shm/emulators.daziu
+	cat /dev/shm/emulators.daziu >> /dev/shm/emulators.cfg
+fi
+
 # Configure [dazi] as DEFAULT in [emulators.cfg]
 if [[ "$(cat /dev/shm/emulators.cfg | grep -q 'lzdoom-dazi+' ; echo $?)" == '0' ]]; then
 	if [[ "$(cat /dev/shm/emulators.cfg | grep -q 'default =' ; echo $?)" == '1' ]]; then echo 'default = "lzdoom"' >> /dev/shm/emulators.cfg; fi
 	sed -i 's/default\ =.*/default\ =\ \"lzdoom-dazi+\"/g' /dev/shm/emulators.cfg
-elif [[ "$(cat /dev/shm/emulators.cfg | grep -q 'prboom-plus' ; echo $?)" == '0' ]]; then
+fi
+if [[ "$(cat /dev/shm/emulators.cfg | grep -q 'prboom-plus' ; echo $?)" == '0' ]]; then
 	if [[ "$(cat /dev/shm/emulators.cfg | grep -q 'default =' ; echo $?)" == '1' ]]; then echo 'default = "prboom-plus"' >> /dev/shm/emulators.cfg; fi
 	sed -i 's/default\ =.*/default\ =\ \"prboom-plus\"/g' /dev/shm/emulators.cfg
-elif [[ "$(cat //dev/shm/emulators.cfg | grep -q 'lr-prboom' ; echo $?)" == '0' ]]; then
+fi
+if [[ "$(cat //dev/shm/emulators.cfg | grep -q 'lr-prboom' ; echo $?)" == '0' ]]; then
 	if [[ "$(cat /dev/shm/emulators.cfg | grep -q 'default =' ; echo $?)" == '1' ]]; then echo 'default = "lr-prboom"' >> /dev/shm/emulators.cfg; fi
 	sed -i 's/default\ =.*/default\ =\ \"lr-prboom\"/g' /dev/shm/emulators.cfg
-elif [[ "$(cat /dev/shm/emulators.cfg | grep -q 'gzdoom-dazi+' ; echo $?)" == '0' ]]; then
+fi
+if [[ "$(cat /dev/shm/emulators.cfg | grep -q 'gzdoom-dazi+' ; echo $?)" == '0' ]]; then
 	if [[ "$(cat /dev/shm/emulators.cfg | grep -q 'default =' ; echo $?)" == '1' ]]; then echo 'default = "gzdoom"' >> /dev/shm/emulators.cfg; fi
 	sed -i 's/default\ =.*/default\ =\ \"gzdoom-dazi+\"/g' /dev/shm/emulators.cfg
+fi
+if [[ "$(cat /dev/shm/emulators.cfg | grep -q 'uzdoom-dazi+' ; echo $?)" == '0' ]]; then
+	if [[ "$(cat /dev/shm/emulators.cfg | grep -q 'default =' ; echo $?)" == '1' ]]; then echo 'default = "uzdoom"' >> /dev/shm/emulators.cfg; fi
+	sed -i 's/default\ =.*/default\ =\ \"uzdoom-dazi+\"/g' /dev/shm/emulators.cfg
 fi
 
 # Replace [emulators.cfg]
@@ -1186,6 +1218,9 @@ rm /dev/shm/emulators.prboompluswarp 2>/dev/null
 rm /dev/shm/emulators.dazig 2>/dev/null
 rm /dev/shm/emulators.dazigplus 2>/dev/null
 rm /dev/shm/emulators.dazigpluswarp 2>/dev/null
+rm /dev/shm/emulators.daziu 2>/dev/null
+rm /dev/shm/emulators.daziuplus 2>/dev/null
+rm /dev/shm/emulators.daziupluswarp 2>/dev/null
 
 # Update [runcommand-onstart.sh] to BLANK the [runcommand.log] 0NLY IF [lzdoom-dazi] is Called
 # Ensures the PRE-LOAD D00M-M0Ds Using [EXIT WITHOUT LAUNCHING] Feature remains Functional
@@ -1246,8 +1281,8 @@ mv /dev/shm/lzdoom-dazi.sh /opt/retropie/configs/all/runcommand-menu/lzdoom-dazi
 echo 'sudo chmod 755 /opt/retropie/configs/all/runcommand-menu/lzdoom-dazi.sh'
 sudo chmod 755 /opt/retropie/configs/all/runcommand-menu/lzdoom-dazi.sh
 
-# Toggle [runcommand] Flag ON [dazi-mod-loader]
-echo '1' > /opt/retropie/configs/ports/doom/lzdoom-dazi.flag
+# Toggle [runcommand] Flag OFF [dazi-mod-loader]
+echo '0' > /opt/retropie/configs/ports/doom/lzdoom-dazi.flag
 
 # FINISHED
 dialog --no-collapse --title "INSTALL [DAZI] for [RetroPie]  *COMPLETE!* " --ok-label Back --msgbox "$daziLOGO $zipREFmod $daziHUD $doomEMUSref ====================================================================== $daziFILES $doomWARPdiff $(cat /opt/retropie/configs/ports/doom/emulators.cfg | grep 'default =')"  25 75
@@ -1712,6 +1747,7 @@ DMLconfCONFIG=$(dialog --no-collapse --title " [DAZI] M0D LOADER for [lzdoom] by
 	C ">< CREATE [prboom.cfg] Configuration File(s) ><" \
 	D ">< DELETE [lzdoom.ini] Configuration (RESET) ><" \
 	G ">< DELETE [gzdoom.ini] Configuration (RESET) ><" \
+	U ">< DELETE [uzdoom.ini] Configuration (RESET) ><" \
 	A ">< ABORT ><" 2>&1>/dev/tty)
 
 if [ "$DMLconfCONFIG" == '1' ]; then
@@ -1807,8 +1843,8 @@ if [ "$DMLconfCONFIG" == 'D' ]; then
 		2 "><  BACK  ><" 2>&1>/dev/tty)
 	# Uninstall Confirmed - Otherwise Back to Main Menu
 	if [ "$DMLconfDELETEcfg" == '1' ]; then
-		rm "$zdoomCFGrp"
-		rm "$zdoomCFGroms"
+		rm -f "$zdoomCFGrp"
+		rm -f "$zdoomCFGroms"
 		dialog --no-collapse --title "DELETE [lzdoom.ini] Configuration (RESET) *COMPLETE!*" --ok-label Back --msgbox "Default: [$zdoomCFGrp]  \nPorts:   [$zdoomCFGroms]\n"  25 75
 		DMLmainMENU
 	fi
@@ -1824,9 +1860,26 @@ if [ "$DMLconfCONFIG" == 'G' ]; then
 		2 "><  BACK  ><" 2>&1>/dev/tty)
 	# Uninstall Confirmed - Otherwise Back to Main Menu
 	if [ "$DMLconfDELETEcfgGZ" == '1' ]; then
-		rm "$GzdoomCFGrp"
-		rm "$GzdoomCFGroms"
+		rm -f "$GzdoomCFGrp"
+		rm -f "$GzdoomCFGroms"
 		dialog --no-collapse --title "DELETE [gzdoom.ini] Configuration (RESET) *COMPLETE!*" --ok-label Back --msgbox "Default: [$GzdoomCFGrp]  \nPorts:   [$GzdoomCFGroms]\n"  25 75
+		DMLmainMENU
+	fi
+DMLmainMENU
+fi
+
+# DELETE uzdoom.ini Confirmed - Otherwise Back to Main Menu
+if [ "$DMLconfCONFIG" == 'U' ]; then
+	DMLconfDELETEcfgUZ=$(dialog --no-collapse --title "               DELETE [uzdoom.ini] Configuration (RESET)              " \
+		--ok-label OK --cancel-label BACK \
+		--menu "Default: [$UzdoomCFGrp]  \nPorts:   [$UzdoomCFGroms]\n \n                          ? ARE YOU SURE ?             " 25 75 20 \
+		1 "><  DELETE [uzdoom.ini] Configuration (RESET)  ><" \
+		2 "><  BACK  ><" 2>&1>/dev/tty)
+	# Uninstall Confirmed - Otherwise Back to Main Menu
+	if [ "$DMLconfDELETEcfgUZ" == '1' ]; then
+		rm -f "$UzdoomCFGrp"
+		rm -f "$UzdoomCFGroms"
+		dialog --no-collapse --title "DELETE [uzdoom.ini] Configuration (RESET) *COMPLETE!*" --ok-label Back --msgbox "Default: [$UzdoomCFGrp]  \nPorts:   [$UzdoomCFGroms]\n"  25 75
 		DMLmainMENU
 	fi
 DMLmainMENU
