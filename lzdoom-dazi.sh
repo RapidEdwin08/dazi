@@ -6,7 +6,7 @@ alternateM0Ddir=
 # Running this Script from [/opt/retropie/configs/ports/doom] will access 0NLY the Mod Loader Menu  
 # Running this Script from [/opt/retropie/configs/all/runcommand-menu] will access 0NLY the Mod Loader Menu  
 
-versionDAZI=2025.10
+versionDAZI=2026.01
 M0DdirMAIN=~/RetroPie/roms/ports/doom/mods
 modDIRroms=~/RetroPie/roms/ports/doom/addon
 modDIRtmpfs=/dev/shm/addon
@@ -18,7 +18,7 @@ GzdoomCFGrp=/opt/retropie/configs/ports/doom/gzdoom.ini
 GzdoomCFGroms=~/RetroPie/roms/ports/doom/gzdoom.ini
 UzdoomCFGrp=/opt/retropie/configs/ports/doom/uzdoom.ini
 UzdoomCFGroms=~/RetroPie/roms/ports/doom/uzdoom.ini
-doomWARPemu=lzdoom-dazi+warp
+doomWARPemu=uzdoom-dazi+warp
 
 daziLOGO=$(
 echo ""
@@ -637,10 +637,15 @@ if [ "$confEMUSdazi" == '6' ]; then
 	WARPemuCONFIG=$(dialog --no-collapse --title "     Select an Alternate WARP [Emulator] for the Current Session" \
 		--ok-label SELECT --cancel-label "BACK" \
 		--menu "$currentFLAGhud \n     Alternate WARP [Emulator] can be APPLIED to [EmulatorSettings] \n	\n      CURRENT WARP Emulator for this Session: [$doomWARPemu]" 25 75 20 \
+		U "><  uzdoom-dazi+warp  ><" \
 		L "><  lzdoom-dazi+warp  ><" \
 		G "><  gzdoom-dazi+warp  ><" \
 		P "><  prboom-plus+warp  ><" 2>&1>/dev/tty)
 		
+		if [ "$WARPemuCONFIG" == 'U' ]; then
+			doomWARPemu=uzdoom-dazi+warp
+			dialog --no-collapse --title " Select an Alternate WARP [Emulator] for the Current Session *COMPLETE* " --ok-label CONTINUE --msgbox "\n CURRENT SETTING: [$doomWARPemu]"  25 75
+		fi
 		if [ "$WARPemuCONFIG" == 'L' ]; then
 			doomWARPemu=lzdoom-dazi+warp
 			dialog --no-collapse --title " Select an Alternate WARP [Emulator] for the Current Session *COMPLETE* " --ok-label CONTINUE --msgbox "\n CURRENT SETTING: [$doomWARPemu]"  25 75
