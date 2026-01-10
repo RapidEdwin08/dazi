@@ -18,7 +18,7 @@ GzdoomCFGrp=/opt/retropie/configs/ports/doom/gzdoom.ini
 GzdoomCFGroms=~/RetroPie/roms/ports/doom/gzdoom.ini
 UzdoomCFGrp=/opt/retropie/configs/ports/doom/uzdoom.ini
 UzdoomCFGroms=~/RetroPie/roms/ports/doom/uzdoom.ini
-doomWARPemu=uzdoom-dazi+warp
+doomWARPemu=lzdoom-dazi+warp
 
 daziLOGO=$(
 echo ""
