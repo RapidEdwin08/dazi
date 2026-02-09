@@ -6,7 +6,7 @@ alternateM0Ddir=
 # Running this Script from [/opt/retropie/configs/ports/doom] will access 0NLY the Mod Loader Menu  
 # Running this Script from [/opt/retropie/configs/all/runcommand-menu] will access 0NLY the Mod Loader Menu  
 
-versionDAZI=2026.01
+versionDAZI=2026.02
 M0DdirMAIN=~/RetroPie/roms/ports/doom/mods
 modDIRroms=~/RetroPie/roms/ports/doom/addon
 modDIRtmpfs=/dev/shm/addon
@@ -14,10 +14,16 @@ modDIRprboomplus=/opt/retropie/configs/ports/prboom-plus/autoload/doom-all
 doomDIRwads=~/RetroPie/roms/ports/doom
 zdoomCFGrp=/opt/retropie/configs/ports/doom/lzdoom.ini
 zdoomCFGroms=~/RetroPie/roms/ports/doom/lzdoom.ini
+zdoom388CFGrp=/opt/retropie/configs/ports/doom/lzdoom-388b.ini
+zdoom388CFGroms=~/RetroPie/roms/ports/doom/lzdoom-388b.ini
 GzdoomCFGrp=/opt/retropie/configs/ports/doom/gzdoom.ini
 GzdoomCFGroms=~/RetroPie/roms/ports/doom/gzdoom.ini
+Gzdoom480CFGrp=/opt/retropie/configs/ports/doom/gzdoom-480.ini
+Gzdoom480CFGroms=~/RetroPie/roms/ports/doom/gzdoom-480.ini
 UzdoomCFGrp=/opt/retropie/configs/ports/doom/uzdoom.ini
 UzdoomCFGroms=~/RetroPie/roms/ports/doom/uzdoom.ini
+UzdoomDevCFGrp=/opt/retropie/configs/ports/doom/uzdoom-dev.ini
+UzdoomDevCFGroms=~/RetroPie/roms/ports/doom/uzdoom-dev.ini
 doomWARPemu=lzdoom-dazi+warp
 
 daziLOGO=$(
@@ -81,7 +87,7 @@ echo '+--------------------------------------------------------------------+   '
 doomWARPdiff=$(
 echo "======================================================================"
 echo '          ~ ZDoom [Episode] [Map] [Difficulty] Settings ~ '
-echo 'DAZI will Stream-Edit [emulators.cfg] to APPLY [-warp -skill ] Settings'
+echo 'DAZI will Stream-Edit [warp.cfg] to APPLY [-warp -skill ] Settings'
 echo '*REQUIRES* [lzdoom-dazi+warp] or an ENTRY ENDING in -warp # # -skill #"'
 echo ""
 echo '===Standard Doom Difficulty==============Heretic Difficulty======'
@@ -92,13 +98,13 @@ echo '   4  Ultra-Violence                  4  Thou art a smite-meister'
 echo '   5  Nightmare!                      5  Black plague possesses thee'
 echo ""
 echo '==== Warp+Difficulty Examples ========= [-warp E# M# -skill S#] ===='
-echo '[-warp 5 9 -skill 4] Ultimate Doom SIGIL E5M9 on Ultra-Violence'
 echo '[-warp 6 1 -skill 1] Heretic FatesPath E6M1 on Thou Needeth a Wet-Nurse'
 echo '[-warp 2 1 -skill 3] Ultimate Doom AliensTC E2M1 on Hurt me plenty'
+echo '[-warp 5 9 -skill 4] Ultimate Doom SIGIL E5M9 on Ultra-Violence'
 echo '[-warp  31 -skill 5] Doom II SecretWolfensteinLevel MAP31 on Nightmare!'
 echo '       NOTE: Leave [Episode] set to [NONE] for D00M II Maps'
 echo "======================================================================"
-echo " CURRENT [doom] Port Config: /opt/retropie/configs/ports/emulators.cfg"
+echo "CURRENT [warp] [skill] Config: /opt/retropie/configs/ports/warp.cfg"
 )
 
 scriptREF=$(
@@ -276,8 +282,8 @@ if [ -f "$addonDIR/prboom.cfg" ]; then mkdir "$addonDIR"/".0ther" 2>/dev/null; m
 count=$(( $count + 1 )) # Increase count by+1
 rollingM0D="doomMOD${count}" # Apply Increased count to [doomMOD#]
 if [[ ! "${!rollingM0D}" == "" ]]; then addonDIRcount=$(( $addonDIRcount + 1 )); loadM0Ds; fi } # Prepare more [doomMOD#s] IF DEFINED
-# Prepare WARP and DIFFICULTY Settings For [lzdoom-dazi+warp] - 0nly Update doom[-warp].wad IF the Parameters are DEFINED - Set DEFAULT DIFFICULTY [Hurt me plenty] if NOT DEFINED - Update [-warp*] in [emulators.cfg] - If addonDIR is NOT DEFAULT [~/RetroPie/roms/ports/doom/] Create Symbolic Link to [doomWAD] - set doomWAD=[addonDIRroot/doomWAD]
-if [ ! "$mapNUM" == "" ]; then ln -s "${doomWAD}" "${addonDIR%/*}/$(basename "${doomWAD}" | cut -d. -f1 )-warp.$(basename "${doomWAD}" | sed "s/^.*\.//")" > /dev/null 2>&1; doomWAD="${addonDIR%/*}/$(basename "${doomWAD}" | cut -d. -f1 )-warp.$(basename "${doomWAD}" | sed "s/^.*\.//")"; if [ "$skillLEVEL" == "" ]; then skillLEVEL=3; fi; sed -i "s/-warp.*/-warp\ $episodeNUM\ $mapNUM\ -skill\ $skillLEVEL;\ popd\"/g" /opt/retropie/configs/ports/doom/emulators.cfg; else if [[ ! "$(dirname ${doomWAD} )" == "/home/$USER/RetroPie/roms/ports/doom/addon" ]]; then ln -s "${doomWAD}" "${addonDIR%/*}/$(basename "${doomWAD}" | cut -d. -f1 ).$(basename "${doomWAD}" | sed "s/^.*\.//")" > /dev/null 2>&1; doomWAD="${addonDIR%/*}/$(basename "${doomWAD}" | cut -d. -f1 ).$(basename "${doomWAD}" | sed "s/^.*\.//")"; fi; fi
+# Prepare WARP and DIFFICULTY Settings For [lzdoom-dazi+warp] - 0nly Update doom[-warp].wad IF the Parameters are DEFINED - Set DEFAULT DIFFICULTY [Hurt me plenty] if NOT DEFINED - Update [-warp*]  in [warp.cfg] - If addonDIR is NOT DEFAULT [~/RetroPie/roms/ports/doom/] Create Symbolic Link to [doomWAD] - set doomWAD=[addonDIRroot/doomWAD]
+if [ ! "$mapNUM" == "" ]; then ln -s "${doomWAD}" "${addonDIR%/*}/$(basename "${doomWAD}" | cut -d. -f1 )-warp.$(basename "${doomWAD}" | sed "s/^.*\.//")" > /dev/null 2>&1; doomWAD="${addonDIR%/*}/$(basename "${doomWAD}" | cut -d. -f1 )-warp.$(basename "${doomWAD}" | sed "s/^.*\.//")"; if [ "$skillLEVEL" == "" ]; then skillLEVEL=3; fi; sed -i "s/-warp.*/-warp\ $episodeNUM\ $mapNUM\ -skill\ $skillLEVEL/g" /opt/retropie/configs/ports/doom/warp.cfg; else if [[ ! "$(dirname ${doomWAD} )" == "/home/$USER/RetroPie/roms/ports/doom/addon" ]]; then ln -s "${doomWAD}" "${addonDIR%/*}/$(basename "${doomWAD}" | cut -d. -f1 ).$(basename "${doomWAD}" | sed "s/^.*\.//")" > /dev/null 2>&1; doomWAD="${addonDIR%/*}/$(basename "${doomWAD}" | cut -d. -f1 ).$(basename "${doomWAD}" | sed "s/^.*\.//")"; fi; fi
 mkdir "${addonDIR%/*}" > /dev/null 2>&1; mkdir "$addonDIR" > /dev/null 2>&1; mv "${addonDIR%/*}/$(basename $doomWAD | cut -d. -f1)/prboom.cfg" "${addonDIR%/*}/$(basename $doomWAD | cut -d. -f1)/prboom.cfg.last" > /dev/null 2>&1 # Prepare addonDIR - Move previous prboom.cfg
 count=1; rollingM0D="doomMOD${count}" # Set Initial Count
 if [ ! "$(find $addonDIR -maxdepth 1 -type f | wc -l )" == 0 ] || [ ! "$(find $addonDIR -maxdepth 1 -type l | wc -l )" == 0 ]; then addonDIRcount=$(( $count + $(find $addonDIR -maxdepth 1 -type f | wc -l ) + $(find $addonDIR -maxdepth 1 -type l | wc -l ) )); else addonDIRcount=$count; fi # Count Current Files/Links in ADDONS - Update addonDIRcount
@@ -633,31 +639,47 @@ if [ "$confEMUSdazi" == '5' ]; then userREMOVEemus; fi
 
 # Change WARP Emulatorfor EmulatorSettings
 if [ "$confEMUSdazi" == '6' ]; then
-	# Change WARP Emulator
-	WARPemuCONFIG=$(dialog --no-collapse --title "     Select an Alternate WARP [Emulator] for the Current Session" \
-		--ok-label SELECT --cancel-label "BACK" \
-		--menu "$currentFLAGhud \n     Alternate WARP [Emulator] can be APPLIED to [EmulatorSettings] \n	\n      CURRENT WARP Emulator for this Session: [$doomWARPemu]" 25 75 20 \
-		U "><  uzdoom-dazi+warp  ><" \
-		L "><  lzdoom-dazi+warp  ><" \
-		G "><  gzdoom-dazi+warp  ><" \
-		P "><  prboom-plus+warp  ><" 2>&1>/dev/tty)
+	# Check if NO [+warp] Entries
+	if [ "$(cat /opt/retropie/configs/ports/doom/emulators.cfg | grep '+warp =')" == '' ]; then
+		WARPemuCONFIG=$(dialog --no-collapse --title "     Select an Alternate WARP [Emulator] for the Current Session" \
+			--ok-label SELECT --cancel-label "BACK" \
+			--menu "$currentFLAGhud \n     Alternate WARP [Emulator] can be APPLIED to [EmulatorSettings] \n	\n      CURRENT WARP Emulator for this Session: [$doomWARPemu]" 25 75 20 \
+			U "  uzdoom-dazi+warp  " \
+			V "  uzdoom-dev-dazi+warp  " \
+			L "  lzdoom-dazi+warp  " \
+			3 "  lzdoom-388b-dazi+warp  " \
+			G "  gzdoom-dazi+warp  " \
+			4 "  gzdoom-480-dazi+warp  " \
+			D "  dsda-doom+warp  " \
+			P "  prboom-plus+warp  " 2>&1>/dev/tty)
 		
-		if [ "$WARPemuCONFIG" == 'U' ]; then
-			doomWARPemu=uzdoom-dazi+warp
+			if [ "$WARPemuCONFIG" == 'U' ]; then doomWARPemu=uzdoom-dazi+warp; fi
+			if [ "$WARPemuCONFIG" == 'V' ]; then doomWARPemu=uzdoom-dev-dazi+warp; fi
+			if [ "$WARPemuCONFIG" == 'L' ]; then doomWARPemu=lzdoom-dazi+warp; fi
+			if [ "$WARPemuCONFIG" == '3' ]; then doomWARPemu=lzdoom-388b-dazi+warp; fi
+			if [ "$WARPemuCONFIG" == 'G' ]; then doomWARPemu=gzdoom-dazi+warp; fi
+			if [ "$WARPemuCONFIG" == '4' ]; then doomWARPemu=gzdoom-480-dazi+warp; fi
+			if [ "$WARPemuCONFIG" == 'D' ]; then doomWARPemu=dsda-doom+warp; fi
+			if [ "$WARPemuCONFIG" == 'P' ]; then doomWARPemu=prboom-plus+warp; fi
+			if [ ! "$WARPemuCONFIG" == '' ]; then dialog --no-collapse --title " Select an Alternate WARP [Emulator] for the Current Session *COMPLETE* " --ok-label CONTINUE --msgbox "\n CURRENT SETTING: [$doomWARPemu]"  25 75; fi
+		doomEMUSmenu
+	else
+		# Change WARP Emulator
+		let i=0 # define counting variable
+		W=() # define working array
+			while read -r line; do # process line by line
+	    	let i=$i+1
+	    	W+=($i "$line")
+		done < <( cat /opt/retropie/configs/ports/doom/emulators.cfg | grep '+warp =' | awk '{print $1}' )
+		plusWARPemu=$(dialog --title "     Select an Alternate WARP [Emulator] for the Current Session" --ok-label "SELECT " --cancel-label BACK --menu "$currentFLAGhud \n     Alternate WARP [Emulator] can be APPLIED to [EmulatorSettings] \n	\n      CURRENT WARP Emulator for this Session: [$doomWARPemu]" 25 75 20 "${W[@]}" 3>&2 2>&1 1>&3  </dev/tty > /dev/tty) # show dialog and store output
+		#clear
+		tput reset
+		if [ ! "$plusWARPemu" == '' ]; then
+			doomWARPemu=$(cat /opt/retropie/configs/ports/doom/emulators.cfg | grep '+warp =' | awk '{print $1}' | sed -n "`echo "$plusWARPemu p" | sed 's/ //'`")
 			dialog --no-collapse --title " Select an Alternate WARP [Emulator] for the Current Session *COMPLETE* " --ok-label CONTINUE --msgbox "\n CURRENT SETTING: [$doomWARPemu]"  25 75
+			doomEMUSmenu
 		fi
-		if [ "$WARPemuCONFIG" == 'L' ]; then
-			doomWARPemu=lzdoom-dazi+warp
-			dialog --no-collapse --title " Select an Alternate WARP [Emulator] for the Current Session *COMPLETE* " --ok-label CONTINUE --msgbox "\n CURRENT SETTING: [$doomWARPemu]"  25 75
-		fi
-		if [ "$WARPemuCONFIG" == 'G' ]; then
-			doomWARPemu=gzdoom-dazi+warp
-			dialog --no-collapse --title " Select an Alternate WARP [Emulator] for the Current Session *COMPLETE* " --ok-label CONTINUE --msgbox "\n CURRENT SETTING: [$doomWARPemu]"  25 75
-		fi
-		if [ "$WARPemuCONFIG" == 'P' ]; then
-			doomWARPemu=prboom-plus+warp
-			dialog --no-collapse --title " Select an Alternate WARP [Emulator] for the Current Session *COMPLETE* " --ok-label CONTINUE --msgbox "\n CURRENT SETTING: [$doomWARPemu]"  25 75
-		fi
+	fi
 	doomEMUSmenu
 fi
 
@@ -670,7 +692,6 @@ if [ "$confEMUSdazi" == '1' ]; then
 	echo '         [WADFile]         {WARPSymLink}   =   {Emulator}'
 	echo "======================================================================"
 	echo "         chex.wad $(if [ ! -f ~/RetroPie/roms/ports/doom/chex.wad ]; then echo "???"; fi)          $(cat /opt/retropie/configs/all/emulators.cfg | grep chex-warp | cut -c 6-)"
-	echo "         chex2.wad $(if [ ! -f ~/RetroPie/roms/ports/doom/chex2.wad ]; then echo "???"; fi)         $(cat /opt/retropie/configs/all/emulators.cfg | grep chex2-warp | cut -c 6-)"
 	echo "         chex3.wad $(if [ ! -f ~/RetroPie/roms/ports/doom/chex3.wad ]; then echo "???"; fi)         $(cat /opt/retropie/configs/all/emulators.cfg | grep chex3-warp | cut -c 6-)"
 	echo "         doom.wad $(if [ ! -f ~/RetroPie/roms/ports/doom/doom.wad ]; then echo "???"; fi)          $(cat /opt/retropie/configs/all/emulators.cfg | grep doom-warp | cut -c 6-)"
 	echo "         doom2.wad $(if [ ! -f ~/RetroPie/roms/ports/doom/doom2.wad ]; then echo "???"; fi)         $(cat /opt/retropie/configs/all/emulators.cfg | grep doom2-warp | grep -v freedoom2-warp | cut -c 6-)"
@@ -678,6 +699,7 @@ if [ "$confEMUSdazi" == '1' ]; then
 	echo "         freedoom1.wad $(if [ ! -f ~/RetroPie/roms/ports/doom/freedoom1.wad ]; then echo "???"; fi)     $(cat /opt/retropie/configs/all/emulators.cfg | grep freedoom1-warp | cut -c 6-)"
 	echo "         freedoom2.wad $(if [ ! -f ~/RetroPie/roms/ports/doom/freedoom2.wad ]; then echo "???"; fi)     $(cat /opt/retropie/configs/all/emulators.cfg | grep freedoom2-warp | cut -c 6-)"
 	echo "         hacx.wad $(if [ ! -f ~/RetroPie/roms/ports/doom/hacx.wad ]; then echo "???"; fi)          $(cat /opt/retropie/configs/all/emulators.cfg | grep hacx-warp | cut -c 6-)"
+	echo "         hacx-2.wad $(if [ ! -f ~/RetroPie/roms/ports/doom/hacx-2.wad ]; then echo "???"; fi)        $(cat /opt/retropie/configs/all/emulators.cfg | grep hacx-2-warp | cut -c 6-)"
 	echo "         heretic.wad $(if [ ! -f ~/RetroPie/roms/ports/doom/heretic.wad ]; then echo "???"; fi)       $(cat /opt/retropie/configs/all/emulators.cfg | grep heretic-warp | cut -c 6-)"
 	echo "         hexen.wad $(if [ ! -f ~/RetroPie/roms/ports/doom/hexen.wad ]; then echo "???"; fi)         $(cat /opt/retropie/configs/all/emulators.cfg | grep hexen-warp | cut -c 6-)"
 	echo "         plutonia.wad $(if [ ! -f ~/RetroPie/roms/ports/doom/plutonia.wad ]; then echo "???"; fi)      $(cat /opt/retropie/configs/all/emulators.cfg | grep plutonia-warp | cut -c 6-)"
@@ -685,7 +707,7 @@ if [ "$confEMUSdazi" == '1' ]; then
 	echo "         sve.wad $(if [ ! -f ~/RetroPie/roms/ports/doom/sve.wad ]; then echo "???"; fi)           $(cat /opt/retropie/configs/all/emulators.cfg | grep sve-warp | cut -c 6-)"
 	echo "         tnt.wad $(if [ ! -f ~/RetroPie/roms/ports/doom/tnt.wad ]; then echo "???"; fi)           $(cat /opt/retropie/configs/all/emulators.cfg | grep tnt-warp | cut -c 6-)"
 	echo "======================================================================"
-	echo "$(cat /opt/retropie/configs/all/emulators.cfg | grep doom_ | grep -v chex-warp | grep -v chex2-warp | grep -v chex3-warp | grep -v doom-warp | grep -v doom2-warp | grep -v doomu-warp | grep -v freedoom1-warp | grep -v freedoom2-warp | grep -v hacx-warp | grep -v heretic-warp | grep -v hexen-warp | grep -v plutonia-warp | grep -v strife1-warp | grep -v sve-warp | grep -v tnt-warp | sort -n)"
+	echo "$(cat /opt/retropie/configs/all/emulators.cfg | grep doom_ | grep -v chex-warp | grep -v hacx-2-warp | grep -v chex3-warp | grep -v doom-warp | grep -v doom2-warp | grep -v doomu-warp | grep -v freedoom1-warp | grep -v freedoom2-warp | grep -v hacx-warp | grep -v heretic-warp | grep -v hexen-warp | grep -v plutonia-warp | grep -v strife1-warp | grep -v sve-warp | grep -v tnt-warp | sort -n)"
 	)
 	dialog --no-collapse --title "VIEW Emulator Settings for [doom-warp.wads]:" --ok-label Back --msgbox " $doomEMUsettings"  25 75
 	doomEMUSmenu
@@ -697,9 +719,10 @@ autoADDemus()
 {
 tput reset
 
-if [ ! -f /opt/retropie/configs/ports/doom/lzdoom-dazi.sh ]; then
-	dialog --no-collapse --title " [/opt/retropie/configs/ports/doom/lzdoom-dazi.sh] NOT FOUND!  " --ok-label CONTINUE --msgbox "\n INSTALL [DAZI] FIRST...\n"  25 75
-	doomEMUSmenu
+# Check if NO [+warp] Entries
+if [ "$(cat /opt/retropie/configs/ports/doom/emulators.cfg | grep '+warp =')" == '' ]; then
+	dialog --no-collapse --title "*WARNING*  NO [+warp] Entries found in [emulators.cfg] !   " --ok-label CONTINUE --msgbox "$(cat /opt/retropie/configs/ports/doom/emulators.cfg | awk '{print $1}')"  25 75
+	#doomEMUSmenu
 fi
 
 # Backup emulators.cfg if not exist already
@@ -713,15 +736,6 @@ if [ -f ~/RetroPie/roms/ports/doom/chex.wad ]; then
 		echo "doom_chex-warp = "$doomWARPemu"" >> /opt/retropie/configs/all/emulators.cfg
 	else
 		sed -i "s/doom\_chex-warp\ =.*/doom\_chex-warp\ =\ \"$doomWARPemu\"/g" /opt/retropie/configs/all/emulators.cfg
-	fi
-fi
-
-if [ -f ~/RetroPie/roms/ports/doom/chex2.wad ]; then
-	# Add [to emulators.cfg]
-	if [ ! $(cat /opt/retropie/configs/all/emulators.cfg | grep -q 'doom_chex2-warp =' ; echo $?) == '0' ]; then
-		echo "doom_chex2-warp = "$doomWARPemu"" >> /opt/retropie/configs/all/emulators.cfg
-	else
-		sed -i "s/doom\_chex2-warp\ =.*/doom\_chex2-warp\ =\ \"$doomWARPemu\"/g" /opt/retropie/configs/all/emulators.cfg
 	fi
 fi
 
@@ -785,6 +799,15 @@ if [ -f ~/RetroPie/roms/ports/doom/hacx.wad ]; then
 		echo "doom_hacx-warp = "$doomWARPemu"" >> /opt/retropie/configs/all/emulators.cfg
 	else
 		sed -i "s/doom\_hacx-warp\ =.*/doom\_hacx-warp\ =\ \"$doomWARPemu\"/g" /opt/retropie/configs/all/emulators.cfg
+	fi
+fi
+
+if [ -f ~/RetroPie/roms/ports/doom/hacx-2.wad ]; then
+	# Add [to emulators.cfg]
+	if [ ! $(cat /opt/retropie/configs/all/emulators.cfg | grep -q 'doom_hacx-2-warp =' ; echo $?) == '0' ]; then
+		echo "doom_hacx-2-warp = "$doomWARPemu"" >> /opt/retropie/configs/all/emulators.cfg
+	else
+		sed -i "s/doom\_hacx-2-warp\ =.*/doom\_hacx-2-warp\ =\ \"$doomWARPemu\"/g" /opt/retropie/configs/all/emulators.cfg
 	fi
 fi
 
@@ -854,7 +877,6 @@ tput reset
 
 # REMOVE Symbolic Links Emulators Entries for [lzdoom-dazi+warp]
 sed -i "/chex-warp/d" /opt/retropie/configs/all/emulators.cfg
-sed -i "/chex2-warp/d" /opt/retropie/configs/all/emulators.cfg
 sed -i "/chex3-warp/d" /opt/retropie/configs/all/emulators.cfg
 sed -i "/doom-warp/d" /opt/retropie/configs/all/emulators.cfg
 sed -i "/doom2-warp/d" /opt/retropie/configs/all/emulators.cfg
@@ -862,6 +884,7 @@ sed -i "/doomu-warp/d" /opt/retropie/configs/all/emulators.cfg
 sed -i "/freedoom1-warp/d" /opt/retropie/configs/all/emulators.cfg
 sed -i "/freedoom2-warp/d" /opt/retropie/configs/all/emulators.cfg
 sed -i "/hacx-warp/d" /opt/retropie/configs/all/emulators.cfg
+sed -i "/hacx-2-warp/d" /opt/retropie/configs/all/emulators.cfg
 sed -i "/heretic-warp/d" /opt/retropie/configs/all/emulators.cfg
 sed -i "/hexen-warp/d" /opt/retropie/configs/all/emulators.cfg
 sed -i "/plutonia-warp/d" /opt/retropie/configs/all/emulators.cfg
@@ -870,7 +893,7 @@ sed -i "/sve-warp/d" /opt/retropie/configs/all/emulators.cfg
 sed -i "/tnt-warp/d" /opt/retropie/configs/all/emulators.cfg
 
 if [ ! -f /opt/retropie/configs/all/emulators.cfg.b4dazi ]; then cp /opt/retropie/configs/all/emulators.cfg /opt/retropie/configs/all/emulators.cfg.b4dazi 2>/dev/null; fi
-#cat /opt/retropie/configs/all/emulators.cfg | grep -v 'lzdoom-dazi+warp' > /dev/shm/emulators.cfg
+#cat /opt/retropie/configs/all/emulators.cfg | grep -v '+warp' > /dev/shm/emulators.cfg
 #mv /dev/shm/emulators.cfg /opt/retropie/configs/all/emulators.cfg
 
 # FINISHED
@@ -883,9 +906,10 @@ userCREATEemus()
 {
 tput reset
 
-if [ ! -f /opt/retropie/configs/ports/doom/lzdoom-dazi.sh ]; then
-	dialog --no-collapse --title " [/opt/retropie/configs/ports/doom/lzdoom-dazi.sh] NOT FOUND!  " --ok-label CONTINUE --msgbox "\n INSTALL [DAZI] FIRST...\n"  25 75
-	doomEMUSmenu
+# Check if NO [+warp] Entries
+if [ "$(cat /opt/retropie/configs/ports/doom/emulators.cfg | grep '+warp =')" == '' ]; then
+	dialog --no-collapse --title "*WARNING*  NO [+warp] Entries found in [emulators.cfg] !   " --ok-label CONTINUE --msgbox "$(cat /opt/retropie/configs/ports/doom/emulators.cfg | awk '{print $1}')"  25 75
+	#doomEMUSmenu
 fi
 
 # =====================================
@@ -968,13 +992,31 @@ tput reset
 if [ ! -f /opt/retropie/configs/ports/doom/emulators.cfg.bakdazi ]; then cp /opt/retropie/configs/ports/doom/emulators.cfg /opt/retropie/configs/ports/doom/emulators.cfg.bakdazi 2>/dev/null; fi
 
 # Rebuild emulators.cfg without DAZI
-cat /opt/retropie/configs/ports/doom/emulators.cfg | grep -v 'lzdoom-dazi-' | grep -v 'lzdoom-dazi =' | grep -v 'default =' | grep -v 'lzdoom-dazi+' | grep -v 'prboom-plus+warp' | grep -v 'gzdoom-dazi =' | grep -v 'gzdoom-dazi+' | grep -v 'uzdoom-dazi =' | grep -v 'uzdoom-dazi+' > /dev/shm/emulators.cfg
-if [[ "$(cat /dev/shm/emulators.cfg | grep -q 'lzdoom-addon' ; echo $?)" == '0' ]] && [[ "$(cat /opt/retropie/configs/ports/doom/emulators.cfg | grep -q 'default =' ; echo $?)" == '1' ]]; then echo 'default = "lzdoom-addon"' >> /dev/shm/emulators.cfg; fi
-if [[ "$(cat /dev/shm/emulators.cfg | grep -q 'prboom-plus' ; echo $?)" == '0' ]] && [[ "$(cat /dev/shm/emulators.cfg | grep -q 'default =' ; echo $?)" == '1' ]]; then echo 'default = "prboom-plus"' >> /dev/shm/emulators.cfg; fi
-if [[ "$(cat /dev/shm/emulators.cfg | grep -q 'lr-prboom' ; echo $?)" == '0' ]] && [[ "$(cat /dev/shm/emulators.cfg | grep -q 'default =' ; echo $?)" == '1' ]]; then echo 'default = "lr-prboom"' >> /dev/shm/emulators.cfg; fi
-if [[ "$(cat /dev/shm/emulators.cfg | grep -q 'lzdoom' ; echo $?)" == '0' ]] && [[ "$(cat /dev/shm/emulators.cfg | grep -q 'default =' ; echo $?)" == '1' ]]; then echo 'default = "lzdoom"' >> /dev/shm/emulators.cfg; fi
-if [[ "$(cat /dev/shm/emulators.cfg | grep -q 'gzdoom' ; echo $?)" == '0' ]] && [[ "$(cat /dev/shm/emulators.cfg | grep -q 'default =' ; echo $?)" == '1' ]]; then echo 'default = "gzdoom"' >> /dev/shm/emulators.cfg; fi
-if [[ "$(cat /dev/shm/emulators.cfg | grep -q 'uzdoom' ; echo $?)" == '0' ]] && [[ "$(cat /dev/shm/emulators.cfg | grep -q 'default =' ; echo $?)" == '1' ]]; then echo 'default = "uzdoom"' >> /dev/shm/emulators.cfg; fi
+cat /opt/retropie/configs/ports/doom/emulators.cfg | grep -v 'dazi =' | grep -v 'dazi+ =' | grep -v '+warp =' > /dev/shm/emulators.cfg
+
+# Configure a DEFAULT in [emulators.cfg]
+if [[ "$(cat /dev/shm/emulators.cfg | grep -q 'default =' ; echo $?)" == '1' ]]; then
+	echo 'default = "lzdoom"' >> /dev/shm/emulators.cfg
+fi
+if [[ "$(cat //dev/shm/emulators.cfg | grep -q 'lr-prboom =' ; echo $?)" == '0' ]]; then
+	sed -i 's/default\ =.*/default\ =\ \"lr-prboom\"/g' /dev/shm/emulators.cfg
+fi
+if [[ "$(cat /dev/shm/emulators.cfg | grep -q 'prboom-plus =' ; echo $?)" == '0' ]]; then
+	sed -i 's/default\ =.*/default\ =\ \"prboom-plus\"/g' /dev/shm/emulators.cfg
+fi
+if [[ "$(cat /dev/shm/emulators.cfg | grep -q 'dsda-doom =' ; echo $?)" == '0' ]]; then
+	sed -i 's/default\ =.*/default\ =\ \"dsda-doom\"/g' /dev/shm/emulators.cfg
+fi
+if [[ "$(cat /dev/shm/emulators.cfg | grep -q 'lzdoom =' ; echo $?)" == '0' ]]; then
+	sed -i 's/default\ =.*/default\ =\ \"lzdoom\"/g' /dev/shm/emulators.cfg
+fi
+if [[ "$(cat /dev/shm/emulators.cfg | grep -q 'gzdoom =' ; echo $?)" == '0' ]]; then
+	sed -i 's/default\ =.*/default\ =\ \"gzdoom\"/g' /dev/shm/emulators.cfg
+fi
+if [[ "$(cat /dev/shm/emulators.cfg | grep -q 'uzdoom =' ; echo $?)" == '0' ]]; then
+	sed -i 's/default\ =.*/default\ =\ \"uzdoom\"/g' /dev/shm/emulators.cfg
+fi
+# Replace with Rebuilt emulators.cfg
 mv /dev/shm/emulators.cfg /opt/retropie/configs/ports/doom/emulators.cfg 2>/dev/null
 
 # Remove [lzdoom-dazi] from  [runcommand-onstart.sh]
@@ -1016,7 +1058,6 @@ rm /opt/retropie/configs/ports/doom/lzdoom-dazi.clean 2>/dev/null
 
 # REMOVE Symbolic Links *No Longer Needed but Leaving Here for 0lder Versions of DAZI*
 rm ~/RetroPie/roms/ports/doom/chex-warp.wad 2>/dev/null
-rm ~/RetroPie/roms/ports/doom/chex2-warp.wad 2>/dev/null
 rm ~/RetroPie/roms/ports/doom/chex3-warp.wad 2>/dev/null
 rm ~/RetroPie/roms/ports/doom/doom-warp.wad 2>/dev/null
 rm ~/RetroPie/roms/ports/doom/doom2-warp.wad 2>/dev/null
@@ -1024,6 +1065,7 @@ rm ~/RetroPie/roms/ports/doom/doomu-warp.wad 2>/dev/null
 rm ~/RetroPie/roms/ports/doom/freedoom1-warp.wad 2>/dev/null
 rm ~/RetroPie/roms/ports/doom/freedoom2-warp.wad 2>/dev/null
 rm ~/RetroPie/roms/ports/doom/hacx-warp.wad 2>/dev/null
+rm ~/RetroPie/roms/ports/doom/hacx-2-warp.wad 2>/dev/null
 rm ~/RetroPie/roms/ports/doom/heretic-warp.wad 2>/dev/null
 rm ~/RetroPie/roms/ports/doom/hexen-warp.wad 2>/dev/null
 rm ~/RetroPie/roms/ports/doom/plutonia-warp.wad 2>/dev/null
@@ -1038,8 +1080,6 @@ mv /dev/shm/emulators.cfg /opt/retropie/configs/all/emulators.cfg
 
 # REMOVE DAZI Templates
 rm ~/RetroPie/roms/ports/'0ne Humanity (DAZI).sh' 2>/dev/null
-rm ~/RetroPie/roms/ports/'Chex Quest 2 (DAZI).sh' 2>/dev/null
-rm ~/RetroPie/roms/ports/'Chex Quest 2 (WARP).sh' 2>/dev/null
 rm ~/RetroPie/roms/ports/'Chex Quest 3 (DAZI).sh' 2>/dev/null
 rm ~/RetroPie/roms/ports/'Chex Quest 3 (WARP).sh' 2>/dev/null
 rm ~/RetroPie/roms/ports/'Chex Quest (DAZI).sh' 2>/dev/null
@@ -1057,6 +1097,8 @@ rm ~/RetroPie/roms/ports/'Freedoom Phase II (WARP).sh' 2>/dev/null
 rm ~/RetroPie/roms/ports/'Freedoom Phase I (WARP).sh' 2>/dev/null
 rm ~/RetroPie/roms/ports/'HacX (DAZI).sh' 2>/dev/null
 rm ~/RetroPie/roms/ports/'HacX (WARP).sh' 2>/dev/null
+rm ~/RetroPie/roms/ports/'HacX V2 (DAZI).sh' 2>/dev/null
+rm ~/RetroPie/roms/ports/'HacX V2 (WARP).sh' 2>/dev/null
 rm ~/RetroPie/roms/ports/'Heretic (DAZI).sh' 2>/dev/null
 rm ~/RetroPie/roms/ports/'Heretic (WARP).sh' 2>/dev/null
 rm ~/RetroPie/roms/ports/'Hexen (DAZI).sh' 2>/dev/null
@@ -1083,9 +1125,9 @@ tput reset
 if [[ "$(dpkg -l | grep -F '  p7zip-full ')" == '' ]] || [[ "$(dpkg -l | grep -F '  unzip ')" == '' ]]; then
 	wget -q --spider http://google.com
 	if [ $? -eq 0 ]; then
-		sudo apt-get install zip -y
-		sudo apt-get install unzip -y
-		sudo apt-get install p7zip-full -y
+		if [[ "$(dpkg -l | grep -F '  zip ')" == '' ]]; then echo Installing zip; sudo apt-get install zip -y; fi
+		if [[ "$(dpkg -l | grep -F '  unzip ')" == '' ]]; then echo Installing unzip; sudo apt-get install unzip -y; fi
+		if [[ "$(dpkg -l | grep -F '  p7zip-full ')" == '' ]]; then echo Installing p7zip-full; sudo apt-get install p7zip-full -y; fi
 	else
 		# No Internet - Back to Main Menu
 		dialog --no-collapse --title "               [ERROR]               " --msgbox "   *INTERNET CONNECTION REQUIRED* TO INSTALL [ZIP/UNZIP/P7ZIP]"  25 75
@@ -1106,107 +1148,63 @@ fi
 if [ ! -f /opt/retropie/configs/ports/doom/emulators.cfg.bakdazi ]; then cp /opt/retropie/configs/ports/doom/emulators.cfg /opt/retropie/configs/ports/doom/emulators.cfg.bakdazi 2>/dev/null; fi
 
 # Add [dazi] to [emulators.cfg]
-cat /opt/retropie/configs/ports/doom/emulators.cfg | grep -v 'lzdoom-dazi-' | grep -v 'lzdoom-dazi =' | grep -v 'lzdoom-dazi+' | grep -v 'prboom-plus+warp' | grep -v 'gzdoom-dazi =' | grep -v 'gzdoom-dazi+' | grep -v 'uzdoom-dazi =' | grep -v 'uzdoom-dazi+' > /dev/shm/emulators.cfg
-cat /opt/retropie/configs/ports/doom/emulators.cfg | grep 'lzdoom-addon' > /dev/shm/emulators.dazi
-cat /opt/retropie/configs/ports/doom/emulators.cfg | grep 'prboom-plus' > /dev/shm/emulators.prboomplus
-cat /opt/retropie/configs/ports/doom/emulators.cfg | grep 'gzdoom-addon' > /dev/shm/emulators.dazig
-cat /opt/retropie/configs/ports/doom/emulators.cfg | grep 'uzdoom-addon' > /dev/shm/emulators.daziu
+#cat /opt/retropie/configs/ports/doom/emulators.cfg | grep -v 'lzdoom-dazi-' | grep -v 'lzdoom-dazi =' | grep -v 'lzdoom-dazi+' | grep -v 'prboom-plus+warp' | grep -v 'gzdoom-dazi =' | grep -v 'gzdoom-dazi+' | grep -v 'uzdoom-dazi =' | grep -v 'uzdoom-dazi+' > /dev/shm/emulators.cfg
+cat /opt/retropie/configs/ports/doom/emulators.cfg | grep -v 'dazi =' | grep -v 'dazi+ =' | grep -v '+warp =' > /dev/shm/emulators.cfg
+cat /opt/retropie/configs/ports/doom/emulators.cfg | grep 'addon =' > /dev/shm/emulators.dazi # All the *zdoom-addon entries
+cat /opt/retropie/configs/ports/doom/emulators.cfg | grep 'dsda-doom =' > /dev/shm/emulators.dsdadoom # No [dsda-doom-dazi+] string to pull
+cat /opt/retropie/configs/ports/doom/emulators.cfg | grep 'prboom-plus' > /dev/shm/emulators.prboomplus # No [dsda-doom-addon] entry to pull
 
-#if [ "$(cat /dev/shm/emulators.dazi | grep -q 'lzdoom-addon =' ; echo $?)" == '1' ]; then
-	#echo "lzdoom-addon = \"DOOMWADDIR=/home/$USER/RetroPie/roms/ports/doom /opt/retropie/ports/lzdoom/lzdoom -iwad %ROM% +fullscreen 1 -config /home/$USER/RetroPie/roms/ports/doom/lzdoom.ini +vid_renderer 0 +'snd_mididevice -2' -file /home/$USER/RetroPie/roms/ports/doom/addon/*\"" > /dev/shm/emulators.dazi
-	#echo "lzdoom-addon = \"DOOMWADDIR=/home/$USER/RetroPie/roms/ports/doom /opt/retropie/ports/lzdoom/lzdoom -iwad %ROM% +fullscreen 1 -config /home/$USER/RetroPie/roms/ports/doom/lzdoom.ini +vid_renderer 0 +'snd_mididevice -2' -file /home/$USER/RetroPie/roms/ports/doom/addon/*\"" >> /dev/shm/emulators.cfg
-#fi
-
-# Add the [dazi] and dazi+] entries
+# Add [dazi] entries
 if [ ! "$( cat /dev/shm/emulators.dazi)" == "" ]; then		
-	# Create [dazi+] entry based on current [lzdoom-addon] entry in [emulators.cfg]
-	cat /dev/shm/emulators.dazi | grep 'lzdoom-addon =' > /dev/shm/emulators.daziplus
-	sed -i 's/lzdoom-addon/lzdoom-dazi+/g' /dev/shm/emulators.daziplus
+	# Create [dazi+] entry based on current [*-addon] entry in [emulators.cfg]
+	cat /dev/shm/emulators.dazi | grep 'addon =' > /dev/shm/emulators.daziplus
+	sed -i 's/-addon/-dazi+/g' /dev/shm/emulators.daziplus
 	sed -i "s+-file\ .*+-file\ \/dev\/shm\/addon/\*\ -file\ \/home\/$USER\/RetroPie\/roms\/ports\/doom\/addon/\*\"+g" /dev/shm/emulators.daziplus
 	cat /dev/shm/emulators.daziplus >> /dev/shm/emulators.cfg
 	
 	# Create [dazi+warp] entry based on current [lzdoom-addon] entry in [emulators.cfg]
-	cat /dev/shm/emulators.dazi | grep 'lzdoom-addon =' > /dev/shm/emulators.dazipluswarp
-	sed -i 's/lzdoom-addon/lzdoom-dazi+warp/g' /dev/shm/emulators.dazipluswarp
-	sed -i "s+-file\ .*+-file\ \/dev\/shm\/addon/\*\ -file\ \/home\/$USER\/RetroPie\/roms\/ports\/doom\/addon/\*\ -warp\ 1\ 1\ -skill\ 3;\ popd\"+g" /dev/shm/emulators.dazipluswarp
+	cat /dev/shm/emulators.dazi | grep 'addon =' > /dev/shm/emulators.dazipluswarp
+	sed -i 's/-addon/-dazi+warp/g' /dev/shm/emulators.dazipluswarp
+	sed -i "s+ = \".*+ = \"/opt/retropie/configs/ports/doom/lzdoom-dazi.sh warp %ROM% %XRES% %YRES%\"+g" /dev/shm/emulators.dazipluswarp
 	cat /dev/shm/emulators.dazipluswarp >> /dev/shm/emulators.cfg
-	
-	# Create [dazi] entry based on current [lzdoom-addon] entry in [emulators.cfg]
-	sed -i 's/lzdoom-addon/lzdoom-dazi/g' /dev/shm/emulators.dazi
-	sed -i 's/~\/RetroPie\/roms\/ports\/doom\/addon\//\/dev\/shm\/addon\//g' /dev/shm/emulators.dazi
-	sed -i "s/\/home\/$USER\/RetroPie\/roms\/ports\/doom\/addon\//\/dev\/shm\/addon\//g" /dev/shm/emulators.dazi
-	cat /dev/shm/emulators.dazi >> /dev/shm/emulators.cfg
+fi
+
+# Create [dsda-doom+warp] entry based on current [dsda-doom] entry in [emulators.cfg]
+if [ ! "$( cat /dev/shm/emulators.dsdadoom)" == "" ]; then
+	cat /dev/shm/emulators.dsdadoom | grep 'dsda-doom =' > /dev/shm/emulators.dsdadoomwarp
+	sed -i 's/dsda-doom\ =/dsda-doom+warp\ =/g' /dev/shm/emulators.dsdadoomwarp
+	sed -i "s+ = \".*+ = \"/opt/retropie/configs/ports/doom/lzdoom-dazi.sh warp %ROM% %XRES% %YRES%\"+g" /dev/shm/emulators.dsdadoomwarp
+	cat /dev/shm/emulators.dsdadoomwarp >> /dev/shm/emulators.cfg
 fi
 
 # Create [prboom-plus+warp] entry based on current [prboom-plus] entry in [emulators.cfg]
 if [ ! "$( cat /dev/shm/emulators.prboomplus)" == "" ]; then
 	cat /dev/shm/emulators.prboomplus | grep 'prboom-plus =' > /dev/shm/emulators.prboompluswarp
 	sed -i 's/prboom-plus\ =/prboom-plus+warp\ =/g' /dev/shm/emulators.prboompluswarp
-	sed -i "s+/prboom-plus\ -iwad\ \%ROM\%.*+/prboom-plus\ -iwad\ \%ROM\%\ -warp\ 1\ 1\ -skill\ 3;\ popd\"+g" /dev/shm/emulators.prboompluswarp
+	sed -i "s+ = \".*+ = \"/opt/retropie/configs/ports/doom/lzdoom-dazi.sh warp %ROM% %XRES% %YRES%\"+g" /dev/shm/emulators.prboompluswarp
 	cat /dev/shm/emulators.prboompluswarp >> /dev/shm/emulators.cfg
 fi
 
-# Add gzdoom
-if [ ! "$( cat /dev/shm/emulators.dazig)" == "" ]; then		
-	# Create [dazi+] entry based on current [gzdoom-addon] entry in [emulators.cfg]
-	cat /dev/shm/emulators.dazig | grep 'gzdoom-addon =' > /dev/shm/emulators.dazigplus
-	sed -i 's/gzdoom-addon/gzdoom-dazi+/g' /dev/shm/emulators.dazigplus
-	sed -i "s+-file\ .*+-file\ \/dev\/shm\/addon/\*\ -file\ \/home\/$USER\/RetroPie\/roms\/ports\/doom\/addon/\*\"+g" /dev/shm/emulators.dazigplus
-	cat /dev/shm/emulators.dazigplus >> /dev/shm/emulators.cfg
-	
-	# Create [dazi+warp] entry based on current [gzdoom-addon] entry in [emulators.cfg]
-	cat /dev/shm/emulators.dazig | grep 'gzdoom-addon =' > /dev/shm/emulators.dazigpluswarp
-	sed -i 's/gzdoom-addon/gzdoom-dazi+warp/g' /dev/shm/emulators.dazigpluswarp
-	sed -i "s+-file\ .*+-file\ \/dev\/shm\/addon/\*\ -file\ \/home\/$USER\/RetroPie\/roms\/ports\/doom\/addon/\*\ -warp\ 1\ 1\ -skill\ 3;\ popd\"+g" /dev/shm/emulators.dazigpluswarp
-	cat /dev/shm/emulators.dazigpluswarp >> /dev/shm/emulators.cfg
-	
-	# Create [dazi] entry based on current [gzdoom-addon] entry in [emulators.cfg]
-	sed -i 's/gzdoom-addon/gzdoom-dazi/g' /dev/shm/emulators.dazig
-	sed -i 's/~\/RetroPie\/roms\/ports\/doom\/addon\//\/dev\/shm\/addon\//g' /dev/shm/emulators.dazig
-	sed -i "s/\/home\/$USER\/RetroPie\/roms\/ports\/doom\/addon\//\/dev\/shm\/addon\//g" /dev/shm/emulators.dazig
-	cat /dev/shm/emulators.dazig >> /dev/shm/emulators.cfg
-fi
-
-# Add uzdoom
-if [ ! "$( cat /dev/shm/emulators.daziu)" == "" ]; then		
-	# Create [dazi+] entry based on current [uzdoom-addon] entry in [emulators.cfg]
-	cat /dev/shm/emulators.daziu | grep 'uzdoom-addon =' > /dev/shm/emulators.daziuplus
-	sed -i 's/uzdoom-addon/uzdoom-dazi+/g' /dev/shm/emulators.daziuplus
-	sed -i "s+-file\ .*+-file\ \/dev\/shm\/addon/\*\ -file\ \/home\/$USER\/RetroPie\/roms\/ports\/doom\/addon/\*\"+g" /dev/shm/emulators.daziuplus
-	cat /dev/shm/emulators.daziuplus >> /dev/shm/emulators.cfg
-	
-	# Create [dazi+warp] entry based on current [uzdoom-addon] entry in [emulators.cfg]
-	cat /dev/shm/emulators.daziu | grep 'uzdoom-addon =' > /dev/shm/emulators.daziupluswarp
-	sed -i 's/uzdoom-addon/uzdoom-dazi+warp/g' /dev/shm/emulators.daziupluswarp
-	sed -i "s+-file\ .*+-file\ \/dev\/shm\/addon/\*\ -file\ \/home\/$USER\/RetroPie\/roms\/ports\/doom\/addon/\*\ -warp\ 1\ 1\ -skill\ 3;\ popd\"+g" /dev/shm/emulators.daziupluswarp
-	cat /dev/shm/emulators.daziupluswarp >> /dev/shm/emulators.cfg
-	
-	# Create [dazi] entry based on current [uzdoom-addon] entry in [emulators.cfg]
-	sed -i 's/uzdoom-addon/uzdoom-dazi/g' /dev/shm/emulators.daziu
-	sed -i 's/~\/RetroPie\/roms\/ports\/doom\/addon\//\/dev\/shm\/addon\//g' /dev/shm/emulators.daziu
-	sed -i "s/\/home\/$USER\/RetroPie\/roms\/ports\/doom\/addon\//\/dev\/shm\/addon\//g" /dev/shm/emulators.daziu
-	cat /dev/shm/emulators.daziu >> /dev/shm/emulators.cfg
-fi
-
 # Configure [dazi] as DEFAULT in [emulators.cfg]
-if [[ "$(cat /dev/shm/emulators.cfg | grep -q 'lzdoom-dazi+' ; echo $?)" == '0' ]]; then
-	if [[ "$(cat /dev/shm/emulators.cfg | grep -q 'default =' ; echo $?)" == '1' ]]; then echo 'default = "lzdoom"' >> /dev/shm/emulators.cfg; fi
-	sed -i 's/default\ =.*/default\ =\ \"lzdoom-dazi+\"/g' /dev/shm/emulators.cfg
-fi
-if [[ "$(cat /dev/shm/emulators.cfg | grep -q 'prboom-plus' ; echo $?)" == '0' ]]; then
-	if [[ "$(cat /dev/shm/emulators.cfg | grep -q 'default =' ; echo $?)" == '1' ]]; then echo 'default = "prboom-plus"' >> /dev/shm/emulators.cfg; fi
-	sed -i 's/default\ =.*/default\ =\ \"prboom-plus\"/g' /dev/shm/emulators.cfg
+if [[ "$(cat /dev/shm/emulators.cfg | grep -q 'default =' ; echo $?)" == '1' ]]; then
+	echo 'default = "lzdoom"' >> /dev/shm/emulators.cfg
 fi
 if [[ "$(cat //dev/shm/emulators.cfg | grep -q 'lr-prboom' ; echo $?)" == '0' ]]; then
-	if [[ "$(cat /dev/shm/emulators.cfg | grep -q 'default =' ; echo $?)" == '1' ]]; then echo 'default = "lr-prboom"' >> /dev/shm/emulators.cfg; fi
 	sed -i 's/default\ =.*/default\ =\ \"lr-prboom\"/g' /dev/shm/emulators.cfg
 fi
+if [[ "$(cat /dev/shm/emulators.cfg | grep -q 'prboom-plus' ; echo $?)" == '0' ]]; then
+	sed -i 's/default\ =.*/default\ =\ \"prboom-plus\"/g' /dev/shm/emulators.cfg
+fi
+if [[ "$(cat /dev/shm/emulators.cfg | grep -q 'dsda-doom' ; echo $?)" == '0' ]]; then
+	sed -i 's/default\ =.*/default\ =\ \"dsda-doom\"/g' /dev/shm/emulators.cfg
+fi
+if [[ "$(cat /dev/shm/emulators.cfg | grep -q 'lzdoom-dazi+' ; echo $?)" == '0' ]]; then
+	sed -i 's/default\ =.*/default\ =\ \"lzdoom-dazi+\"/g' /dev/shm/emulators.cfg
+fi
 if [[ "$(cat /dev/shm/emulators.cfg | grep -q 'gzdoom-dazi+' ; echo $?)" == '0' ]]; then
-	if [[ "$(cat /dev/shm/emulators.cfg | grep -q 'default =' ; echo $?)" == '1' ]]; then echo 'default = "gzdoom"' >> /dev/shm/emulators.cfg; fi
 	sed -i 's/default\ =.*/default\ =\ \"gzdoom-dazi+\"/g' /dev/shm/emulators.cfg
 fi
 if [[ "$(cat /dev/shm/emulators.cfg | grep -q 'uzdoom-dazi+' ; echo $?)" == '0' ]]; then
-	if [[ "$(cat /dev/shm/emulators.cfg | grep -q 'default =' ; echo $?)" == '1' ]]; then echo 'default = "uzdoom"' >> /dev/shm/emulators.cfg; fi
 	sed -i 's/default\ =.*/default\ =\ \"uzdoom-dazi+\"/g' /dev/shm/emulators.cfg
 fi
 
@@ -1226,6 +1224,8 @@ rm /dev/shm/emulators.dazigpluswarp 2>/dev/null
 rm /dev/shm/emulators.daziu 2>/dev/null
 rm /dev/shm/emulators.daziuplus 2>/dev/null
 rm /dev/shm/emulators.daziupluswarp 2>/dev/null
+rm /dev/shm/emulators.dsdadoomwarp 2>/dev/null
+rm /dev/shm/emulators.dsdadoom 2>/dev/null
 
 # Update [runcommand-onstart.sh] to BLANK the [runcommand.log] 0NLY IF [lzdoom-dazi] is Called
 # Ensures the PRE-LOAD D00M-M0Ds Using [EXIT WITHOUT LAUNCHING] Feature remains Functional
@@ -1276,15 +1276,15 @@ if [ ! -f /opt/retropie/configs/ports/doom/lzdoom-dazi.clean ]; then echo 'T' > 
 # This script will behave differently depending on the location - copy itself to install location
 cp "$0" /dev/shm/lzdoom-dazi.sh
 mv /dev/shm/lzdoom-dazi.sh /opt/retropie/configs/ports/doom/lzdoom-dazi.sh
-echo 'sudo chmod 755 /opt/retropie/configs/ports/doom/lzdoom-dazi.sh'
-sudo chmod 755 /opt/retropie/configs/ports/doom/lzdoom-dazi.sh
+echo 'chmod 755 /opt/retropie/configs/ports/doom/lzdoom-dazi.sh'
+chmod 755 /opt/retropie/configs/ports/doom/lzdoom-dazi.sh
 
 # This script will behave differently depending on the location - copy itself to [/opt/retropie/configs/all/runcommand-menu]
 cp "$0" /dev/shm/lzdoom-dazi.sh
 mkdir /opt/retropie/configs/all/runcommand-menu > /dev/null 2>&1
 mv /dev/shm/lzdoom-dazi.sh /opt/retropie/configs/all/runcommand-menu/lzdoom-dazi.sh
-echo 'sudo chmod 755 /opt/retropie/configs/all/runcommand-menu/lzdoom-dazi.sh'
-sudo chmod 755 /opt/retropie/configs/all/runcommand-menu/lzdoom-dazi.sh
+echo 'chmod 755 /opt/retropie/configs/all/runcommand-menu/lzdoom-dazi.sh'
+chmod 755 /opt/retropie/configs/all/runcommand-menu/lzdoom-dazi.sh
 
 # Toggle [runcommand] Flag OFF [dazi-mod-loader]
 echo '0' > /opt/retropie/configs/ports/doom/lzdoom-dazi.flag
@@ -1301,7 +1301,6 @@ getDAZIshMENU()
 doomEMUsettings=$(
 	echo '    [WADFile]                {DAZI.sh}         {DAZI+WARP.sh}'
 	echo " chex.wad $(if [ ! -f ~/RetroPie/roms/ports/doom/chex.wad ]; then echo "???"; fi)      $(ls -1 ~/RetroPie/roms/ports/ | grep Chex\ Quest\ \(DAZI\).sh)        $(ls -1 ~/RetroPie/roms/ports/ | grep Chex\ Quest\ \(WARP\).sh)"
-	echo " chex2.wad $(if [ ! -f ~/RetroPie/roms/ports/doom/chex2.wad ]; then echo "???"; fi)     $(ls -1 ~/RetroPie/roms/ports/ | grep Chex\ Quest\ 2\ \(DAZI\).sh)      $(ls -1 ~/RetroPie/roms/ports/ | grep Chex\ Quest\ 2\ \(WARP\).sh)"
 	echo " chex3.wad $(if [ ! -f ~/RetroPie/roms/ports/doom/chex3.wad ]; then echo "???"; fi)     $(ls -1 ~/RetroPie/roms/ports/ | grep Chex\ Quest\ 3\ \(DAZI\).sh)      $(ls -1 ~/RetroPie/roms/ports/ | grep Chex\ Quest\ 3\ \(WARP\).sh)"
 	echo " doom.wad   $(if [ ! -f ~/RetroPie/roms/ports/doom/doom.wad ]; then echo "???"; fi)    $(ls -1 ~/RetroPie/roms/ports/ | grep Doom\ I\ \(DAZI\).sh)            $(ls -1 ~/RetroPie/roms/ports/ | grep Doom\ I\ \(WARP\).sh)"
 	echo " doom2.wad   $(if [ ! -f ~/RetroPie/roms/ports/doom/doom2.wad ]; then echo "???"; fi)   $(ls -1 ~/RetroPie/roms/ports/ | grep Doom\ II\ \(DAZI\).sh)           $(ls -1 ~/RetroPie/roms/ports/ | grep Doom\ II\ \(WARP\).sh)"
@@ -1309,6 +1308,7 @@ doomEMUsettings=$(
 	echo " freedoom1.wad $(if [ ! -f ~/RetroPie/roms/ports/doom/freedoom1.wad ]; then echo "???"; fi) $(ls -1 ~/RetroPie/roms/ports/ | grep Freedoom\ Phase\ I\ \(DAZI\).sh)  $(ls -1 ~/RetroPie/roms/ports/ | grep Freedoom\ Phase\ I\ \(WARP\).sh)"
 	echo " freedoom2.wad $(if [ ! -f ~/RetroPie/roms/ports/doom/freedoom2.wad ]; then echo "???"; fi) $(ls -1 ~/RetroPie/roms/ports/ | grep Freedoom\ Phase\ II\ \(DAZI\).sh) $(ls -1 ~/RetroPie/roms/ports/ | grep Freedoom\ Phase\ II\ \(WARP\).sh)"
 	echo " hacx.wad    $(if [ ! -f ~/RetroPie/roms/ports/doom/hacx.wad ]; then echo "???"; fi)   $(ls -1 ~/RetroPie/roms/ports/ | grep HacX\ \(DAZI\).sh)              $(ls -1 ~/RetroPie/roms/ports/ | grep HacX\ \(WARP\).sh)"
+	echo " hacx-2.wad $(if [ ! -f ~/RetroPie/roms/ports/doom/hacx-2.wad ]; then echo "???"; fi)     $(ls -1 ~/RetroPie/roms/ports/ | grep HacX\ V2\ \(DAZI\).sh)      $(ls -1 ~/RetroPie/roms/ports/ | grep HacX\ V2\ \(WARP\).sh)"
 	echo " heretic.wad  $(if [ ! -f ~/RetroPie/roms/ports/doom/heretic.wad ]; then echo "???"; fi)  $(ls -1 ~/RetroPie/roms/ports/ | grep Heretic\ \(DAZI\).sh)           $(ls -1 ~/RetroPie/roms/ports/ | grep Heretic\ \(WARP\).sh)"
 	echo " hexen.wad   $(if [ ! -f ~/RetroPie/roms/ports/doom/hexen.wad ]; then echo "???"; fi)   $(ls -1 ~/RetroPie/roms/ports/ | grep Hexen\ \(DAZI\).sh)             $(ls -1 ~/RetroPie/roms/ports/ | grep Hexen\ \(WARP\).sh)"
 	echo " plutonia.wad $(if [ ! -f ~/RetroPie/roms/ports/doom/plutonia.wad ]; then echo "???"; fi)  $(ls -1 ~/RetroPie/roms/ports/ | grep Plutonia\ \(DAZI\).sh)          $(ls -1 ~/RetroPie/roms/ports/ | grep Plutonia\ \(WARP\).sh)"
@@ -1357,24 +1357,6 @@ if [ -f ~/RetroPie/roms/ports/doom/chex.wad ]; then
 		echo "doom_chex-warp = "$doomWARPemu"" >> /opt/retropie/configs/all/emulators.cfg
 	else
 		sed -i "s/doom\_chex-warp\ =.*/doom\_chex-warp\ =\ \"$doomWARPemu\"/g" /opt/retropie/configs/all/emulators.cfg
-	fi
-fi
-
-if [ -f ~/RetroPie/roms/ports/doom/chex2.wad ]; then
-	echo "$daziSH" > ~/RetroPie/roms/ports/Chex\ Quest\ 2\ \(DAZI\).sh
-	sed -i 's/doom1.wad/chex2.wad/g' ~/RetroPie/roms/ports/Chex\ Quest\ 2\ \(DAZI\).sh
-	cp ~/RetroPie/roms/ports/Chex\ Quest\ 2\ \(DAZI\).sh ~/RetroPie/roms/ports/Chex\ Quest\ 2\ \(WARP\).sh
-	sed -i 's/episodeNUM=1993/episodeNUM=/g' ~/RetroPie/roms/ports/Chex\ Quest\ 2\ \(DAZI\).sh
-	sed -i 's/mapNUM=1993/mapNUM=/g' ~/RetroPie/roms/ports/Chex\ Quest\ 2\ \(DAZI\).sh
-	sed -i 's/skillLEVEL=1993/skillLEVEL=/g' ~/RetroPie/roms/ports/Chex\ Quest\ 2\ \(DAZI\).sh
-	sed -i 's/episodeNUM=1993/episodeNUM=1/g' ~/RetroPie/roms/ports/Chex\ Quest\ 2\ \(WARP\).sh
-	sed -i 's/mapNUM=1993/mapNUM=3/g' ~/RetroPie/roms/ports/Chex\ Quest\ 2\ \(WARP\).sh
-	sed -i 's/skillLEVEL=1993/skillLEVEL=3/g' ~/RetroPie/roms/ports/Chex\ Quest\ 2\ \(WARP\).sh
-	# Add [to emulators.cfg]
-	if [ ! $(cat /opt/retropie/configs/all/emulators.cfg | grep -q 'doom_chex2-warp =' ; echo $?) == '0' ]; then
-		echo "doom_chex2-warp = "$doomWARPemu"" >> /opt/retropie/configs/all/emulators.cfg
-	else
-		sed -i "s/doom\_chex2-warp\ =.*/doom\_chex2-warp\ =\ \"$doomWARPemu\"/g" /opt/retropie/configs/all/emulators.cfg
 	fi
 fi
 
@@ -1504,6 +1486,24 @@ if [ -f ~/RetroPie/roms/ports/doom/hacx.wad ]; then
 	fi
 fi
 
+if [ -f ~/RetroPie/roms/ports/doom/hacx-2.wad ]; then
+	echo "$daziSH" > ~/RetroPie/roms/ports/HacX\ V2\ \(DAZI\).sh
+	sed -i 's/doom1.wad/hacx-2.wad/g' ~/RetroPie/roms/ports/HacX\ V2\ \(DAZI\).sh
+	cp ~/RetroPie/roms/ports/HacX\ V2\ \(DAZI\).sh ~/RetroPie/roms/ports/HacX\ V2\ \(WARP\).sh
+	sed -i 's/episodeNUM=1993/episodeNUM=/g' ~/RetroPie/roms/ports/HacX\ V2\ \(DAZI\).sh
+	sed -i 's/mapNUM=1993/mapNUM=/g' ~/RetroPie/roms/ports/HacX\ V2\ \(DAZI\).sh
+	sed -i 's/skillLEVEL=1993/skillLEVEL=/g' ~/RetroPie/roms/ports/HacX\ V2\ \(DAZI\).sh
+	sed -i 's/episodeNUM=1993/episodeNUM=1/g' ~/RetroPie/roms/ports/HacX\ V2\ \(WARP\).sh
+	sed -i 's/mapNUM=1993/mapNUM=16/g' ~/RetroPie/roms/ports/HacX\ V2\ \(WARP\).sh
+	sed -i 's/skillLEVEL=1993/skillLEVEL=3/g' ~/RetroPie/roms/ports/HacX\ V2\ \(WARP\).sh
+	# Add [to emulators.cfg]
+	if [ ! $(cat /opt/retropie/configs/all/emulators.cfg | grep -q 'doom_hacx-2-warp =' ; echo $?) == '0' ]; then
+		echo "doom_hacx-2-warp = "$doomWARPemu"" >> /opt/retropie/configs/all/emulators.cfg
+	else
+		sed -i "s/doom\_hacx-2-warp\ =.*/doom\_hacx-2-warp\ =\ \"$doomWARPemu\"/g" /opt/retropie/configs/all/emulators.cfg
+	fi
+fi
+
 if [ -f ~/RetroPie/roms/ports/doom/heretic.wad ]; then
 	echo "$daziSH" > ~/RetroPie/roms/ports/Heretic\ \(DAZI\).sh
 	sed -i 's/doom1.wad/heretic.wad/g' ~/RetroPie/roms/ports/Heretic\ \(DAZI\).sh
@@ -1615,11 +1615,10 @@ fi
 # Get SIGIL If Internet Connection Available
 wget -q --spider http://google.com
 if [ $? -eq 0 ]; then	
-	if [[ "$(dpkg -l | grep -F '  p7zip-full ')" == '' ]] || [[ "$(dpkg -l | grep -F '  unzip ')" == '' ]]; then
-		sudo apt-get install zip -y
-		sudo apt-get install unzip -y
-		sudo apt-get install p7zip-full -y
-	fi
+	if [[ "$(dpkg -l | grep -F '  zip ')" == '' ]]; then echo Installing zip; sudo apt-get install zip -y; fi
+	if [[ "$(dpkg -l | grep -F '  unzip ')" == '' ]]; then echo Installing unzip; sudo apt-get install unzip -y; fi
+	if [[ "$(dpkg -l | grep -F '  p7zip-full ')" == '' ]]; then echo Installing p7zip-full; sudo apt-get install p7zip-full -y; fi
+
 	wget --progress=bar:force https://romero.com/s/SIGIL_v1_21.zip -P /dev/shm
 	unzip -qq -o /dev/shm/SIGIL_v1_21.zip -d /dev/shm
 	mv /dev/shm/SIGIL_v1_21/SIGIL_COMPAT_v1_21.wad /dev/shm/SIGIL_v1_21/01_SIGIL_COMPAT_v1_21.wad
@@ -1661,8 +1660,6 @@ tput reset
 
 # REMOVE DAZI Templates
 rm ~/RetroPie/roms/ports/'0ne Humanity (DAZI).sh' 2>/dev/null
-rm ~/RetroPie/roms/ports/'Chex Quest 2 (DAZI).sh' 2>/dev/null
-rm ~/RetroPie/roms/ports/'Chex Quest 2 (WARP).sh' 2>/dev/null
 rm ~/RetroPie/roms/ports/'Chex Quest 3 (DAZI).sh' 2>/dev/null
 rm ~/RetroPie/roms/ports/'Chex Quest 3 (WARP).sh' 2>/dev/null
 rm ~/RetroPie/roms/ports/'Chex Quest (DAZI).sh' 2>/dev/null
@@ -1680,6 +1677,8 @@ rm ~/RetroPie/roms/ports/'Freedoom Phase II (WARP).sh' 2>/dev/null
 rm ~/RetroPie/roms/ports/'Freedoom Phase I (WARP).sh' 2>/dev/null
 rm ~/RetroPie/roms/ports/'HacX (DAZI).sh' 2>/dev/null
 rm ~/RetroPie/roms/ports/'HacX (WARP).sh' 2>/dev/null
+rm ~/RetroPie/roms/ports/'HacX V2 (DAZI).sh' 2>/dev/null
+rm ~/RetroPie/roms/ports/'HacX V2 (WARP).sh' 2>/dev/null
 rm ~/RetroPie/roms/ports/'Heretic (DAZI).sh' 2>/dev/null
 rm ~/RetroPie/roms/ports/'Heretic (WARP).sh' 2>/dev/null
 rm ~/RetroPie/roms/ports/'Hexen (DAZI).sh' 2>/dev/null
@@ -1850,6 +1849,8 @@ if [ "$DMLconfCONFIG" == 'D' ]; then
 	if [ "$DMLconfDELETEcfg" == '1' ]; then
 		rm -f "$zdoomCFGrp"
 		rm -f "$zdoomCFGroms"
+		rm -f "$zdoom388CFGrp"
+		rm -f "$zdoom388CFGroms"
 		dialog --no-collapse --title "DELETE [lzdoom.ini] Configuration (RESET) *COMPLETE!*" --ok-label Back --msgbox "Default: [$zdoomCFGrp]  \nPorts:   [$zdoomCFGroms]\n"  25 75
 		DMLmainMENU
 	fi
@@ -1867,6 +1868,8 @@ if [ "$DMLconfCONFIG" == 'G' ]; then
 	if [ "$DMLconfDELETEcfgGZ" == '1' ]; then
 		rm -f "$GzdoomCFGrp"
 		rm -f "$GzdoomCFGroms"
+		rm -f "$Gzdoom480CFGrp"
+		rm -f "$Gzdoom480CFGroms"
 		dialog --no-collapse --title "DELETE [gzdoom.ini] Configuration (RESET) *COMPLETE!*" --ok-label Back --msgbox "Default: [$GzdoomCFGrp]  \nPorts:   [$GzdoomCFGroms]\n"  25 75
 		DMLmainMENU
 	fi
@@ -1884,6 +1887,8 @@ if [ "$DMLconfCONFIG" == 'U' ]; then
 	if [ "$DMLconfDELETEcfgUZ" == '1' ]; then
 		rm -f "$UzdoomCFGrp"
 		rm -f "$UzdoomCFGroms"
+		rm -f "$UzdoomDevCFGrp"
+		rm -f "$UzdoomDevCFGroms"
 		dialog --no-collapse --title "DELETE [uzdoom.ini] Configuration (RESET) *COMPLETE!*" --ok-label Back --msgbox "Default: [$UzdoomCFGrp]  \nPorts:   [$UzdoomCFGroms]\n"  25 75
 		DMLmainMENU
 	fi
@@ -2220,13 +2225,16 @@ DMLsubMENU
 WARPmainMENU()
 {
 # DEFINE WARP and DIFFICULTY
-userWARPcfg=$(dialog --no-collapse --title "         SELECT [WARP] and [DIFFICULTY] for [lzdoom-dazi+warp]              " \
+#if [[ "$episodeNUM" == '' ]]; then episodeNUM=?; fi
+if [[ "$mapNUM" == '' ]]; then mapNUM=?; fi
+if [[ "$skillLEVEL" == '' ]]; then skillLEVEL=?; fi
+userWARPcfg=$(dialog --no-collapse --title "         SELECT [WARP] and [DIFFICULTY] for [*zdoom-dazi+warp]              " \
 	--ok-label OK --cancel-label BACK \
-	--menu "\n        When Selecting WARP Settings @ [runcommand-onstart]:\n      Refer to the *[runcommand.info]* as your Final Indicator\n  Utilize the [ABORT] 0ption to REFRESH the [runcommand] if Needed\n[DAZI-Templates] with Pre-Defined [-warp -skill] OVERRIDE SETTINGS here\n   \nSELECT and APPLY Settings to [emulators.cfg] @ [-warp E# M# -skill S#\"] \neg. Ultimate Doom SIGIL E5M9 on Ultra-Violence [-warp  5  9 -skill  4]\n   \nCURRENT [emulators.cfg]:    [$(cat /opt/retropie/configs/ports/doom/emulators.cfg | grep '\-warp' | sed -n 's/.*addon\/\*//p' | sed 's_\(...................\).*_\1_' )]\nCURRENT [runcommand.info]:  [$(cat /dev/shm/runcommand.info | grep '\-warp' | sed -n 's/.*addon\/\*//p' | sed 's_\(...................\).*_\1_' )]\n   \nCURRENT [USER] SELECT Settings: -warp [$episodeNUM] [$mapNUM] -skill [$skillLEVEL]" 25 75 20 \
+	--menu "\n        When Selecting WARP Settings @ [runcommand-onstart]:\n\nPre-Defined [-warp -skill] from [DAZI-Templates.sh] will be superseded\n   \nSELECT and APPLY Settings to [warp.cfg] @ [-warp E# M# -skill S#\"] \neg. Ultimate Doom SIGIL E5M9 on Ultra-Violence [-warp  5  9 -skill  4]\n   \n      CURRENT [warp.cfg]:             [$(cat /opt/retropie/configs/ports/doom/warp.cfg)]\n   \n      CURRENT (USER) SELECT Settings: (-warp $episodeNUM $mapNUM -skill $skillLEVEL)" 25 75 20 \
 	1 "><  SELECT [Episode]  ><" \
 	2 "><  SELECT [Map]  ><" \
 	3 "><  SELECT [Difficulty]  ><" \
-	4 "><  APPLY  [Episode] [Map] [Difficulty] to [emulators.cfg] ><" \
+	4 "><  APPLY  [Episode] [Map] [Difficulty] to [warp.cfg] ><" \
 	R "><  REFERENCES  ><" 2>&1>/dev/tty)
 
 # SELECT Setting Confirmed - Otherwise Back to Main Menu
@@ -2243,7 +2251,7 @@ if [ "$userWARPcfg" == '1' ]; then
 		6 "EPISODE [6]    eg. Heretic: Fates Path" 2>&1>/dev/tty)
 	
 	# Confirmed - Otherwise Back to Main Menu
-	if [ "$confEPISODE" == '0' ]; then episodeNUM=; fi
+	if [ "$confEPISODE" == '0' ]; then episodeNUM=''; fi
 	if [ "$confEPISODE" == '1' ]; then episodeNUM=1; fi
 	if [ "$confEPISODE" == '2' ]; then episodeNUM=2; fi
 	if [ "$confEPISODE" == '3' ]; then episodeNUM=3; fi
@@ -2405,14 +2413,30 @@ if [ "$userWARPcfg" == '4' ]; then
 	# Prepare WARP and DIFFICULTY Settings For [lzdoom-dazi+warp]
 	if [ "$mapNUM" == "" ]; then mapNUM=1; fi # Set Map [1] if NOT DEFINED
 	if [ "$skillLEVEL" == "" ]; then skillLEVEL=3; fi # Set DEFAULT DIFFICULTY [Hurt me plenty] if NOT DEFINED
-	sed -i "s/-warp.*/-warp\ $episodeNUM\ $mapNUM\ -skill\ $skillLEVEL;\ popd\"/g" /opt/retropie/configs/ports/doom/emulators.cfg #Update [-warp*] in [emulators.cfg]
-	dialog --no-collapse --title "APPLY [Episode] [Map] [Difficulty] Settings to [emulators.cfg] *COMPLETE!*" --ok-label Back --msgbox "\n   \nCURRENT [USER] SELECT Settings: -warp [$episodeNUM] [$mapNUM] -skill [$skillLEVEL]\n   \nCURRENT [emulators.cfg]:    [$(cat /opt/retropie/configs/ports/doom/emulators.cfg | grep '\-warp' | sed -n 's/.*addon\/\*//p' | sed 's_\(...................\).*_\1_' )]\nCURRENT [runcommand.info]:  [$(cat /dev/shm/runcommand.info | grep '\-warp' | sed -n 's/.*addon\/\*//p' | sed 's_\(...................\).*_\1_' )]"  25 75
+	if [[ ! -f /opt/retropie/configs/ports/doom/warp.cfg ]] && [[ -f /opt/retropie/configs/ports/doom/lzdoom-dazi.sh ]]; then echo '-warp 1 1 -skill 3' > /opt/retropie/configs/ports/doom/warp.cfg; fi
+	if [[ "$mapNUM" == '?' ]]; then dialog --no-collapse --title "CURRENT [USER] SELECT Settings: -warp [$episodeNUM] [$mapNUM] -skill [$skillLEVEL]" --ok-label Back --msgbox "\n   \n*YOU MUST SELECT a [Map]*"  25 75; WARPmainMENU; fi
+	if [[ "$skillLEVEL" == '?' ]]; then dialog --no-collapse --title "CURRENT [USER] SELECT Settings: -warp [$episodeNUM] [$mapNUM] -skill [$skillLEVEL]" --ok-label Back --msgbox "\n   \n*YOU MUST SELECT a [Difficulty]*"  25 75; WARPmainMENU; fi
+	episodeNOTE=''
+	if [[ "$episodeNUM" == '' ]]; then episodeNOTE="\n\n           *WARNING* THE SETTING FOR [Episode] IS *[NONE]* \n              This Setting will *NOT* work for DOOM I \n                This Setting *WILL* work for DOOM II"; fi
+	confWARPset=$(dialog --no-collapse --title "APPLY WARP SETTINGS" \
+		--ok-label OK --cancel-label Back \
+		--menu " ? APPLY [Episode] [Map] [Difficulty] Settings to [warp.cfg] ? \n\n      CURRENT [warp.cfg]:             [$(cat /opt/retropie/configs/ports/doom/warp.cfg)]\n   \n      CURRENT (USER) SELECT Settings: (-warp $episodeNUM $mapNUM -skill $skillLEVEL) $episodeNOTE" 25 75 20 \
+		A "APPLY CURRENT (USER) SELECT Settings" \
+		B "Back" 2>&1>/dev/tty)
+	
+	# Confirmed - Otherwise Back to Main Menu
+	if [ "$confWARPset" == 'A' ]; then
+		if [[ ! -f /opt/retropie/configs/ports/doom/lzdoom-dazi.sh ]]; then dialog --no-collapse --title "CURRENT [USER] SELECT Settings: -warp [$episodeNUM] [$mapNUM] -skill [$skillLEVEL]" --ok-label Back --msgbox "\n   \n*YOU MUST INSTALL DAZI 1st!*"  25 75; WARPmainMENU; fi
+		sed -i "s/-warp.*/-warp\ $episodeNUM\ $mapNUM\ -skill\ $skillLEVEL/g" /opt/retropie/configs/ports/doom/warp.cfg #Update [-warp*] in [warp.cfg]
+		dialog --no-collapse --title "APPLY [Episode] [Map] [Difficulty] Settings to [warp.cfg] *COMPLETE!*" --ok-label Back --msgbox "\n   \nCURRENT [warp.cfg]:             [$(cat /opt/retropie/configs/ports/doom/warp.cfg)]\n   \nCURRENT (USER) SELECT Settings: (-warp $episodeNUM $mapNUM -skill $skillLEVEL)"  25 75
+		WARPmainMENU
+	fi
 	WARPmainMENU
 fi
 
 # REFERENCES
 if [ "$userWARPcfg" == 'R' ]; then
-	dialog --no-collapse --title "[WARP] + [DIFFICULTY] SETTINGS REFERENCES" --ok-label Back --msgbox "$doomWARPdiff $(cat /opt/retropie/configs/ports/doom/emulators.cfg | grep 'default =')"  25 75
+	dialog --no-collapse --title "[WARP] + [DIFFICULTY] SETTINGS REFERENCES" --ok-label Back --msgbox "$doomWARPdiff $(cat /opt/retropie/configs/ports/doom/warp.cfg)"  25 75
 	WARPmainMENU
 fi
 
@@ -2774,6 +2798,8 @@ mainMENU
 # Parameter [loadmod] + [D00M-R0M.sh] determines Called by [DAZI-Template.sh]
 if [ "$1" == "loadmod" ]; then
 	tmpDAZIsh=/dev/shm/daziTMP.sh
+	warpCFG=/opt/retropie/configs/ports/doom/warp.cfg
+	if [[ ! -f "$warpCFG" ]]; then echo '-warp 1 1 -skill 3' > "$warpCFG"; fi
 	# Create TMP script based on ROM.sh Content to Load M0Ds
 	cat "$2" | grep -v "runcommand.sh" | grep -v "^if" | grep -v "^bash" | grep -v "^loadM0Ds" | grep -v "^mkdir" | grep -v "^#" | grep -v "^rollingM0D=" | grep -v "^count=" | grep -v "^{" | grep -v "^}" | grep -v "^fi" | grep -v "^	exit 0" | grep -v "^	sudo" | grep -v "	echo" > $tmpDAZIsh
 	echo "$loadM0Dsh" >> $tmpDAZIsh
@@ -2911,6 +2937,30 @@ if [ "$1" == "onend" ]; then
 		fi
 	fi
 	tput reset
+	exit 0
+fi
+
+# Parameter [warp] determines Called by a [*zdoom+warp] entry from [emulators.cfg]
+if [ "$1" == 'warp' ]; then
+	doomIWAD="$2"
+	doomPORT="$(head -2 /dev/shm/runcommand.info | tail +2 | sed 's/+warp//')+"
+	if [[ "$doomPORT" == "prboom-plus"* ]]; then doomPORT='prboom-plus'; fi # No [prboom-plus-dazi+] string to pull
+	if [[ "$doomPORT" == "dsda-doom"* ]]; then doomPORT='dsda-doom'; fi # No [dsda-doom-dazi+] string to pull
+
+	# Pull [doomPORT] String
+	doomSTRING="$(cat /opt/retropie/configs/ports/doom/emulators.cfg | grep "$doomPORT =" | sed "s/"$doomPORT" = //" | sed "s+%ROM%+$doomIWAD+g" | sed "s/%XRES%/"$3"/g" | sed "s/%YRES%/"$4"/g" | sed 's/\"//g' | sed 's/; popd//g')"
+
+	# Pulling [warp] settings from a Separate file (last) allows us to modify at [runcommand] AFTER the _PORT_ command has already been queued in ES
+	warpCFG=/opt/retropie/configs/ports/doom/warp.cfg
+	if [[ ! -f "$warpCFG" ]]; then echo '-warp 1 1 -skill 3' > "$warpCFG"; fi
+	warpTO="$(cat $warpCFG)"
+
+	# Run [doomSTRING] with -warp -skill added
+	suffix=''
+	if [[ $(cat /opt/retropie/configs/ports/doom/emulators.cfg | grep "$doomPORT =" | grep -q '; popd' ; echo $?) == '0' ]]; then suffix='; popd'; fi
+	finalCMD="${doomSTRING} ${warpTO}${suffix}"
+	echo [$doomPORT] $finalCMD >> /dev/shm/runcommand.log
+	eval "${finalCMD}"
 	exit 0
 fi
 
