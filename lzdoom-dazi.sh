@@ -1274,10 +1274,12 @@ fi
 if [ ! -f /opt/retropie/configs/ports/doom/lzdoom-dazi.clean ]; then echo 'T' > /opt/retropie/configs/ports/doom/lzdoom-dazi.clean; fi
 
 # This script will behave differently depending on the location - copy itself to install location
-cp "$0" /dev/shm/lzdoom-dazi.sh
+cp "$0" /dev/shm/lzdoom-dazi.sh; chmod 755 /dev/shm/lzdoom-dazi.sh
 mv /dev/shm/lzdoom-dazi.sh /opt/retropie/configs/ports/doom/lzdoom-dazi.sh
-echo 'chmod 755 /opt/retropie/configs/ports/doom/lzdoom-dazi.sh'
-chmod 755 /opt/retropie/configs/ports/doom/lzdoom-dazi.sh
+
+cp "$0" /dev/shm/lzdoom-dazi.sh; chmod 755 /dev/shm/lzdoom-dazi.sh
+echo 'Adding lzdoom-dazi to /usr/bin/dazi'
+sudo mv /dev/shm/lzdoom-dazi.sh /usr/bin/dazi
 
 # This script will behave differently depending on the location - copy itself to [/opt/retropie/configs/all/runcommand-menu]
 cp "$0" /dev/shm/lzdoom-dazi.sh
