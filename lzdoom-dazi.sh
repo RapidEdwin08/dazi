@@ -1112,6 +1112,8 @@ rm ~/RetroPie/roms/ports/'Strife (WARP).sh' 2>/dev/null
 rm ~/RetroPie/roms/ports/'TNT (DAZI).sh' 2>/dev/null
 rm ~/RetroPie/roms/ports/'TNT (WARP).sh' 2>/dev/null
 
+rm /opt/retropie/configs/ports/doom/warp.cfg 2>/dev/null
+
 echo 'Removing lzdoom-dazi from /usr/bin/dazi'
 sudo rm /usr/bin/dazi 2>/dev/null
 
