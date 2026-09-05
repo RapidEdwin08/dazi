@@ -6,7 +6,7 @@ alternateM0Ddir=
 # Running this Script from [/opt/retropie/configs/ports/doom] will access 0NLY the Mod Loader Menu  
 # Running this Script from [/opt/retropie/configs/all/runcommand-menu] will access 0NLY the Mod Loader Menu  
 
-versionDAZI=2026.02
+versionDAZI=2026.09
 M0DdirMAIN=~/RetroPie/roms/ports/doom/mods
 modDIRroms=~/RetroPie/roms/ports/doom/addon
 modDIRtmpfs=/dev/shm/addon
@@ -22,6 +22,8 @@ Gzdoom480CFGrp=/opt/retropie/configs/ports/doom/gzdoom-480.ini
 Gzdoom480CFGroms=~/RetroPie/roms/ports/doom/gzdoom-480.ini
 UzdoomCFGrp=/opt/retropie/configs/ports/doom/uzdoom.ini
 UzdoomCFGroms=~/RetroPie/roms/ports/doom/uzdoom.ini
+Uzdoom414CFGrp=/opt/retropie/configs/ports/doom/uzdoom-414.ini
+Uzdoom414CFGroms=~/RetroPie/roms/ports/doom/uzdoom-414.ini
 UzdoomDevCFGrp=/opt/retropie/configs/ports/doom/uzdoom-dev.ini
 UzdoomDevCFGroms=~/RetroPie/roms/ports/doom/uzdoom-dev.ini
 doomWARPemu=lzdoom-dazi+warp
@@ -645,6 +647,7 @@ if [ "$confEMUSdazi" == '6' ]; then
 			--ok-label SELECT --cancel-label "BACK" \
 			--menu "$currentFLAGhud \n     Alternate WARP [Emulator] can be APPLIED to [EmulatorSettings] \n	\n      CURRENT WARP Emulator for this Session: [$doomWARPemu]" 25 75 20 \
 			U "  uzdoom-dazi+warp  " \
+			F "  uzdoom-414-dazi+warp  " \
 			V "  uzdoom-dev-dazi+warp  " \
 			L "  lzdoom-dazi+warp  " \
 			3 "  lzdoom-388b-dazi+warp  " \
@@ -654,6 +657,7 @@ if [ "$confEMUSdazi" == '6' ]; then
 			P "  prboom-plus+warp  " 2>&1>/dev/tty)
 		
 			if [ "$WARPemuCONFIG" == 'U' ]; then doomWARPemu=uzdoom-dazi+warp; fi
+			if [ "$WARPemuCONFIG" == 'F' ]; then doomWARPemu=uzdoom-414-dazi+warp; fi
 			if [ "$WARPemuCONFIG" == 'V' ]; then doomWARPemu=uzdoom-dev-dazi+warp; fi
 			if [ "$WARPemuCONFIG" == 'L' ]; then doomWARPemu=lzdoom-dazi+warp; fi
 			if [ "$WARPemuCONFIG" == '3' ]; then doomWARPemu=lzdoom-388b-dazi+warp; fi
@@ -1111,8 +1115,6 @@ rm ~/RetroPie/roms/ports/'Strife Veteren Edition (WARP).sh' 2>/dev/null
 rm ~/RetroPie/roms/ports/'Strife (WARP).sh' 2>/dev/null
 rm ~/RetroPie/roms/ports/'TNT (DAZI).sh' 2>/dev/null
 rm ~/RetroPie/roms/ports/'TNT (WARP).sh' 2>/dev/null
-
-rm /opt/retropie/configs/ports/doom/warp.cfg 2>/dev/null
 
 echo 'Removing lzdoom-dazi from /usr/bin/dazi'
 sudo rm /usr/bin/dazi 2>/dev/null
@@ -1894,6 +1896,8 @@ if [ "$DMLconfCONFIG" == 'U' ]; then
 	if [ "$DMLconfDELETEcfgUZ" == '1' ]; then
 		rm -f "$UzdoomCFGrp"
 		rm -f "$UzdoomCFGroms"
+		rm -f "$Uzdoom414CFGrp"
+		rm -f "$Uzdoom414CFGroms"
 		rm -f "$UzdoomDevCFGrp"
 		rm -f "$UzdoomDevCFGroms"
 		dialog --no-collapse --title "DELETE [uzdoom.ini] Configuration (RESET) *COMPLETE!*" --ok-label Back --msgbox "Default: [$UzdoomCFGrp]  \nPorts:   [$UzdoomCFGroms]\n"  25 75
