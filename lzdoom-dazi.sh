@@ -6,7 +6,7 @@ alternateM0Ddir=
 # Running this Script from [/opt/retropie/configs/ports/doom] will access 0NLY the Mod Loader Menu  
 # Running this Script from [/opt/retropie/configs/all/runcommand-menu] will access 0NLY the Mod Loader Menu  
 
-versionDAZI=2026.09
+versionDAZI=2026.10
 M0DdirMAIN=~/RetroPie/roms/ports/doom/mods
 modDIRroms=~/RetroPie/roms/ports/doom/addon
 modDIRtmpfs=/dev/shm/addon
@@ -105,23 +105,33 @@ echo '[-warp 2 1 -skill 3] Ultimate Doom AliensTC E2M1 on Hurt me plenty'
 echo '[-warp 5 9 -skill 4] Ultimate Doom SIGIL E5M9 on Ultra-Violence'
 echo '[-warp  31 -skill 5] Doom II SecretWolfensteinLevel MAP31 on Nightmare!'
 echo '       NOTE: Leave [Episode] set to [NONE] for D00M II Maps'
+echo ''
+echo '==== Host+Client Examples === [-join H#] === [-host H# -skill S#] ===='
+echo '[-host 4 -skill 3] Host with Max 4 Clients Allowed on 3 Hurt me Plenty'
+echo '[-join 192.168.66.66] Connect as Client to Host Address 192.168.66.66 '
+echo '     *May Require FIREWALL Rule for UZDoom: UDP 5029 INBOUND*'
 echo "======================================================================"
-echo "CURRENT [warp] [skill] Config: /opt/retropie/configs/ports/warp.cfg"
+echo ''
+echo '          ~ ZDOOM CLIENT/HOST/WARP CONFIG FILES ~'
+echo '/opt/retropie/configs/ports/zdoom-client.cfg {~/zdoom-client.cfg}'
+echo '/opt/retropie/configs/ports/zdoom-host.cfg   {~/zdoom-host.cfg}'
+echo '/opt/retropie/configs/ports/zdoom-warp.cfg   {~/zdoom-warp.cfg}        '
+echo ''
 )
 
 scriptREF=$(
 echo ""
-echo '- LZDOOM:'
-echo '[lzdoom-addon] Loads M0Ds from ADDON [..roms/ports/doom/addon/*]'
-echo '[lzdoom-dazi]  Loads M0Ds from TMPFS [/dev/shm/addon/*]'
-echo '[lzdoom-dazi+] Loads M0Ds from BOTH  [TMPFS+ADDON] in that 0rder'
-echo '[lzdoom-dazi+warp] Loads from [TMPFS+ADDON] and Includes [-WARP -SKILL]'
+echo '- *ZDOOM:'
+echo '[zdoom-addon] Loads M0Ds from ADDON [..roms/ports/doom/addon/*]'
+echo '[zdoom-dazi]  Loads M0Ds from TMPFS [/dev/shm/addon/*]'
+echo '[zdoom-dazi+] Loads M0Ds from BOTH  [TMPFS+ADDON] in that 0rder'
+echo '[zdoom-dazi+warp] Loads from [TMPFS+ADDON] and Includes -WARP -SKILL'
+echo '[zdoom-dazi+host] Loads from [TMPFS+ADDON] and Includes -JOIN ADDRESS'
+echo '[zdoom-dazi+client] Loads from [TMPFS+ADDON] and Includes -HOST -SKILL'
 echo ''
-echo '- PRBOOM-PLUS:'
 echo '[prboom-plus] Loads M0Ds from [..configs/prboom-plus/autoload/doom-all]'
-echo '[prboom-plus+warp] Loads from [../doom-all] and Includes [-WARP -SKILL]'
+echo '[prboom-plus+warp] Loads from [../doom-all] and Includes -WARP -SKILL'
 echo ''
-echo '- LR-PRBOOM:'
 echo '[lr-prboom] Loads M0Ds based on the Config File [DOOMWADDIR/prboom.cfg]'
 echo 'DAZI can AutoGenerate a [prboom.cfg] based on [addonDIR] when Installed'
 )
@@ -996,7 +1006,7 @@ tput reset
 if [ ! -f /opt/retropie/configs/ports/doom/emulators.cfg.bakdazi ]; then cp /opt/retropie/configs/ports/doom/emulators.cfg /opt/retropie/configs/ports/doom/emulators.cfg.bakdazi 2>/dev/null; fi
 
 # Rebuild emulators.cfg without DAZI
-cat /opt/retropie/configs/ports/doom/emulators.cfg | grep -v 'dazi =' | grep -v 'dazi+ =' | grep -v '+warp =' > /dev/shm/emulators.cfg
+cat /opt/retropie/configs/ports/doom/emulators.cfg | grep -v 'dazi =' | grep -v 'dazi+ =' | grep -v '+warp =' | grep -v '+client =' | grep -v '+host =' > /dev/shm/emulators.cfg
 
 # Configure a DEFAULT in [emulators.cfg]
 if [[ "$(cat /dev/shm/emulators.cfg | grep -q 'default =' ; echo $?)" == '1' ]]; then
@@ -1156,7 +1166,7 @@ if [ ! -f /opt/retropie/configs/ports/doom/emulators.cfg.bakdazi ]; then cp /opt
 
 # Add [dazi] to [emulators.cfg]
 #cat /opt/retropie/configs/ports/doom/emulators.cfg | grep -v 'lzdoom-dazi-' | grep -v 'lzdoom-dazi =' | grep -v 'lzdoom-dazi+' | grep -v 'prboom-plus+warp' | grep -v 'gzdoom-dazi =' | grep -v 'gzdoom-dazi+' | grep -v 'uzdoom-dazi =' | grep -v 'uzdoom-dazi+' > /dev/shm/emulators.cfg
-cat /opt/retropie/configs/ports/doom/emulators.cfg | grep -v 'dazi =' | grep -v 'dazi+ =' | grep -v '+warp =' > /dev/shm/emulators.cfg
+cat /opt/retropie/configs/ports/doom/emulators.cfg | grep -v 'dazi =' | grep -v 'dazi+ =' | grep -v '+warp =' | grep -v '+client =' | grep -v '+host =' > /dev/shm/emulators.cfg
 cat /opt/retropie/configs/ports/doom/emulators.cfg | grep 'addon =' > /dev/shm/emulators.dazi # All the *zdoom-addon entries
 cat /opt/retropie/configs/ports/doom/emulators.cfg | grep 'dsda-doom =' > /dev/shm/emulators.dsdadoom # No [dsda-doom-dazi+] string to pull
 cat /opt/retropie/configs/ports/doom/emulators.cfg | grep 'prboom-plus' > /dev/shm/emulators.prboomplus # No [dsda-doom-addon] entry to pull
@@ -1174,6 +1184,20 @@ if [ ! "$( cat /dev/shm/emulators.dazi)" == "" ]; then
 	sed -i 's/-addon/-dazi+warp/g' /dev/shm/emulators.dazipluswarp
 	sed -i "s+ = \".*+ = \"/opt/retropie/configs/ports/doom/lzdoom-dazi.sh warp %ROM% %XRES% %YRES%\"+g" /dev/shm/emulators.dazipluswarp
 	cat /dev/shm/emulators.dazipluswarp >> /dev/shm/emulators.cfg
+
+	# Create [dazi+client] entry based on current [uzdoom-addon] entry in [emulators.cfg]
+	cat /dev/shm/emulators.dazi | grep 'uzdoom-addon =' > /dev/shm/emulators.daziplusclient
+	cat /dev/shm/emulators.dazi | grep 'uzdoom-dev-addon =' >> /dev/shm/emulators.daziplusclient
+	sed -i 's/-addon/-dazi+client/g' /dev/shm/emulators.daziplusclient
+	sed -i "s+ = \".*+ = \"/opt/retropie/configs/ports/doom/lzdoom-dazi.sh client %ROM% %XRES% %YRES%\"+g" /dev/shm/emulators.daziplusclient
+	cat /dev/shm/emulators.daziplusclient >> /dev/shm/emulators.cfg
+
+	# Create [dazi+host] entry based on current [uzdoom-addon] entry in [emulators.cfg]
+	cat /dev/shm/emulators.dazi | grep 'uzdoom-addon =' > /dev/shm/emulators.daziplushost
+	cat /dev/shm/emulators.dazi | grep 'uzdoom-dev-addon =' >> /dev/shm/emulators.daziplushost
+	sed -i 's/-addon/-dazi+host/g' /dev/shm/emulators.daziplushost
+	sed -i "s+ = \".*+ = \"/opt/retropie/configs/ports/doom/lzdoom-dazi.sh host %ROM% %XRES% %YRES%\"+g" /dev/shm/emulators.daziplushost
+	cat /dev/shm/emulators.daziplushost >> /dev/shm/emulators.cfg
 fi
 
 # Create [dsda-doom+warp] entry based on current [dsda-doom] entry in [emulators.cfg]
@@ -1219,20 +1243,9 @@ fi
 mv /dev/shm/emulators.cfg /opt/retropie/configs/ports/doom/emulators.cfg 2>/dev/null
 
 # Cleanup
-rm /dev/shm/emulators.cfg 2>/dev/null
-rm /dev/shm/emulators.dazi 2>/dev/null
-rm /dev/shm/emulators.daziplus 2>/dev/null
-rm /dev/shm/emulators.dazipluswarp 2>/dev/null
-rm /dev/shm/emulators.prboomplus 2>/dev/null
-rm /dev/shm/emulators.prboompluswarp 2>/dev/null
-rm /dev/shm/emulators.dazig 2>/dev/null
-rm /dev/shm/emulators.dazigplus 2>/dev/null
-rm /dev/shm/emulators.dazigpluswarp 2>/dev/null
-rm /dev/shm/emulators.daziu 2>/dev/null
-rm /dev/shm/emulators.daziuplus 2>/dev/null
-rm /dev/shm/emulators.daziupluswarp 2>/dev/null
-rm /dev/shm/emulators.dsdadoomwarp 2>/dev/null
-rm /dev/shm/emulators.dsdadoom 2>/dev/null
+for _tmpEMUS in cfg dazi daziplus dazipluswarp daziplusclient daziplushost prboomplus prboompluswarp dazig dazigplus dazigpluswarp daziu daziuplus daziupluswarp dsdadoomwarp dsdadoom; do
+	rm -f /dev/shm/emulators.$_tmpEMUS
+done
 
 # Update [runcommand-onstart.sh] to BLANK the [runcommand.log] 0NLY IF [lzdoom-dazi] is Called
 # Ensures the PRE-LOAD D00M-M0Ds Using [EXIT WITHOUT LAUNCHING] Feature remains Functional
@@ -2962,14 +2975,64 @@ if [ "$1" == 'warp' ]; then
 	doomSTRING="$(cat /opt/retropie/configs/ports/doom/emulators.cfg | grep "$doomPORT =" | sed "s/"$doomPORT" = //" | sed "s+%ROM%+$doomIWAD+g" | sed "s/%XRES%/"$3"/g" | sed "s/%YRES%/"$4"/g" | sed 's/\"//g' | sed 's/; popd//g')"
 
 	# Pulling [warp] settings from a Separate file (last) allows us to modify at [runcommand] AFTER the _PORT_ command has already been queued in ES
-	warpCFG=/opt/retropie/configs/ports/doom/warp.cfg
+	warpCFG=/opt/retropie/configs/ports/doom/zdoom-warp.cfg
+	HOMEwarpCFG=~/zdoom-warp.cfg
 	if [[ ! -f "$warpCFG" ]]; then echo '-warp 1 1 -skill 3' > "$warpCFG"; fi
+	if [[ ! -f "$HOMEwarpCFG" ]]; then ln -s "$warpCFG" "$HOMEwarpCFG"; fi
 	warpTO="$(cat $warpCFG)"
 
 	# Run [doomSTRING] with -warp -skill added
 	suffix=''
 	if [[ $(cat /opt/retropie/configs/ports/doom/emulators.cfg | grep "$doomPORT =" | grep -q '; popd' ; echo $?) == '0' ]]; then suffix='; popd'; fi
 	finalCMD="${doomSTRING} ${warpTO}${suffix}"
+	echo [$doomPORT] $finalCMD >> /dev/shm/runcommand.log
+	eval "${finalCMD}"
+	exit 0
+fi
+
+# Parameter [client] determines Called by a [*zdoom+client] entry from [emulators.cfg]
+if [ "$1" == 'client' ]; then
+	doomIWAD="$2"
+	doomPORT="$(head -2 /dev/shm/runcommand.info | tail +2 | sed 's/+client//')+"
+
+	# Pull [doomPORT] String
+	doomSTRING="$(cat /opt/retropie/configs/ports/doom/emulators.cfg | grep "$doomPORT =" | sed "s/"$doomPORT" = //" | sed "s+%ROM%+$doomIWAD+g" | sed "s/%XRES%/"$3"/g" | sed "s/%YRES%/"$4"/g" | sed 's/\"//g' | sed 's/; popd//g')"
+
+	# Pulling [client] settings from a Separate file (last) allows us to modify at [runcommand] AFTER the _PORT_ command has already been queued in ES
+	clientCFG=/opt/retropie/configs/ports/doom/zdoom-client.cfg
+	HOMEclientCFG=~/zdoom-client.cfg
+	if [[ ! -f "$clientCFG" ]]; then echo '192.168.33.33' > "$clientCFG"; fi
+	if [[ ! -f "$HOMEclientCFG" ]]; then ln -s "$clientCFG" "$HOMEclientCFG"; fi
+	clientADDR="$(cat $clientCFG)"
+
+	# Run [doomSTRING] with -join clientADDR added
+	suffix=''
+	if [[ $(cat /opt/retropie/configs/ports/doom/emulators.cfg | grep "$doomPORT =" | grep -q '; popd' ; echo $?) == '0' ]]; then suffix='; popd'; fi
+	finalCMD="${doomSTRING} -join ${clientADDR}${suffix}"
+	echo [$doomPORT] $finalCMD >> /dev/shm/runcommand.log
+	eval "${finalCMD}"
+	exit 0
+fi
+
+# Parameter [host] determines Called by a [*zdoom+host] entry from [emulators.cfg]
+if [ "$1" == 'host' ]; then
+	doomIWAD="$2"
+	doomPORT="$(head -2 /dev/shm/runcommand.info | tail +2 | sed 's/+host//')+"
+
+	# Pull [doomPORT] String
+	doomSTRING="$(cat /opt/retropie/configs/ports/doom/emulators.cfg | grep "$doomPORT =" | sed "s/"$doomPORT" = //" | sed "s+%ROM%+$doomIWAD+g" | sed "s/%XRES%/"$3"/g" | sed "s/%YRES%/"$4"/g" | sed 's/\"//g' | sed 's/; popd//g')"
+
+	# Pulling [host] settings from a Separate file (last) allows us to modify at [runcommand] AFTER the _PORT_ command has already been queued in ES
+	hostCFG=/opt/retropie/configs/ports/doom/zdoom-host.cfg
+	HOMEhostCFG=~/zdoom-host.cfg
+	if [[ ! -f "$hostCFG" ]]; then echo '-host 4 -skill 3' > "$hostCFG"; fi
+	if [[ ! -f "$HOMEhostCFG" ]]; then ln -s "$hostCFG" "$HOMEhostCFG"; fi
+	hostVARS="$(cat $hostCFG)"
+
+	# Run [doomSTRING] with -host -skill added
+	suffix=''
+	if [[ $(cat /opt/retropie/configs/ports/doom/emulators.cfg | grep "$doomPORT =" | grep -q '; popd' ; echo $?) == '0' ]]; then suffix='; popd'; fi
+	finalCMD="${doomSTRING} ${hostVARS}${suffix}"
 	echo [$doomPORT] $finalCMD >> /dev/shm/runcommand.log
 	eval "${finalCMD}"
 	exit 0
