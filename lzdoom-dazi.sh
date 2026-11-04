@@ -3,10 +3,21 @@
 # IF DEFINED [alternateM0Ddir] will 0verride DEFAULT M0D Directory - DO NOT INCLUDE '/' at END of PATHs - DO NOT USE *R00T* '/' 0NLY
 alternateM0Ddir=
 
+# 0PTIONAL: DEFINE CUSTOM HOST(s) for CLIENT TO CONNECT TO eg. 192.168.6.66
+hostONE=
+hostTWO=
+hostTHREE=
+hostFOUR=
+hostFIVE=
+hostSIX=
+hostSEVEN=
+hostEIGHT=
+hostNINE=
+
 # Running this Script from [/opt/retropie/configs/ports/doom] will access 0NLY the Mod Loader Menu  
 # Running this Script from [/opt/retropie/configs/all/runcommand-menu] will access 0NLY the Mod Loader Menu  
 
-versionDAZI=2026.10
+versionDAZI=2026.11
 M0DdirMAIN=~/RetroPie/roms/ports/doom/mods
 modDIRroms=~/RetroPie/roms/ports/doom/addon
 modDIRtmpfs=/dev/shm/addon
@@ -106,17 +117,29 @@ echo '[-warp 5 9 -skill 4] Ultimate Doom SIGIL E5M9 on Ultra-Violence'
 echo '[-warp  31 -skill 5] Doom II SecretWolfensteinLevel MAP31 on Nightmare!'
 echo '       NOTE: Leave [Episode] set to [NONE] for D00M II Maps'
 echo ''
-echo '==== Host+Client Examples === [-join H#] === [-host H# -skill S#] ===='
-echo '[-host 4 -skill 3] Host with Max 4 Clients Allowed on 3 Hurt me Plenty'
-echo '[-join 192.168.66.66] Connect as Client to Host Address 192.168.66.66 '
+echo "======================================================================"
+echo ''
+echo '                ~ ZDOOM WARP CONFIG FILE ~'
+echo '/opt/retropie/configs/ports/zdoom-warp.cfg   {~/zdoom-warp.cfg}        '
+echo ''
+echo "======================================================================"
+)
+
+doomNETdiff=$(
+echo ''
+echo '==== Client+Host Examples === [-join H#] === [-host L# -skill S#] ===='
+echo '[-join 192.168.6.66] Connect as Client to Host Address 192.168.6.66   '
+echo '[-host 4 -skill 3] Host Limit of 4 Clients Allowed on 3 Hurt me Plenty'
 echo '     *May Require FIREWALL Rule for UZDoom: UDP 5029 INBOUND*'
 echo "======================================================================"
 echo ''
-echo '          ~ ZDOOM CLIENT/HOST/WARP CONFIG FILES ~'
+echo '             ~ ZDOOM CLIENT/HOST CONFIG FILES ~'
 echo '/opt/retropie/configs/ports/zdoom-client.cfg {~/zdoom-client.cfg}'
-echo '/opt/retropie/configs/ports/zdoom-host.cfg   {~/zdoom-host.cfg}'
-echo '/opt/retropie/configs/ports/zdoom-warp.cfg   {~/zdoom-warp.cfg}        '
+echo '/opt/retropie/configs/ports/zdoom-host.cfg   {~/zdoom-host.cfg}  '
 echo ''
+echo "     ~ ADD your own Custom HOSTs to appear in DAZI's List ~"
+echo "/opt/retropie/configs/ports/doom/lzdoom-dazi.sh {hostONE=*}"
+echo "======================================================================"
 )
 
 scriptREF=$(
@@ -295,7 +318,7 @@ count=$(( $count + 1 )) # Increase count by+1
 rollingM0D="doomMOD${count}" # Apply Increased count to [doomMOD#]
 if [[ ! "${!rollingM0D}" == "" ]]; then addonDIRcount=$(( $addonDIRcount + 1 )); loadM0Ds; fi } # Prepare more [doomMOD#s] IF DEFINED
 # Prepare WARP and DIFFICULTY Settings For [lzdoom-dazi+warp] - 0nly Update doom[-warp].wad IF the Parameters are DEFINED - Set DEFAULT DIFFICULTY [Hurt me plenty] if NOT DEFINED - Update [-warp*]  in [warp.cfg] - If addonDIR is NOT DEFAULT [~/RetroPie/roms/ports/doom/] Create Symbolic Link to [doomWAD] - set doomWAD=[addonDIRroot/doomWAD]
-if [ ! "$mapNUM" == "" ]; then ln -s "${doomWAD}" "${addonDIR%/*}/$(basename "${doomWAD}" | cut -d. -f1 )-warp.$(basename "${doomWAD}" | sed "s/^.*\.//")" > /dev/null 2>&1; doomWAD="${addonDIR%/*}/$(basename "${doomWAD}" | cut -d. -f1 )-warp.$(basename "${doomWAD}" | sed "s/^.*\.//")"; if [ "$skillLEVEL" == "" ]; then skillLEVEL=3; fi; sed -i "s/-warp.*/-warp\ $episodeNUM\ $mapNUM\ -skill\ $skillLEVEL/g" /opt/retropie/configs/ports/doom/warp.cfg; else if [[ ! "$(dirname ${doomWAD} )" == "/home/$USER/RetroPie/roms/ports/doom/addon" ]]; then ln -s "${doomWAD}" "${addonDIR%/*}/$(basename "${doomWAD}" | cut -d. -f1 ).$(basename "${doomWAD}" | sed "s/^.*\.//")" > /dev/null 2>&1; doomWAD="${addonDIR%/*}/$(basename "${doomWAD}" | cut -d. -f1 ).$(basename "${doomWAD}" | sed "s/^.*\.//")"; fi; fi
+if [ ! "$mapNUM" == "" ]; then ln -s "${doomWAD}" "${addonDIR%/*}/$(basename "${doomWAD}" | cut -d. -f1 )-warp.$(basename "${doomWAD}" | sed "s/^.*\.//")" > /dev/null 2>&1; doomWAD="${addonDIR%/*}/$(basename "${doomWAD}" | cut -d. -f1 )-warp.$(basename "${doomWAD}" | sed "s/^.*\.//")"; if [ "$skillLEVEL" == "" ]; then skillLEVEL=3; fi; sed -i "s/-warp.*/-warp\ $episodeNUM\ $mapNUM\ -skill\ $skillLEVEL/g" /opt/retropie/configs/ports/doom/zdoom-warp.cfg; else if [[ ! "$(dirname ${doomWAD} )" == "/home/$USER/RetroPie/roms/ports/doom/addon" ]]; then ln -s "${doomWAD}" "${addonDIR%/*}/$(basename "${doomWAD}" | cut -d. -f1 ).$(basename "${doomWAD}" | sed "s/^.*\.//")" > /dev/null 2>&1; doomWAD="${addonDIR%/*}/$(basename "${doomWAD}" | cut -d. -f1 ).$(basename "${doomWAD}" | sed "s/^.*\.//")"; fi; fi
 mkdir "${addonDIR%/*}" > /dev/null 2>&1; mkdir "$addonDIR" > /dev/null 2>&1; mv "${addonDIR%/*}/$(basename $doomWAD | cut -d. -f1)/prboom.cfg" "${addonDIR%/*}/$(basename $doomWAD | cut -d. -f1)/prboom.cfg.last" > /dev/null 2>&1 # Prepare addonDIR - Move previous prboom.cfg
 count=1; rollingM0D="doomMOD${count}" # Set Initial Count
 if [ ! "$(find $addonDIR -maxdepth 1 -type f | wc -l )" == 0 ] || [ ! "$(find $addonDIR -maxdepth 1 -type l | wc -l )" == 0 ]; then addonDIRcount=$(( $count + $(find $addonDIR -maxdepth 1 -type f | wc -l ) + $(find $addonDIR -maxdepth 1 -type l | wc -l ) )); else addonDIRcount=$count; fi # Count Current Files/Links in ADDONS - Update addonDIRcount
@@ -409,7 +432,7 @@ fi
 
 # REFERENCES
 if [ "$confCONFIG" == '9' ]; then
-	dialog --no-collapse --title "[DAZI] for [RetroPie] REFERENCES" --ok-label Back --msgbox "$daziLOGO        $howtoREF ====================================================================== $zipREFmod $daziHUD $doomEMUSref ====================================================================== $daziFILES $zdoomCFGinis $daziHUDsrb2 $srb2FILES $doomWARPdiff $(cat /opt/retropie/configs/ports/doom/emulators.cfg | grep 'default =')"  25 75
+	dialog --no-collapse --title "[DAZI] for [RetroPie] REFERENCES" --ok-label Back --msgbox "$daziLOGO        $howtoREF ====================================================================== $zipREFmod $daziHUD $doomEMUSref ====================================================================== $daziFILES $zdoomCFGinis $daziHUDsrb2 $srb2FILES $doomWARPdiff $doomNETdiff DEFAULT [port]: $(cat /opt/retropie/configs/ports/doom/emulators.cfg | grep 'default =')"  25 75
 	mainMENU
 fi
 
@@ -1297,22 +1320,27 @@ if [ ! -f /opt/retropie/configs/ports/doom/lzdoom-dazi.clean ]; then echo 'T' > 
 cp "$0" /dev/shm/lzdoom-dazi.sh; chmod 755 /dev/shm/lzdoom-dazi.sh
 mv /dev/shm/lzdoom-dazi.sh /opt/retropie/configs/ports/doom/lzdoom-dazi.sh
 
-cp "$0" /dev/shm/lzdoom-dazi.sh; chmod 755 /dev/shm/lzdoom-dazi.sh
 echo 'Adding lzdoom-dazi to /usr/bin/dazi'
-sudo mv /dev/shm/lzdoom-dazi.sh /usr/bin/dazi
+##cp "$0" /dev/shm/lzdoom-dazi.sh; chmod 755 /dev/shm/lzdoom-dazi.sh
+##sudo mv /dev/shm/lzdoom-dazi.sh /usr/bin/dazi
+sudo rm -f /usr/bin/dazi
+sudo ln -s /opt/retropie/configs/ports/doom/lzdoom-dazi.sh /usr/bin/dazi
 
 # This script will behave differently depending on the location - copy itself to [/opt/retropie/configs/all/runcommand-menu]
-cp "$0" /dev/shm/lzdoom-dazi.sh
+##echo 'chmod 755 /opt/retropie/configs/all/runcommand-menu/lzdoom-dazi.sh'
 mkdir /opt/retropie/configs/all/runcommand-menu > /dev/null 2>&1
-mv /dev/shm/lzdoom-dazi.sh /opt/retropie/configs/all/runcommand-menu/lzdoom-dazi.sh
-echo 'chmod 755 /opt/retropie/configs/all/runcommand-menu/lzdoom-dazi.sh'
+##cp "$0" /dev/shm/lzdoom-dazi.sh; chmod 755 /dev/shm/lzdoom-dazi.sh 
+##mv /dev/shm/lzdoom-dazi.sh /opt/retropie/configs/all/runcommand-menu/lzdoom-dazi.sh
+rm -f /opt/retropie/configs/all/runcommand-menu/lzdoom-dazi.sh
+echo '#!/usr/bin/env bash' > /opt/retropie/configs/all/runcommand-menu/lzdoom-dazi.sh
+echo '/opt/retropie/configs/ports/doom/lzdoom-dazi.sh' >> /opt/retropie/configs/all/runcommand-menu/lzdoom-dazi.sh
 chmod 755 /opt/retropie/configs/all/runcommand-menu/lzdoom-dazi.sh
 
 # Toggle [runcommand] Flag OFF [dazi-mod-loader]
 echo '0' > /opt/retropie/configs/ports/doom/lzdoom-dazi.flag
 
 # FINISHED
-dialog --no-collapse --title "INSTALL [DAZI] for [RetroPie]  *COMPLETE!* " --ok-label Back --msgbox "$daziLOGO $zipREFmod $daziHUD $doomEMUSref ====================================================================== $daziFILES $doomWARPdiff $(cat /opt/retropie/configs/ports/doom/emulators.cfg | grep 'default =')"  25 75
+dialog --no-collapse --title "INSTALL [DAZI] for [RetroPie]  *COMPLETE!* " --ok-label Back --msgbox "$daziLOGO        $howtoREF ====================================================================== $zipREFmod $daziHUD $doomEMUSref ====================================================================== $daziFILES $zdoomCFGinis $daziHUDsrb2 $srb2FILES $doomWARPdiff $doomNETdiff DEFAULT [port]: $(cat /opt/retropie/configs/ports/doom/emulators.cfg | grep 'default =')"  25 75
 
 mainMENU
 }
@@ -1770,6 +1798,7 @@ DMLconfCONFIG=$(dialog --no-collapse --title " [DAZI] M0D LOADER for [lzdoom] by
 	3 ">< {$modCOUNTroms} M0Ds in [/roms/ports/doom/addon] ><" \
 	4 ">< {$modCOUNTprboomplus} M0Ds in [/prboom-plus/autoload/doom-all] ><" \
 	W ">< SELECT [WARP] and [DIFFICULTY] for [lzdoom-dazi+warp] ><" \
+	N ">< SELECT [NETWORK] Settings for [zdoom-dazi+client/host] ><" \
 	C ">< CREATE [prboom.cfg] Configuration File(s) ><" \
 	D ">< DELETE [lzdoom.ini] Configuration (RESET) ><" \
 	G ">< DELETE [gzdoom.ini] Configuration (RESET) ><" \
@@ -1782,6 +1811,7 @@ if [ "$DMLconfCONFIG" == '1' ]; then
 		tput reset
 		exit 0
 	else
+		tput reset
 		mainMENU
 	fi
 fi
@@ -1808,6 +1838,7 @@ if [ "$DMLconfCONFIG" == '4' ]; then
 fi
 
 if [ "$DMLconfCONFIG" == 'W' ]; then WARPmainMENU; fi
+if [ "$DMLconfCONFIG" == 'N' ]; then NETmainMENU; fi
 
 if [ "$DMLconfCONFIG" == 'A' ]; then
 	abortRUNcommand=$(dialog --no-collapse --title "                 ABORT              " \
@@ -2248,18 +2279,24 @@ DMLsubMENU
 
 WARPmainMENU()
 {
+tput reset
+
 # DEFINE WARP and DIFFICULTY
 #if [[ "$episodeNUM" == '' ]]; then episodeNUM=?; fi
 if [[ "$mapNUM" == '' ]]; then mapNUM=?; fi
 if [[ "$skillLEVEL" == '' ]]; then skillLEVEL=?; fi
 userWARPcfg=$(dialog --no-collapse --title "         SELECT [WARP] and [DIFFICULTY] for [*zdoom-dazi+warp]              " \
 	--ok-label OK --cancel-label BACK \
-	--menu "\n        When Selecting WARP Settings @ [runcommand-onstart]:\n\nPre-Defined [-warp -skill] from [DAZI-Templates.sh] will be superseded\n   \nSELECT and APPLY Settings to [warp.cfg] @ [-warp E# M# -skill S#\"] \neg. Ultimate Doom SIGIL E5M9 on Ultra-Violence [-warp  5  9 -skill  4]\n   \n      CURRENT [warp.cfg]:             [$(cat /opt/retropie/configs/ports/doom/warp.cfg)]\n   \n      CURRENT (USER) SELECT Settings: (-warp $episodeNUM $mapNUM -skill $skillLEVEL)" 25 75 20 \
-	1 "><  SELECT [Episode]  ><" \
-	2 "><  SELECT [Map]  ><" \
-	3 "><  SELECT [Difficulty]  ><" \
-	4 "><  APPLY  [Episode] [Map] [Difficulty] to [warp.cfg] ><" \
-	R "><  REFERENCES  ><" 2>&1>/dev/tty)
+	--menu "\n        When Selecting WARP Settings @ [runcommand-onstart]:\n\nPre-Defined [-warp -skill] from [DAZI-Templates.sh] will be superseded\n   \nSELECT and APPLY Settings to [warp.cfg] @ [-warp E# M# -skill S#\"] \neg. Ultimate Doom SIGIL E5M9 on Ultra-Violence [-warp  5  9 -skill  4]\n   \n      CURRENT [zdoom-warp.cfg]:       [$(cat /opt/retropie/configs/ports/doom/zdoom-warp.cfg)]\n      CURRENT (USER) SELECT Settings: (-warp $episodeNUM $mapNUM -skill $skillLEVEL)" 25 75 20 \
+	1 " SELECT [ Episode ]  FOR WARP SESSION" \
+	2 " SELECT [   Map   ]  FOR WARP SESSION" \
+	3 " SELECT [Difficulty] FOR WARP SESSION" \
+	- "" \
+	4 "  APPLY [Episode] [Map] [Difficulty] to [zdoom-warp.cfg]" \
+	- "" \
+	R " REFERENCES" 2>&1>/dev/tty)
+
+if [ "$userWARPcfg" == '-' ]; then WARPmainMENU; fi
 
 # SELECT Setting Confirmed - Otherwise Back to Main Menu
 if [ "$userWARPcfg" == '1' ]; then
@@ -2437,22 +2474,23 @@ if [ "$userWARPcfg" == '4' ]; then
 	# Prepare WARP and DIFFICULTY Settings For [lzdoom-dazi+warp]
 	if [ "$mapNUM" == "" ]; then mapNUM=1; fi # Set Map [1] if NOT DEFINED
 	if [ "$skillLEVEL" == "" ]; then skillLEVEL=3; fi # Set DEFAULT DIFFICULTY [Hurt me plenty] if NOT DEFINED
-	if [[ ! -f /opt/retropie/configs/ports/doom/warp.cfg ]] && [[ -f /opt/retropie/configs/ports/doom/lzdoom-dazi.sh ]]; then echo '-warp 1 1 -skill 3' > /opt/retropie/configs/ports/doom/warp.cfg; fi
+	if [[ ! -f /opt/retropie/configs/ports/doom/zdoom-warp.cfg ]] && [[ -f /opt/retropie/configs/ports/doom/lzdoom-dazi.sh ]]; then echo '-warp 1 1 -skill 3' > /opt/retropie/configs/ports/doom/zdoom-warp.cfg; fi
 	if [[ "$mapNUM" == '?' ]]; then dialog --no-collapse --title "CURRENT [USER] SELECT Settings: -warp [$episodeNUM] [$mapNUM] -skill [$skillLEVEL]" --ok-label Back --msgbox "\n   \n*YOU MUST SELECT a [Map]*"  25 75; WARPmainMENU; fi
 	if [[ "$skillLEVEL" == '?' ]]; then dialog --no-collapse --title "CURRENT [USER] SELECT Settings: -warp [$episodeNUM] [$mapNUM] -skill [$skillLEVEL]" --ok-label Back --msgbox "\n   \n*YOU MUST SELECT a [Difficulty]*"  25 75; WARPmainMENU; fi
 	episodeNOTE=''
 	if [[ "$episodeNUM" == '' ]]; then episodeNOTE="\n\n           *WARNING* THE SETTING FOR [Episode] IS *[NONE]* \n              This Setting will *NOT* work for DOOM I \n                This Setting *WILL* work for DOOM II"; fi
 	confWARPset=$(dialog --no-collapse --title "APPLY WARP SETTINGS" \
 		--ok-label OK --cancel-label Back \
-		--menu " ? APPLY [Episode] [Map] [Difficulty] Settings to [warp.cfg] ? \n\n      CURRENT [warp.cfg]:             [$(cat /opt/retropie/configs/ports/doom/warp.cfg)]\n   \n      CURRENT (USER) SELECT Settings: (-warp $episodeNUM $mapNUM -skill $skillLEVEL) $episodeNOTE" 25 75 20 \
+		--menu " ? APPLY [Episode] [Map] [Difficulty] Settings to [zdoom-warp.cfg] ? \n\n      CURRENT [zdoom-warp.cfg]:       [$(cat /opt/retropie/configs/ports/doom/zdoom-warp.cfg)]\n      CURRENT (USER) SELECT Settings: (-warp $episodeNUM $mapNUM -skill $skillLEVEL) $episodeNOTE" 25 75 20 \
 		A "APPLY CURRENT (USER) SELECT Settings" \
 		B "Back" 2>&1>/dev/tty)
 	
 	# Confirmed - Otherwise Back to Main Menu
 	if [ "$confWARPset" == 'A' ]; then
 		if [[ ! -f /opt/retropie/configs/ports/doom/lzdoom-dazi.sh ]]; then dialog --no-collapse --title "CURRENT [USER] SELECT Settings: -warp [$episodeNUM] [$mapNUM] -skill [$skillLEVEL]" --ok-label Back --msgbox "\n   \n*YOU MUST INSTALL DAZI 1st!*"  25 75; WARPmainMENU; fi
-		sed -i "s/-warp.*/-warp\ $episodeNUM\ $mapNUM\ -skill\ $skillLEVEL/g" /opt/retropie/configs/ports/doom/warp.cfg #Update [-warp*] in [warp.cfg]
-		dialog --no-collapse --title "APPLY [Episode] [Map] [Difficulty] Settings to [warp.cfg] *COMPLETE!*" --ok-label Back --msgbox "\n   \nCURRENT [warp.cfg]:             [$(cat /opt/retropie/configs/ports/doom/warp.cfg)]\n   \nCURRENT (USER) SELECT Settings: (-warp $episodeNUM $mapNUM -skill $skillLEVEL)"  25 75
+		grep -q '\-warp' /opt/retropie/configs/ports/doom/zdoom-warp.cfg; [ $? -eq 1 ] && echo '-warp' > /opt/retropie/configs/ports/doom/zdoom-warp.cfg
+		sed -i "s/-warp.*/-warp\ $episodeNUM\ $mapNUM\ -skill\ $skillLEVEL/g" /opt/retropie/configs/ports/doom/zdoom-warp.cfg #Update [-warp*] in [warp.cfg]
+		dialog --no-collapse --title "APPLY [Episode] [Map] [Difficulty] Settings to [zdoom-warp.cfg] *COMPLETE!*" --ok-label Back --msgbox "\n   \nCURRENT [zdoom-warp.cfg]:       [$(cat /opt/retropie/configs/ports/doom/zdoom-warp.cfg)]\nCURRENT (USER) SELECT Settings: (-warp $episodeNUM $mapNUM -skill $skillLEVEL)"  25 75
 		WARPmainMENU
 	fi
 	WARPmainMENU
@@ -2460,9 +2498,213 @@ fi
 
 # REFERENCES
 if [ "$userWARPcfg" == 'R' ]; then
-	dialog --no-collapse --title "[WARP] + [DIFFICULTY] SETTINGS REFERENCES" --ok-label Back --msgbox "$doomWARPdiff $(cat /opt/retropie/configs/ports/doom/warp.cfg)"  25 75
+	dialog --no-collapse --title "[WARP] SETTINGS REFERENCES" --ok-label Back --msgbox "$doomWARPdiff CURRENT [zdoom-warp.cfg]: $(cat /opt/retropie/configs/ports/doom/zdoom-warp.cfg)"  25 75
 	WARPmainMENU
 fi
+
+DMLmainMENU
+}
+
+NETmainMENU()
+{
+tput reset
+
+# The Author's Pre-Defined HOSTs
+_hostONE=192.168.33.33
+_hostTWO=192.168.33.54
+_hostTHREE=192.168.33.55
+_hostFOUR=192.168.33.56
+_hostFIVE=192.168.33.68
+_hostSIX=192.168.33.30
+_hostSEVEN=192.168.1.100
+_hostEIGHT=192.168.10.100
+_hostNINE=192.168.11.100
+
+# The User's Custom HOSTs #IF DEFINED
+if [ ! "$hostONE" == "" ]; then _hostONE="$hostONE"; fi
+if [ ! "$hostTWO" == "" ]; then _hostTWO="$hostTWO"; fi
+if [ ! "$hostTHREE" == "" ]; then _hostTHREE="$hostTHREE"; fi
+if [ ! "$hostFOUR" == "" ]; then _hostFOUR="$hostFOUR"; fi
+if [ ! "$hostFIVE" == "" ]; then _hostFIVE="$hostFIVE"; fi
+if [ ! "$hostSIX" == "" ]; then _hostSIX="$hostSIX"; fi
+if [ ! "$hostSEVEN" == "" ]; then _hostSEVEN="$hostSEVEN"; fi
+if [ ! "$hostEIGHT" == "" ]; then _hostEIGHT="$hostEIGHT"; fi
+if [ ! "$hostNINE" == "" ]; then _hostNINE="$hostNINE"; fi
+
+if [[ ! -f /opt/retropie/configs/ports/doom/zdoom-client.cfg ]]; then echo "$hostONE" > /opt/retropie/configs/ports/doom/zdoom-client.cfg; fi
+if [[ ! -f /opt/retropie/configs/ports/doom/zdoom-host.cfg ]]; then echo '-host 4 -skill 3' > /opt/retropie/configs/ports/doom/zdoom-host.cfg; fi
+
+# DEFINE CLIENT HOST and DIFFICULTY
+if [[ "$hostNUM" == '' ]]; then hostNUM=?; fi
+if [[ "$HOSTskillLEVEL" == '' ]]; then HOSTskillLEVEL=?; fi
+if [[ "$clientHOST" == '' ]]; then clientHOST=???.???.???.???; fi
+userNETcfg=$(dialog --no-collapse --title "   SELECT Network Settings for [*zdoom-dazi+host] [*zdoom-dazi+client]" \
+	--ok-label OK --cancel-label BACK \
+	--menu "\nSELECT and APPLY Settings to [zdoom-client.cfg] + [zdoom-host.cfg] \n   \n      CURRENT [zdoom-client.cfg]:   [$(cat /opt/retropie/configs/ports/doom/zdoom-client.cfg)]\n      CURRENT [zdoom-host.cfg]:     [$(cat /opt/retropie/configs/ports/doom/zdoom-host.cfg)]\n   \n   CURRENT (USER) SELECT [client]:  (-join $clientHOST)\n   CURRENT (USER) SELECT [host]:    (-host $hostNUM -skill $HOSTskillLEVEL)\n\n                CURRENT [IP] ADDRESS: $(ip -4 route get 8.8.8.8 2>/dev/null | grep -oP "src \K[^\s]+")" 25 75 20 \
+	1 "SELECT [Join-Host] FOR CLIENT SESSION" \
+	- "" \
+	2 "SELECT [Host-Limit] FOR HOST SESSION" \
+	3 "SELECT [Difficulty] FOR HOST SESSION" \
+	- "" \
+	C " APPLY [Join-Host] TO [zdoom-client.cfg]" \
+	H " APPLY [Host-Limit] + [Difficulty] TO [zdoom-host.cfg]" \
+	- "" \
+	R " REFERENCES" 2>&1>/dev/tty)
+
+# SELECT Setting Confirmed - Otherwise Back to Main Menu
+if [ "$userNETcfg" == '1' ]; then
+	confHOST=$(dialog --no-collapse --title "SELECT [Join-Host]  FOR CLIENT SESSION" \
+		--ok-label OK --cancel-label Back \
+		--menu "   ? [Join-Host] ?  CURRENT USER SELECTION: [$clientHOST]" 25 75 20 \
+		1 "$_hostONE" \
+		2 "$_hostTWO" \
+		3 "$_hostTHREE" \
+		4 "$_hostFOUR" \
+		5 "$_hostFIVE" \
+		6 "$_hostSIX" \
+		7 "$_hostSEVEN" \
+		8 "$_hostEIGHT" \
+		9 "$_hostNINE" \
+		B "BACK" 2>&1>/dev/tty)
+	
+	# Confirmed - Otherwise Back to Main Menu
+	if [ "$confHOST" == '1' ]; then clientHOST="$_hostONE"; fi
+	if [ "$confHOST" == '2' ]; then clientHOST="$_hostTWO"; fi
+	if [ "$confHOST" == '3' ]; then clientHOST="$_hostTHREE"; fi
+	if [ "$confHOST" == '4' ]; then clientHOST="$_hostFOUR"; fi
+	if [ "$confHOST" == '5' ]; then clientHOST="$_hostFIVE"; fi
+	if [ "$confHOST" == '6' ]; then clientHOST="$_hostSIX"; fi
+	if [ "$confHOST" == '7' ]; then clientHOST="$_hostSEVEN"; fi
+	if [ "$confHOST" == '8' ]; then clientHOST="$_hostEIGHT"; fi
+	if [ "$confHOST" == '9' ]; then clientHOST="$_hostNINE"; fi
+NETmainMENU
+fi
+
+if [ "$userNETcfg" == '2' ]; then
+	confHOSTnum=$(dialog --no-collapse --title "SELECT [Host-Limit] FOR HOST SESSION" \
+		--ok-label OK --cancel-label Back \
+		--menu "   ? [Host-Limit] ?  CURRENT USER SELECTION: [$hostNUM]" 25 75 20 \
+		1 "HOST LIMIT [1]" \
+		2 "HOST LIMIT [2]" \
+		3 "HOST LIMIT [3]" \
+		4 "HOST LIMIT [4]" \
+		5 "HOST LIMIT [5]" \
+		6 "HOST LIMIT [6]" \
+		7 "HOST LIMIT [7]" \
+		8 "HOST LIMIT [8]" \
+		9 "HOST LIMIT [9]" \
+		10 "HOST LIMIT [10]" \
+		11 "HOST LIMIT [11]" \
+		12 "HOST LIMIT [12]" \
+		13 "HOST LIMIT [13]" \
+		14 "HOST LIMIT [14]" \
+		15 "HOST LIMIT [15]" \
+		16 "HOST LIMIT [16]" \
+		17 "HOST LIMIT [17]" \
+		18 "HOST LIMIT [18]" \
+		19 "HOST LIMIT [19]" \
+		20 "HOST LIMIT [20]" \
+		21 "HOST LIMIT [21]" \
+		B "BACK" 2>&1>/dev/tty)
+	
+	# Confirmed - Otherwise Back to Main Menu
+	if [ "$confHOSTnum" == '1' ]; then hostNUM=1; fi
+	if [ "$confHOSTnum" == '2' ]; then hostNUM=2; fi
+	if [ "$confHOSTnum" == '3' ]; then hostNUM=3; fi
+	if [ "$confHOSTnum" == '4' ]; then hostNUM=4; fi
+	if [ "$confHOSTnum" == '5' ]; then hostNUM=5; fi
+	if [ "$confHOSTnum" == '6' ]; then hostNUM=6; fi
+	if [ "$confHOSTnum" == '7' ]; then hostNUM=7; fi
+	if [ "$confHOSTnum" == '8' ]; then hostNUM=8; fi
+	if [ "$confHOSTnum" == '9' ]; then hostNUM=9; fi
+	if [ "$confHOSTnum" == '10' ]; then hostNUM=10; fi
+	if [ "$confHOSTnum" == '11' ]; then hostNUM=11; fi
+	if [ "$confHOSTnum" == '12' ]; then hostNUM=12; fi
+	if [ "$confHOSTnum" == '13' ]; then hostNUM=13; fi
+	if [ "$confHOSTnum" == '14' ]; then hostNUM=14; fi
+	if [ "$confHOSTnum" == '15' ]; then hostNUM=15; fi
+	if [ "$confHOSTnum" == '16' ]; then hostNUM=16; fi
+	if [ "$confHOSTnum" == '17' ]; then hostNUM=17; fi
+	if [ "$confHOSTnum" == '18' ]; then hostNUM=18; fi
+	if [ "$confHOSTnum" == '19' ]; then hostNUM=19; fi
+	if [ "$confHOSTnum" == '20' ]; then hostNUM=20; fi
+	if [ "$confHOSTnum" == '21' ]; then hostNUM=21; fi
+NETmainMENU
+fi
+
+if [ "$userNETcfg" == '3' ]; then
+	confHOSTskill=$(dialog --no-collapse --title "SELECT [ Difficulty ] FOR HOST SESSION#" \
+		--ok-label OK --cancel-label Back \
+		--menu "   ? [ Difficulty ] ?  CURRENT USER SELECTION: [$HOSTskillLEVEL]" 25 75 20 \
+		1 "DIFFICULTY [1] Im too young to die" \
+		2 "DIFFICULTY [2] Hey, not too rough." \
+		3 "DIFFICULTY [3] Hurt me plenty." \
+		4 "DIFFICULTY [4] Ultra-Violence." \
+		5 "DIFFICULTY [5] Nightmare!" 2>&1>/dev/tty)
+	
+	# Confirmed - Otherwise Back to Main Menu
+	if [ "$confHOSTskill" == '1' ]; then HOSTskillLEVEL=1; fi
+	if [ "$confHOSTskill" == '2' ]; then HOSTskillLEVEL=2; fi
+	if [ "$confHOSTskill" == '3' ]; then HOSTskillLEVEL=3; fi
+	if [ "$confHOSTskill" == '4' ]; then HOSTskillLEVEL=4; fi
+	if [ "$confHOSTskill" == '5' ]; then HOSTskillLEVEL=5; fi
+NETmainMENU
+fi
+
+if [ "$userNETcfg" == 'C' ]; then
+	# Prepare CLIENT Settings For [zdoom-dazi+client]
+	if [[ ! -f /opt/retropie/configs/ports/doom/zdoom-client.cfg ]]; then echo "$hostONE" > /opt/retropie/configs/ports/doom/zdoom-client.cfg; fi
+	if [[ "$clientHOST" == '???.???.???.???' ]]; then dialog --no-collapse --title "[USER] SELECT Settings: -join [$clientHOST]" --ok-label Back --msgbox "\n   \n*YOU MUST SELECT a [Join-Host]*"  25 75; NETmainMENU; fi
+
+	confCLIENTset=$(dialog --no-collapse --title "APPLY [Join-Host] SETTINGS" \
+		--ok-label OK --cancel-label Back \
+		--menu " ? APPLY [Join-Host] Settings to [zdoom-client.cfg] ? \n   \n      CURRENT [zdoom-client.cfg]:   [$(cat /opt/retropie/configs/ports/doom/zdoom-client.cfg)]\n   CURRENT (USER) SELECT [client]:  (-join $clientHOST)" 25 75 20 \
+		A "APPLY (USER) SELECT Settings" \
+		B "Back" 2>&1>/dev/tty)
+	
+	# Confirmed - Otherwise Back to Main Menu
+	if [ "$confCLIENTset" == 'A' ]; then
+		if [[ ! -f /opt/retropie/configs/ports/doom/lzdoom-dazi.sh ]]; then dialog --no-collapse --title "[USER] SELECT Settings: -join [$clientHOST]" --ok-label Back --msgbox "\n   \n*YOU MUST INSTALL DAZI 1st!*"  25 75; NETmainMENU; fi
+		grep -q '\-join' /opt/retropie/configs/ports/doom/zdoom-client.cfg; [ $? -eq 1 ] && echo '-join' > /opt/retropie/configs/ports/doom/zdoom-client.cfg
+		sed -i "s/-join.*/-join\ $clientHOST/g" /opt/retropie/configs/ports/doom/zdoom-client.cfg #Update
+		dialog --no-collapse --title "APPLY [Join-Host] Settings to [zdoom-client.cfg] *COMPLETE!*" --ok-label Back --msgbox "\n      CURRENT [zdoom-client.cfg]:   [$(cat /opt/retropie/configs/ports/doom/zdoom-client.cfg)]\n   CURRENT (USER) SELECT [client]:  (-join $clientHOST)"  25 75
+		NETmainMENU
+	fi
+	NETmainMENU
+fi
+
+if [ "$userNETcfg" == 'H' ]; then
+	# Prepare HOST and DIFFICULTY Settings For [zdoom-dazi+host]
+	if [ "$hostNUM" == "" ]; then hostNUM=4; fi # Set if NOT DEFINED
+	if [ "$HOSTskillLEVEL" == "" ]; then HOSTskillLEVEL=3; fi # Set DEFAULT DIFFICULTY [Hurt me plenty] if NOT DEFINED
+	if [[ ! -f /opt/retropie/configs/ports/doom/zdoom-host.cfg ]] && [[ -f /opt/retropie/configs/ports/doom/lzdoom-dazi.sh ]]; then echo '-host 4 -skill 3' > /opt/retropie/configs/ports/doom/zdoom-host.cfg; fi
+	if [[ "$hostNUM" == '?' ]]; then dialog --no-collapse --title "[USER] SELECT Settings: -host [$hostNUM] -skill [$HOSTskillLEVEL]" --ok-label Back --msgbox "\n   \n*YOU MUST SELECT a [Host-Limit]*"  25 75; NETmainMENU; fi
+	if [[ "$HOSTskillLEVEL" == '?' ]]; then dialog --no-collapse --title "[USER] SELECT Settings: -host [$hostNUM] -skill [$HOSTskillLEVEL]" --ok-label Back --msgbox "\n   \n*YOU MUST SELECT a [Difficulty]*"  25 75; NETmainMENU; fi
+
+	confHOSTset=$(dialog --no-collapse --title "APPLY HOST SETTINGS" \
+		--ok-label OK --cancel-label Back \
+		--menu " ? APPLY [Host-Limit] + [Difficulty] Settings to [zdoom-host.cfg] ? \n\n      CURRENT [zdoom-host.cfg]:     [$(cat /opt/retropie/configs/ports/doom/zdoom-host.cfg)]\n   CURRENT (USER) SELECT [host]:    (-host $hostNUM -skill $HOSTskillLEVEL)" 25 75 20 \
+		A "APPLY (USER) SELECT Settings" \
+		B "Back" 2>&1>/dev/tty)
+	
+	# Confirmed - Otherwise Back to Main Menu
+	if [ "$confHOSTset" == 'A' ]; then
+		if [[ ! -f /opt/retropie/configs/ports/doom/lzdoom-dazi.sh ]]; then dialog --no-collapse --title "[USER] SELECT Settings: -host [$hostNUM] -skill [$HOSTskillLEVEL]" --ok-label Back --msgbox "\n   \n*YOU MUST INSTALL DAZI 1st!*"  25 75; NETmainMENU; fi
+		grep -q '\-host' /opt/retropie/configs/ports/doom/zdoom-host.cfg; [ $? -eq 1 ] && echo '-host' > /opt/retropie/configs/ports/doom/zdoom-host.cfg
+		sed -i "s/-host.*/-host\ $hostNUM\ -skill\ $HOSTskillLEVEL/g" /opt/retropie/configs/ports/doom/zdoom-host.cfg #Update
+		dialog --no-collapse --title "APPLY [Host-Limit] + [Difficulty] TO [zdoom-host.cfg] *COMPLETE!*" --ok-label Back --msgbox "\n      CURRENT [zdoom-host.cfg]:     [$(cat /opt/retropie/configs/ports/doom/zdoom-host.cfg)]\n   CURRENT (USER) SELECT [host]:    (-host $hostNUM -skill $HOSTskillLEVEL)"  25 75
+		NETmainMENU
+	fi
+	NETmainMENU
+fi
+
+# REFERENCES
+if [ "$userNETcfg" == 'R' ]; then
+	dialog --no-collapse --title "[CLIENT] [HOST] [DIFFICULTY] SETTINGS REFERENCES" --ok-label Back --msgbox "$doomNETdiff \n   \n      CURRENT [zdoom-client.cfg]:   [$(cat /opt/retropie/configs/ports/doom/zdoom-client.cfg)]\n   \n      CURRENT [zdoom-host.cfg]:     [$(cat /opt/retropie/configs/ports/doom/zdoom-host.cfg)]\n\n               CURRENT [IP] ADDRESS: $(ip -4 route get 8.8.8.8 2>/dev/null | grep -oP "src \K[^\s]+")" 25 75
+	NETmainMENU
+fi
+
+if [ "$userNETcfg" == '-' ]; then NETmainMENU; fi
 
 DMLmainMENU
 }
@@ -2822,7 +3064,7 @@ mainMENU
 # Parameter [loadmod] + [D00M-R0M.sh] determines Called by [DAZI-Template.sh]
 if [ "$1" == "loadmod" ]; then
 	tmpDAZIsh=/dev/shm/daziTMP.sh
-	warpCFG=/opt/retropie/configs/ports/doom/warp.cfg
+	warpCFG=/opt/retropie/configs/ports/doom/zdoom-warp.cfg
 	if [[ ! -f "$warpCFG" ]]; then echo '-warp 1 1 -skill 3' > "$warpCFG"; fi
 	# Create TMP script based on ROM.sh Content to Load M0Ds
 	cat "$2" | grep -v "runcommand.sh" | grep -v "^if" | grep -v "^bash" | grep -v "^loadM0Ds" | grep -v "^mkdir" | grep -v "^#" | grep -v "^rollingM0D=" | grep -v "^count=" | grep -v "^{" | grep -v "^}" | grep -v "^fi" | grep -v "^	exit 0" | grep -v "^	sudo" | grep -v "	echo" > $tmpDAZIsh
@@ -3001,14 +3243,16 @@ if [ "$1" == 'client' ]; then
 	# Pulling [client] settings from a Separate file (last) allows us to modify at [runcommand] AFTER the _PORT_ command has already been queued in ES
 	clientCFG=/opt/retropie/configs/ports/doom/zdoom-client.cfg
 	HOMEclientCFG=~/zdoom-client.cfg
-	if [[ ! -f "$clientCFG" ]]; then echo '192.168.33.33' > "$clientCFG"; fi
+	_hostONE=192.168.33.33; # The Author's Pre-Defined HOST
+	if [ ! "$hostONE" == "" ]; then _hostONE="$hostONE"; fi # The User's Custom HOST #IF DEFINED
+	if [[ ! -f "$clientCFG" ]]; then echo "$hostONE" > "$clientCFG"; fi
 	if [[ ! -f "$HOMEclientCFG" ]]; then ln -s "$clientCFG" "$HOMEclientCFG"; fi
 	clientADDR="$(cat $clientCFG)"
 
 	# Run [doomSTRING] with -join clientADDR added
 	suffix=''
 	if [[ $(cat /opt/retropie/configs/ports/doom/emulators.cfg | grep "$doomPORT =" | grep -q '; popd' ; echo $?) == '0' ]]; then suffix='; popd'; fi
-	finalCMD="${doomSTRING} -join ${clientADDR}${suffix}"
+	finalCMD="${doomSTRING} ${clientADDR}${suffix}" #zdoom.client.cfg includes -join
 	echo [$doomPORT] $finalCMD >> /dev/shm/runcommand.log
 	eval "${finalCMD}"
 	exit 0
