@@ -100,8 +100,6 @@ echo '+--------------------------------------------------------------------+   '
 doomWARPdiff=$(
 echo "======================================================================"
 echo '          ~ ZDoom [Episode] [Map] [Difficulty] Settings ~ '
-echo 'DAZI will Stream-Edit [warp.cfg] to APPLY [-warp -skill ] Settings'
-echo '*REQUIRES* [lzdoom-dazi+warp] or an ENTRY ENDING in -warp # # -skill #"'
 echo ""
 echo '===Standard Doom Difficulty==============Heretic Difficulty======'
 echo '   1  Im too young to die             1  Thou needeth a wet-nurse'
@@ -116,12 +114,9 @@ echo '[-warp 2 1 -skill 3] Ultimate Doom AliensTC E2M1 on Hurt me plenty'
 echo '[-warp 5 9 -skill 4] Ultimate Doom SIGIL E5M9 on Ultra-Violence'
 echo '[-warp  31 -skill 5] Doom II SecretWolfensteinLevel MAP31 on Nightmare!'
 echo '       NOTE: Leave [Episode] set to [NONE] for D00M II Maps'
-echo ''
 echo "======================================================================"
-echo ''
 echo '                ~ ZDOOM WARP CONFIG FILE ~'
 echo '/opt/retropie/configs/ports/zdoom-warp.cfg   {~/zdoom-warp.cfg}        '
-echo ''
 echo "======================================================================"
 )
 
@@ -132,7 +127,6 @@ echo '[-join 192.168.6.66] Connect as Client to Host Address 192.168.6.66   '
 echo '[-host 4 -skill 3] Host Limit of 4 Clients Allowed on 3 Hurt me Plenty'
 echo '     *May Require FIREWALL Rule for UZDoom: UDP 5029 INBOUND*'
 echo "======================================================================"
-echo ''
 echo '             ~ ZDOOM CLIENT/HOST CONFIG FILES ~'
 echo '/opt/retropie/configs/ports/zdoom-client.cfg {~/zdoom-client.cfg}'
 echo '/opt/retropie/configs/ports/zdoom-host.cfg   {~/zdoom-host.cfg}  '
@@ -365,8 +359,8 @@ echo ""
 
 # Location of Script determines Menu Launched
 MENUlaunchDOOM=BACK
-if [ "$0" == "/opt/retropie/configs/ports/doom/lzdoom-dazi.sh" ]; then MENUlaunchDOOM=" LAUNCH $(head -3 /dev/shm/runcommand.info | tail -1 | sed 's/.*\///')"; fi
-if [ "$0" == "/opt/retropie/configs/all/runcommand-menu/lzdoom-dazi.sh" ]; then MENUlaunchDOOM="Runcommand $(head -3 /dev/shm/runcommand.info | tail -1 | sed 's/.*\///')"; fi
+if [[ "$0" == "/opt/retropie/configs/ports/doom/lzdoom-dazi.sh" ]] && [[ ! "$1" == 'retropiemenu' ]]; then MENUlaunchDOOM=" LAUNCH $(head -3 /dev/shm/runcommand.info | tail -1 | sed 's/.*\///')"; fi
+if [[ "$0" == "/opt/retropie/configs/all/runcommand-menu/lzdoom-dazi.sh" ]] && [[ ! "$1" == 'retropiemenu' ]]; then MENUlaunchDOOM="Runcommand $(head -3 /dev/shm/runcommand.info | tail -1 | sed 's/.*\///')"; fi
 
 mainMENU()
 {
@@ -1152,6 +1146,13 @@ rm ~/RetroPie/roms/ports/'TNT (WARP).sh' 2>/dev/null
 echo 'Removing lzdoom-dazi from /usr/bin/dazi'
 sudo rm /usr/bin/dazi 2>/dev/null
 
+rm -f ~/zdoom-client.cfg
+rm -f ~/zdoom-host.cfg
+rm -f ~/zdoom-warp.cfg
+rm -f /opt/retropie/configs/ports/doom/zdoom-client.cfg
+rm -f /opt/retropie/configs/ports/doom/zdoom-host.cfg
+rm -f /opt/retropie/configs/ports/doom/zdoom-warp.cfg
+
 dialog --no-collapse --title "REMOVE [DAZI] for [RetroPie]  *COMPLETE!*" --ok-label Back --msgbox "$daziLOGO $daziFILES"  25 75
 
 mainMENU
@@ -1317,24 +1318,29 @@ fi
 if [ ! -f /opt/retropie/configs/ports/doom/lzdoom-dazi.clean ]; then echo 'T' > /opt/retropie/configs/ports/doom/lzdoom-dazi.clean; fi
 
 # This script will behave differently depending on the location - copy itself to install location
-cp "$0" /dev/shm/lzdoom-dazi.sh; chmod 755 /dev/shm/lzdoom-dazi.sh
-mv /dev/shm/lzdoom-dazi.sh /opt/retropie/configs/ports/doom/lzdoom-dazi.sh
+cp "$0" /dev/shm/lzdoom-dazi.tmp; chmod 755 /dev/shm/lzdoom-dazi.tmp
+mv /dev/shm/lzdoom-dazi.tmp /opt/retropie/configs/ports/doom/lzdoom-dazi.sh
 
-echo 'Adding lzdoom-dazi to /usr/bin/dazi'
-##cp "$0" /dev/shm/lzdoom-dazi.sh; chmod 755 /dev/shm/lzdoom-dazi.sh
-##sudo mv /dev/shm/lzdoom-dazi.sh /usr/bin/dazi
-sudo rm -f /usr/bin/dazi
-sudo ln -s /opt/retropie/configs/ports/doom/lzdoom-dazi.sh /usr/bin/dazi
-
-# This script will behave differently depending on the location - copy itself to [/opt/retropie/configs/all/runcommand-menu]
-##echo 'chmod 755 /opt/retropie/configs/all/runcommand-menu/lzdoom-dazi.sh'
-mkdir /opt/retropie/configs/all/runcommand-menu > /dev/null 2>&1
-##cp "$0" /dev/shm/lzdoom-dazi.sh; chmod 755 /dev/shm/lzdoom-dazi.sh 
-##mv /dev/shm/lzdoom-dazi.sh /opt/retropie/configs/all/runcommand-menu/lzdoom-dazi.sh
+# runcommand-menu
+mkdir -p /opt/retropie/configs/all/runcommand-menu
 rm -f /opt/retropie/configs/all/runcommand-menu/lzdoom-dazi.sh
 echo '#!/usr/bin/env bash' > /opt/retropie/configs/all/runcommand-menu/lzdoom-dazi.sh
 echo '/opt/retropie/configs/ports/doom/lzdoom-dazi.sh' >> /opt/retropie/configs/all/runcommand-menu/lzdoom-dazi.sh
 chmod 755 /opt/retropie/configs/all/runcommand-menu/lzdoom-dazi.sh
+
+# Symbolic Link for [/usr/bin]; DAZI behaves differently depending on the location
+echo 'Adding lzdoom-dazi to /usr/bin/dazi'
+sudo rm -f /usr/bin/dazi
+sudo ln -s /opt/retropie/configs/ports/doom/lzdoom-dazi.sh /usr/bin/dazi
+##sudo cp /opt/retropie/configs/all/runcommand-menu/lzdoom-dazi.sh /usr/bin/dazi; sudo chmod 755 /usr/bin/dazi
+
+# Copy for [retropiemenu]; DAZI behaves differently depending on the location
+cp "$0" /dev/shm/lzdoom-dazi.tmp
+if [[ -d ~/RetroPie/retropiemenu/Utilities ]]; then
+	mv /dev/shm/lzdoom-dazi.tmp ~/RetroPie/retropiemenu/Utilities/lzdoom-dazi.sh
+else
+	mv /dev/shm/lzdoom-dazi.tmp ~/RetroPie/retropiemenu/lzdoom-dazi.sh
+fi
 
 # Toggle [runcommand] Flag OFF [dazi-mod-loader]
 echo '0' > /opt/retropie/configs/ports/doom/lzdoom-dazi.flag
@@ -1750,6 +1756,12 @@ getDAZIshMENU
 
 DMLmainMENU()
 {
+# Run from Installed Location for [alternateM0Ddir] and CUSTOM HOST(s)
+if [[ "$0" == *"/RetroPie/retropiemenu/"* ]] && [[ -f "/opt/retropie/configs/ports/doom/lzdoom-dazi.sh" ]]; then
+	bash /opt/retropie/configs/ports/doom/lzdoom-dazi.sh retropiemenu
+	mainMENU
+fi
+
 # Apply Custom User M0D Directory IF DEFINED
 if [ ! "$alternateM0Ddir" == "" ]; then M0DdirMAIN="$alternateM0Ddir"; fi
 
