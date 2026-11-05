@@ -13,6 +13,7 @@ hostSIX=
 hostSEVEN=
 hostEIGHT=
 hostNINE=
+hostTEN=
 
 # Running this Script from [/opt/retropie/configs/ports/doom] will access 0NLY the Mod Loader Menu  
 # Running this Script from [/opt/retropie/configs/all/runcommand-menu] will access 0NLY the Mod Loader Menu  
@@ -1149,9 +1150,11 @@ sudo rm /usr/bin/dazi 2>/dev/null
 rm -f ~/zdoom-client.cfg
 rm -f ~/zdoom-host.cfg
 rm -f ~/zdoom-warp.cfg
+rm -f ~/warp.cfg # Legacy
 rm -f /opt/retropie/configs/ports/doom/zdoom-client.cfg
 rm -f /opt/retropie/configs/ports/doom/zdoom-host.cfg
 rm -f /opt/retropie/configs/ports/doom/zdoom-warp.cfg
+rm -f /opt/retropie/configs/ports/doom/warp.cfg # Legacy
 
 dialog --no-collapse --title "REMOVE [DAZI] for [RetroPie]  *COMPLETE!*" --ok-label Back --msgbox "$daziLOGO $daziFILES"  25 75
 
@@ -1344,6 +1347,9 @@ fi
 
 # Toggle [runcommand] Flag OFF [dazi-mod-loader]
 echo '0' > /opt/retropie/configs/ports/doom/lzdoom-dazi.flag
+
+rm -f ~/warp.cfg # Legacy
+rm -f /opt/retropie/configs/ports/doom/warp.cfg # Legacy
 
 # FINISHED
 dialog --no-collapse --title "INSTALL [DAZI] for [RetroPie]  *COMPLETE!* " --ok-label Back --msgbox "$daziLOGO        $howtoREF ====================================================================== $zipREFmod $daziHUD $doomEMUSref ====================================================================== $daziFILES $zdoomCFGinis $daziHUDsrb2 $srb2FILES $doomWARPdiff $doomNETdiff DEFAULT [port]: $(cat /opt/retropie/configs/ports/doom/emulators.cfg | grep 'default =')"  25 75
@@ -2293,6 +2299,9 @@ WARPmainMENU()
 {
 tput reset
 
+if [[ ! -f /opt/retropie/configs/ports/doom/zdoom-warp.cfg ]]; then echo '-warp 1 1 -skill 3' > /opt/retropie/configs/ports/doom/zdoom-warp.cfg; fi
+if [[ ! -f ~/zdoom-warp.cfg ]]; then ln -s /opt/retropie/configs/ports/doom/zdoom-warp.cfg ~/zdoom-warp.cfg; fi
+
 # DEFINE WARP and DIFFICULTY
 #if [[ "$episodeNUM" == '' ]]; then episodeNUM=?; fi
 if [[ "$mapNUM" == '' ]]; then mapNUM=?; fi
@@ -2486,7 +2495,8 @@ if [ "$userWARPcfg" == '4' ]; then
 	# Prepare WARP and DIFFICULTY Settings For [lzdoom-dazi+warp]
 	if [ "$mapNUM" == "" ]; then mapNUM=1; fi # Set Map [1] if NOT DEFINED
 	if [ "$skillLEVEL" == "" ]; then skillLEVEL=3; fi # Set DEFAULT DIFFICULTY [Hurt me plenty] if NOT DEFINED
-	if [[ ! -f /opt/retropie/configs/ports/doom/zdoom-warp.cfg ]] && [[ -f /opt/retropie/configs/ports/doom/lzdoom-dazi.sh ]]; then echo '-warp 1 1 -skill 3' > /opt/retropie/configs/ports/doom/zdoom-warp.cfg; fi
+	if [[ ! -f /opt/retropie/configs/ports/doom/zdoom-warp.cfg ]]; then echo '-warp 1 1 -skill 3' > /opt/retropie/configs/ports/doom/zdoom-warp.cfg; fi
+	if [[ ! -f ~/zdoom-warp.cfg ]]; then ln -s /opt/retropie/configs/ports/doom/zdoom-warp.cfg ~/zdoom-warp.cfg; fi
 	if [[ "$mapNUM" == '?' ]]; then dialog --no-collapse --title "CURRENT [USER] SELECT Settings: -warp [$episodeNUM] [$mapNUM] -skill [$skillLEVEL]" --ok-label Back --msgbox "\n   \n*YOU MUST SELECT a [Map]*"  25 75; WARPmainMENU; fi
 	if [[ "$skillLEVEL" == '?' ]]; then dialog --no-collapse --title "CURRENT [USER] SELECT Settings: -warp [$episodeNUM] [$mapNUM] -skill [$skillLEVEL]" --ok-label Back --msgbox "\n   \n*YOU MUST SELECT a [Difficulty]*"  25 75; WARPmainMENU; fi
 	episodeNOTE=''
@@ -2521,18 +2531,19 @@ NETmainMENU()
 {
 tput reset
 
-# The Author's Pre-Defined HOSTs
-_hostONE=192.168.33.33
-_hostTWO=192.168.33.54
-_hostTHREE=192.168.33.55
-_hostFOUR=192.168.33.56
-_hostFIVE=192.168.33.68
-_hostSIX=192.168.33.30
-_hostSEVEN=192.168.1.100
-_hostEIGHT=192.168.10.100
-_hostNINE=192.168.11.100
+# Populate Host List with Author's Pre-Defined HOSTs
+_hostONE=192.168.33.30
+_hostTWO=192.168.33.31
+_hostTHREE=192.168.33.33
+_hostFOUR=192.168.33.54
+_hostFIVE=192.168.33.55
+_hostSIX=192.168.33.56
+_hostSEVEN=192.168.33.68
+_hostEIGHT=192.168.1.100
+_hostNINE=192.168.10.100
+_hostTEN=192.168.11.100
 
-# The User's Custom HOSTs #IF DEFINED
+# IF DEFINED Populate Host List with User's Custom HOSTs
 if [ ! "$hostONE" == "" ]; then _hostONE="$hostONE"; fi
 if [ ! "$hostTWO" == "" ]; then _hostTWO="$hostTWO"; fi
 if [ ! "$hostTHREE" == "" ]; then _hostTHREE="$hostTHREE"; fi
@@ -2542,9 +2553,12 @@ if [ ! "$hostSIX" == "" ]; then _hostSIX="$hostSIX"; fi
 if [ ! "$hostSEVEN" == "" ]; then _hostSEVEN="$hostSEVEN"; fi
 if [ ! "$hostEIGHT" == "" ]; then _hostEIGHT="$hostEIGHT"; fi
 if [ ! "$hostNINE" == "" ]; then _hostNINE="$hostNINE"; fi
+if [ ! "$hostTEN" == "" ]; then _hostTEN="$hostTEN"; fi
 
-if [[ ! -f /opt/retropie/configs/ports/doom/zdoom-client.cfg ]]; then echo "$hostONE" > /opt/retropie/configs/ports/doom/zdoom-client.cfg; fi
+if [[ ! -f /opt/retropie/configs/ports/doom/zdoom-client.cfg ]]; then echo "-join $_hostONE" > /opt/retropie/configs/ports/doom/zdoom-client.cfg; fi
 if [[ ! -f /opt/retropie/configs/ports/doom/zdoom-host.cfg ]]; then echo '-host 4 -skill 3' > /opt/retropie/configs/ports/doom/zdoom-host.cfg; fi
+if [[ ! -f ~/zdoom-client.cfg ]]; then ln -s /opt/retropie/configs/ports/doom/zdoom-client.cfg ~/zdoom-client.cfg; fi
+if [[ ! -f ~/zdoom-host.cfg ]]; then ln -s /opt/retropie/configs/ports/doom/zdoom-host.cfg ~/zdoom-host.cfg; fi
 
 # DEFINE CLIENT HOST and DIFFICULTY
 if [[ "$hostNUM" == '' ]]; then hostNUM=?; fi
@@ -2577,6 +2591,7 @@ if [ "$userNETcfg" == '1' ]; then
 		7 "$_hostSEVEN" \
 		8 "$_hostEIGHT" \
 		9 "$_hostNINE" \
+		10 "$_hostTEN" \
 		B "BACK" 2>&1>/dev/tty)
 	
 	# Confirmed - Otherwise Back to Main Menu
@@ -2589,6 +2604,7 @@ if [ "$userNETcfg" == '1' ]; then
 	if [ "$confHOST" == '7' ]; then clientHOST="$_hostSEVEN"; fi
 	if [ "$confHOST" == '8' ]; then clientHOST="$_hostEIGHT"; fi
 	if [ "$confHOST" == '9' ]; then clientHOST="$_hostNINE"; fi
+	if [ "$confHOST" == '10' ]; then clientHOST="$_hostTEN"; fi
 NETmainMENU
 fi
 
@@ -2665,7 +2681,7 @@ fi
 
 if [ "$userNETcfg" == 'C' ]; then
 	# Prepare CLIENT Settings For [zdoom-dazi+client]
-	if [[ ! -f /opt/retropie/configs/ports/doom/zdoom-client.cfg ]]; then echo "$hostONE" > /opt/retropie/configs/ports/doom/zdoom-client.cfg; fi
+	if [[ ! -f /opt/retropie/configs/ports/doom/zdoom-client.cfg ]]; then echo "-join $_hostONE" > /opt/retropie/configs/ports/doom/zdoom-client.cfg; fi
 	if [[ "$clientHOST" == '???.???.???.???' ]]; then dialog --no-collapse --title "[USER] SELECT Settings: -join [$clientHOST]" --ok-label Back --msgbox "\n   \n*YOU MUST SELECT a [Join-Host]*"  25 75; NETmainMENU; fi
 
 	confCLIENTset=$(dialog --no-collapse --title "APPLY [Join-Host] SETTINGS" \
@@ -3257,7 +3273,7 @@ if [ "$1" == 'client' ]; then
 	HOMEclientCFG=~/zdoom-client.cfg
 	_hostONE=192.168.33.33; # The Author's Pre-Defined HOST
 	if [ ! "$hostONE" == "" ]; then _hostONE="$hostONE"; fi # The User's Custom HOST #IF DEFINED
-	if [[ ! -f "$clientCFG" ]]; then echo "$hostONE" > "$clientCFG"; fi
+	if [[ ! -f "$clientCFG" ]]; then echo "-join $_hostONE" > "$clientCFG"; fi
 	if [[ ! -f "$HOMEclientCFG" ]]; then ln -s "$clientCFG" "$HOMEclientCFG"; fi
 	clientADDR="$(cat $clientCFG)"
 
