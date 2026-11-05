@@ -18,6 +18,9 @@ DAZI will Extract [ZIPs] [7z] Files and Load [M0Ds] into Doom [AddOnDIRs]
 [$zdoom-dazi]  Loads M0Ds from TMPFS [/dev/shm/addon/]  
 [$zdoom-dazi+] Loads M0Ds from BOTH  [TMPFS+ADDON] in that 0rder  
 [$zdoom-dazi+warp] Loads from [TMPFS+ADDON] and Includes [-WARP -SKILL]  
+[$zdoom-dazi+client] Loads from [TMPFS+ADDON] and Includes [-JOIN 192.168.6.66]  
+[$zdoom-dazi+host] Loads from [TMPFS+ADDON] and Includes [-HOST -SKILL]  
+     *Client/Host May Require FIREWALL Rule for UZDoom: UDP 5029 INBOUND*  
 
 - PRBOOM-PLUS:  
 [prboom-plus] Loads M0Ds from [..configs/prboom-plus/autoload/doom-all]  
@@ -30,7 +33,7 @@ DAZI can AutoGenerate a [prboom.cfg] based on [addonDIR] when Installed
 ## INSTALLATION  
 If you want 1-Run-N-Done:  
 ```bash
-wget https://raw.githubusercontent.com/RapidEdwin08/dazi/main/lzdoom-dazi.sh -P /dev/shm/; sudo chmod 755 /dev/shm/lzdoom-dazi.sh; mv /dev/shm/lzdoom-dazi.sh /dev/shm/lzdoom-dazi-tmp.sh; /dev/shm/lzdoom-dazi-tmp.sh
+wget https://raw.githubusercontent.com/RapidEdwin08/dazi/main/lzdoom-dazi.sh -P /dev/shm/; chmod 755 /dev/shm/lzdoom-dazi.sh; mv /dev/shm/lzdoom-dazi.sh /dev/shm/lzdoom-dazi-tmp.sh; /dev/shm/lzdoom-dazi-tmp.sh
 ```
 
 If you want to Put the Install Script in the retropiemenu [+Icon]:  
@@ -121,7 +124,7 @@ Or Repeat the Process to Pre-Load more D00M-M0Ds
 Use [dazi-mod-loader] from this Script directly, 0r Install it and...  
 Configure it to Always Load when the [doom] P0RT Launches  
 
-**HOW LEVEL WARP WITH DAZI:**  
+**HOW TO LEVEL WARP WITH DAZI:**  
 *Use the M0D Loader Menu to *SELECT* [Episode] [Map] [Difficulty] Settings:*  
 DAZI will Stream-Edit [emulators.cfg] to *APPLY* [-warp -skill ] Settings  
 Select appropriate WARP Emulator [lzdoom-dazi+warp] or [prboom-plus+warp]  
@@ -132,6 +135,17 @@ Warp+Difficulty Examples [-warp E# M# -skill S#]:
 [-warp 2 1 -skill 3] Ultimate Doom AliensTC E2M1 on Hurt me plenty  
 [-warp  31 -skill 5] Doom II SecretWolfensteinLevel MAP31 on Nightmare!  
 NOTE: Leave [Episode] set to [NONE] for D00M II Maps  
+
+**HOW TO PLAY NETWORK GAME WITH DAZI:**  
+Client+Host Examples [-join H#] [-host L# -skill S#]  
+[-join 192.168.6.66] Connect as Client to Host Address 192.168.6.66  
+[-host 4 -skill 3] Host Limit of 4 Clients Allowed on 3 Hurt me Plenty  
+     *Client/Host May Require FIREWALL Rule for UZDoom: UDP 5029 INBOUND*  
+
+**client/host/warp.cfg Files**  
+/opt/retropie/configs/ports/zdoom-warp.cfg   {/home/$USER/zdoom-warp.cfg}  
+/opt/retropie/configs/ports/zdoom-client.cfg {/home/$USER/zdoom-client.cfg}  
+/opt/retropie/configs/ports/zdoom-host.cfg    {/home/$USER/zdoom-host.cfg}  
 
 **prboom.cfg Files**  
 [prboom.cfg] Files are Required for Loading M0Ds with [lr-prboom]  
