@@ -137,7 +137,7 @@ NOTE: Leave [Episode] set to [NONE] for D00M II Maps
 
 **HOW TO PLAY NETWORK GAME WITH DAZI:**  
 *Use the M0D Loader Menu to *SELECT* [Join] [Host] [Difficulty] Settings:*  
-Select appropriate WARP Emulator [uzdoom-dazi+client] or [uzdoom-dazi+host]  
+Select appropriate NETWORK Emulator [uzdoom-dazi+client] or [uzdoom-dazi+host]  
 
 Client+Host Examples [-join H#] [-host L# -skill S#]  
 [-join 192.168.6.66] Connect as Client to Host Address 192.168.6.66  
