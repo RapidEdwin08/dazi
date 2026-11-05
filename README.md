@@ -126,8 +126,7 @@ Configure it to Always Load when the [doom] P0RT Launches
 
 **HOW TO LEVEL WARP WITH DAZI:**  
 *Use the M0D Loader Menu to *SELECT* [Episode] [Map] [Difficulty] Settings:*  
-DAZI will Stream-Edit [emulators.cfg] to *APPLY* [-warp -skill ] Settings  
-Select appropriate WARP Emulator [lzdoom-dazi+warp] or [prboom-plus+warp]  
+Select appropriate WARP Emulator [$zdoom-dazi+warp] or [prboom-plus+warp]  
 
 Warp+Difficulty Examples [-warp E# M# -skill S#]:  
 [-warp 5 9 -skill 4] Ultimate Doom SIGIL E5M9 on Ultra-Violence  
@@ -137,6 +136,9 @@ Warp+Difficulty Examples [-warp E# M# -skill S#]:
 NOTE: Leave [Episode] set to [NONE] for D00M II Maps  
 
 **HOW TO PLAY NETWORK GAME WITH DAZI:**  
+*Use the M0D Loader Menu to *SELECT* [Join] [Host] [Difficulty] Settings:*  
+Select appropriate WARP Emulator [uzdoom-dazi+client] or [uzdoom-dazi+host]  
+
 Client+Host Examples [-join H#] [-host L# -skill S#]  
 [-join 192.168.6.66] Connect as Client to Host Address 192.168.6.66  
 [-host 4 -skill 3] Host Limit of 4 Clients Allowed on 3 Hurt me Plenty  
